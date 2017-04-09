@@ -1,79 +1,63 @@
 #include "hash.h"
-/* função de ipressão de tokens */
-void printToken(int token)
-{
-	switch(token)
-	{
-		case TEMP:					fprintf(stderr,"TEMP");			break;
-		case LABEL:					fprintf(stderr,"LABEL");		break;
-		case SYMBOL_LIT_INTEGER: 	fprintf(stderr,"INT");			break;
-		case SYMBOL_LIT_TRUE : 		fprintf(stderr,"TRUE");			break;
-		case SYMBOL_LIT_FALSE : 	fprintf(stderr,"FALSE");		break;
-		case SYMBOL_LIT_CHAR : 		fprintf(stderr,"CHAR");			break;
-		case SYMBOL_LIT_STRING : 	fprintf(stderr,"STRING");		break;
-		case SYMBOL_IDENTIFIER : 	fprintf(stderr,"IDENTIFIER");	break;
 
-		case ID_SCALAR	:	 		fprintf(stderr,"SCALAR");		break;
-		case ID_POINTER	:	 		fprintf(stderr,"POINTER");		break;
-		case ID_VECTOR		: 		fprintf(stderr,"VECTOR");		break;
-		case ID_FUNCTION	: 		fprintf(stderr,"FUNCTION");		break;
-				
-		case T_INTEGER	:	 		fprintf(stderr,"INTEGER");		break;
-		case T_BOOLEAN	: 			fprintf(stderr,"BOOLEAN");		break;
-		case BOOL:  				fprintf(stderr,"BOOL");			break;
-		case WORD:  				fprintf(stderr,"WORD");			break;
-		case BYTE:		 			fprintf(stderr,"BYTE");			break;
-		
+// impressao dos tokens
+void printToken(int token){
+	switch(token){
+		// PALAVRAS RESERVADAS
+		case KW_BYTE: fprintf(stderr,"BYTE"); break;
+		case KW_SHORT: fprintf(stderr,"SHORT"); break;
+		case KW_LONG: fprintf(stderr,"LONG"); break;
+		case KW_FLOAT: fprintf(stderr,"FLOAT"); break;
+		case KW_DOUBLE: fprintf(stderr,"DOUBLE"); break;
+		case KW_WHEN: fprintf(stderr,"WHEN"); break;
+		case KW_THEN: fprintf(stderr,"THEN"); break;
+		case KW_ELSE: fprintf(stderr,"ELSE"); break;
+		case KW_WHILE: fprintf(stderr,"WHILE"); break;
+		case KW_FOR: fprintf(stderr,"FOR"); break;
+		case KW_READ: fprintf(stderr,"READ"); break;
+		case KW_RETURN: fprintf(stderr,"RETURN"); break;
+		case KW_PRINT: fprintf(stderr,"PRINT"); break;
+		// operadores duplos
+		case OPERATOR_LE: fprintf(stderr,"OPERATOR_LE"); break;
+		case OPERATOR_GE: fprintf(stderr,"OPERATOR_GE"); break;
+		case OPERATOR_EQ: fprintf(stderr,"OPERATOR_EQ"); break;
+		case OPERATOR_NE: fprintf(stderr,"OPERATOR_NE"); break;
+		case OPERATOR_AND: fprintf(stderr,"OPERATOR_AND"); break;
+		case OPERATOR_OR: fprintf(stderr,"OPERATOR_OR"); break;
+		// identificador
+		case TK_IDENTIFIER: fprintf(stderr,"TK_IDENTIFIER"); break;
+		// literais
+		case LIT_INTEGER: fprintf(stderr,"LIT_INTEGER"); break;
+		case LIT_REAL: fprintf(stderr,"LIT_REAL"); break;
+		case LIT_CHAR: fprintf(stderr,"LIT_CHAR"); break;
+		case LIT_STRING: fprintf(stderr,"LIT_STRING"); break;
+		// erro
+		case TOKEN_ERROR: fprintf(stderr,"TOKEN_ERROR"); break;
+
 		default:					fprintf(stderr,"default");		break;
 	}
 }
-/* função de utilização de intList */
-intList * insertIntList(int value_, intList * oldList)
-{
-	intList * new = (intList *)calloc(1,sizeof(intList));
-	intList * aux = oldList;
-	new->value = value_;
-	new->next = NULL;
-	
-	if(oldList)
-	{
-		for(aux = oldList ; aux->next != NULL ; aux = aux->next);
-		aux->next = new;
-		return oldList;
-	}
-	return new;
-}
 
-/* inicializa a hash */
+// inicializa a hash
 void startHash()
 {
 	int i=0;
 	
-	nextTempNumber =0;
-	nextLabelNumber =0;
 	for(i=0 ; i < HASH_SIZE ; i++)
 		hashTable[i] = NULL;
 }
 
-/* exibe um unico nodo */
-void printNode(hashNode * node)
-{
-	intList * intListAux = NULL;
+// imprime um nodo da hash
+void printNode(hashNode * node){
 
-	if(node)
-	{
-		fprintf(stderr,"Type: ");printToken(node->type);fprintf(stderr,"| DataType: ");printToken(node->dataType);fprintf(stderr," | Value: %s |",node->value);
-		
-		for(intListAux = node->functionArguments ; intListAux ; intListAux = intListAux->next)
-		{
-			fprintf(stderr,"Argument: "); printToken(intListAux->value);fprintf(stderr," | ");
-		}
-		
-		fprintf(stderr,"\n");
+	if(node){
+		fprintf(stderr,"Type: ");
+		printToken(node->type);
+		fprintf(stderr,", Value: %s\n",node->value);
 	}	
 }
 
-/* exibe toda a hash */
+/* printa a hash */
 void printHash()
 {
 	int i=0;
@@ -88,6 +72,9 @@ void printHash()
 		}
 	fprintf(stderr,"Fim da impressao...\n");	
 }
+
+
+
 
 /* 	Função para obter um nodo da hash, buscando pelo campo 'value'
 	Retorna NULL se não encontrar o valor */
@@ -108,7 +95,7 @@ hashNode * getNode(char *text)
 
 }
 
-/*	gera o valor de endereço da hash baseado na string */
+/* gera o valor de endereço da hash baseado na string */
 int address(char * text)
 {
 	int add =1;
@@ -137,10 +124,10 @@ char * addTerminator(char* text)
 
 }
 
-/* insere nodo na hash */
-hashNode * insertHash(char * text, int type)
-{
-	/* inicialização das variáveis */
+// insere nodo na hash
+hashNode * insertHash(char * text, int type){
+
+
 	int newAddress = 0;
 	int j=0;
 	hashNode * newNode = calloc(1,sizeof(hashNode));
@@ -149,31 +136,29 @@ hashNode * insertHash(char * text, int type)
 	
 	newAddress = address(text);
 	
-	/* switch do tipo para decidir como tratar o texto */
-	switch(type)
-	{
-		case SYMBOL_LIT_INTEGER:
+	// switch do tipo para decidir como tratar o texto 
+	switch(type){
+
+		case TK_IDENTIFIER:
 			newNode->value = addTerminator(text);
 			break;
-		case SYMBOL_LIT_TRUE:
-			newNode->value = "TRUE";
+
+		case LIT_INTEGER:
+			newNode->value = addTerminator(text);
 			break;
-		case SYMBOL_LIT_FALSE:
-			newNode->value = "FALSE";
+		case LIT_REAL:
+			newNode->value = addTerminator(text);
 			break;
-		case SYMBOL_LIT_CHAR:
+		case LIT_CHAR:
 			newNode->value = (char*)calloc(2,sizeof(char));
 			newNode->value[0] = text[1];
 			newNode->value[1] = '\0';
 			break;
-		case SYMBOL_LIT_STRING:
+		case LIT_STRING:
 			newNode->value = (char*)calloc(strlen(text)-1,sizeof(char));
 			for(j=1 ; j < strlen(text)-1 ; j++)
 				newNode->value[j-1]=text[j];
 			newNode->value[strlen(text)-2]='\0';
-			break;
-		case SYMBOL_IDENTIFIER:
-			newNode->value = addTerminator(text);
 			break;
 		default: 
 			newNode->value = addTerminator(text);  
@@ -187,9 +172,7 @@ hashNode * insertHash(char * text, int type)
 	{
 		/* atribuição do novo nodo */
 		newNode->type = type;
-		newNode->dataType = 0;
 		newNode->next = hashTable[newAddress];
-		newNode->functionArguments = NULL;
 
 		hashTable[newAddress] = newNode;
 		returnValue = newNode;
@@ -206,23 +189,4 @@ hashNode * insertHash(char * text, int type)
 	
 	return returnValue;
 	
-}
-
-/* cria novo temporario */
-hashNode * newTemp()
-{
-	char tempName[20] = "";
-	
-	sprintf(tempName,"_temp%d",nextTempNumber);
-	nextTempNumber++;
-	return insertHash(tempName,TEMP);
-}
-
-/* cria nova label */
-hashNode * newLabel()
-{
-	char labelName[20] ="";
-	sprintf(labelName,"_label%d",nextLabelNumber);
-	nextLabelNumber++;
-	return insertHash(labelName,LABEL);
 }
