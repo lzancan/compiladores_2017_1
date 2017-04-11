@@ -1,5 +1,6 @@
 %{
-
+	
+	#include <stdio.h>
 	#include "tokens.h"
 	#include "hash.h"
 
@@ -23,21 +24,21 @@ ALPHANUMUNDER [a-zA-Z0-9_]
 
 %%
 					
-byte					{return KW_BYTE; printf ("byte\n"); /* palavras reservadas */}
-short 					{return KW_SHORT;}
-long 					{return KW_LONG;}
-float 					{return KW_FLOAT;}
-double 					{return KW_DOUBLE;}
-when 					{return KW_WHEN;}
-then 					{return KW_THEN;}
-else 					{return KW_ELSE;}
-while 					{return KW_WHILE;}
-for 					{return KW_FOR;}
-read 					{return KW_READ;}
-print 					{return KW_PRINT;}
-return 					{return KW_RETURN;}
+"byte"					{return KW_BYTE; printf ("byte\n"); /* palavras reservadas */}
+"short" 					{return KW_SHORT;}
+"long" 					{return KW_LONG;}
+"float" 					{return KW_FLOAT;}
+"double" 					{return KW_DOUBLE;}
+"when" 					{return KW_WHEN;}
+"then" 					{return KW_THEN;}
+"else" 					{return KW_ELSE;}
+"while" 					{return KW_WHILE;}
+"for" 					{return KW_FOR;}
+"read" 					{return KW_READ;}
+"return" 					{return KW_RETURN;}
+"print" 					{return KW_PRINT;}
 
-[,;:()\[\]\{}+\-*/<>=!&$#]		{return yytext[0];/* codigo ascii */}
+[-,;:()\[\]\{}+\*/<>=!&$#]		{return yytext[0];/* codigo ascii */}
 					
 "<=" 					{return OPERATOR_LE;/* operadores compostos */}
 ">=" 					{return OPERATOR_GE;}
@@ -78,7 +79,7 @@ int isRunning(void){
 }
 
 void initMe(void){
-	startHash();
+	initHash();
 }
 
 int openFile(char* filePath){

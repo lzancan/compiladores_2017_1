@@ -24,9 +24,14 @@ typedef struct hashNode hashNode;
 hashNode * hashTable[HASH_SIZE];
 
 
-void startHash();
-void printHash();
-hashNode * insertHash(char * text, int type);
+void initHash();// inicializa a hash, fazendo os nodos serem null
+void printHash(); // imprime a hash toda
+void printToken(int token);// imprime um token
+int hashAddress(char *value); // gera o endereço hash baseado no nome (char *value)
+hashNode * insertHash(char * value, int type);
+void printNode(hashNode * node); // imprime um nodo da hash
+hashNode *getNode(char *value); // procura por um nodo na hash, retorna null se não encontrou
+char * addTerminator(char* value); // adiciona "\0" ao final de uma string
 
 
 

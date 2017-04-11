@@ -4,8 +4,11 @@
 
 extern lineNumber;
 extern FILE *yyin;
+extern running;
 
 int main(int argc, char **argv){
+
+	int token;
 
 	if(argc < 2){ 
 		exit(0);
@@ -18,13 +21,20 @@ int main(int argc, char **argv){
 	// inicializa
 	initMe();
 
-	while (yyin != EOF){
-		yylex();
+	while (running){
+		token = yylex();
+		
+		if(!running)
+			break;
+		
+		printf("token: %d (line %d)\n", token, getLineNumber());
 	}
 
 	closeFile();
 
-	printf ("numero de linhas: %d\n",lineNumber);
+	printf ("numero de linhas: %d\n",lineNumber-1);
+
+	printHash();
 
 	exit(0);
 }

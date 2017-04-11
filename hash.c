@@ -1,6 +1,6 @@
 #include "hash.h"
 
-// impressao dos tokens
+// imprime um token
 void printToken(int token){
 	switch(token){
 		// PALAVRAS RESERVADAS
@@ -38,8 +38,8 @@ void printToken(int token){
 	}
 }
 
-// inicializa a hash
-void startHash()
+// inicializa a hash, fazendo os nodos serem null
+void initHash()
 {
 	int i=0;
 	
@@ -49,7 +49,6 @@ void startHash()
 
 // imprime um nodo da hash
 void printNode(hashNode * node){
-
 	if(node){
 		fprintf(stderr,"Type: ");
 		printToken(node->type);
@@ -57,76 +56,66 @@ void printNode(hashNode * node){
 	}	
 }
 
-/* printa a hash */
-void printHash()
-{
+// imprime a hash toda
+void printHash(){
 	int i=0;
+
 	hashNode * node = NULL;
-	
-	fprintf(stderr,"Imprimindo a hash...\n");
-	
-	for(i=0 ; i < HASH_SIZE ; i++)
-		for(node = hashTable[i] ; node ; node = node->next)
-		{
+
+	fprintf(stderr,"Hash printing:\nInicio de impressao");
+	for(i=0 ; i < HASH_SIZE ; i++){
+		for(node = hashTable[i] ; node ; node = node->next){
 			printNode(node);
 		}
-	fprintf(stderr,"Fim da impressao...\n");	
+	}
+	fprintf(stderr,"Termino de impressao\n");	
 }
 
 
 
 
-/* 	Função para obter um nodo da hash, buscando pelo campo 'value'
-	Retorna NULL se não encontrar o valor */
-hashNode * getNode(char *text)
-{
+// procura por um nodo na hash, retorna null se não encontrou
+hashNode *getNode(char *value){
+
 	int i=0;
 	hashNode * node = NULL;
 	
-	for(i=0 ; i < HASH_SIZE ; i++)
-		for(node = hashTable[i] ; node ; node = node->next)
-		{
-			if(strcmp(node->value,text) == 0)
-			{
+	for(i=0 ; i < HASH_SIZE ; i++){
+		for(node = hashTable[i] ; node ; node = node->next){
+			if(strcmp(node->value,value) == 0){
 				return node;
 			}
 		}
+	}
 	return NULL;
-
 }
 
-/* gera o valor de endereço da hash baseado na string */
-int address(char * text)
-{
+// gera o endereço hash baseado no nome (char *value)
+int hashAddress(char *value){
 	int add =1;
 	int i=0;
 	
-	for(i=0; i<strlen(text); ++i)
-	{
-			add = ((add * text[i]) % HASH_SIZE ) +1;
+	for(i=0; i<strlen(value); ++i){
+		add = ((add * value[i]) % HASH_SIZE ) +1;
 	}
 	return add-1;
 }
 
 /* adiciona um caractere terminador no final de uma string */
-char * addTerminator(char* text)
-{
-	
-	int j = 0;
-	char* value = NULL;
-	
-	value = (char*)calloc(strlen(text),sizeof(char));
-	for(j=0 ; j<strlen(text); j++)
-		value[j] = text[j];
-	value[strlen(text)]='\0';
-	
-	return value;
+char * addTerminator(char* value){
+	int i = 0;
+	char* value2 = NULL;
+	value2 = (char*)calloc(strlen(value),sizeof(char));
+	for(i=0 ; i<strlen(value); i++)
+		value2[i] = value[i];
+	value2[strlen(value)]='\0';
+
+	return value2;
 
 }
 
 // insere nodo na hash
-hashNode * insertHash(char * text, int type){
-
+hashNode * insertHash(char * value, int type){
 
 	int newAddress = 0;
 	int j=0;
@@ -134,34 +123,33 @@ hashNode * insertHash(char * text, int type){
 	hashNode * returnValue = NULL;
 	hashNode * existingNode = NULL;
 	
-	newAddress = address(text);
-	
-	// switch do tipo para decidir como tratar o texto 
+	newAddress = hashAddress(value);
+
 	switch(type){
 
 		case TK_IDENTIFIER:
-			newNode->value = addTerminator(text);
+			newNode->value = addTerminator(value);
 			break;
 
 		case LIT_INTEGER:
-			newNode->value = addTerminator(text);
+			newNode->value = addTerminator(value);
 			break;
 		case LIT_REAL:
-			newNode->value = addTerminator(text);
+			newNode->value = addTerminator(value);
 			break;
 		case LIT_CHAR:
 			newNode->value = (char*)calloc(2,sizeof(char));
-			newNode->value[0] = text[1];
+			newNode->value[0] = value[1];
 			newNode->value[1] = '\0';
 			break;
 		case LIT_STRING:
-			newNode->value = (char*)calloc(strlen(text)-1,sizeof(char));
-			for(j=1 ; j < strlen(text)-1 ; j++)
-				newNode->value[j-1]=text[j];
-			newNode->value[strlen(text)-2]='\0';
+			newNode->value = (char*)calloc(strlen(value)-1,sizeof(char));
+			for(j=1 ; j < strlen(value)-1 ; j++)
+				newNode->value[j-1]=value[j];
+			newNode->value[strlen(value)-2]='\0';
 			break;
 		default: 
-			newNode->value = addTerminator(text);  
+			newNode->value = addTerminator(value);  
 			break;
 	}
 	

@@ -1,16 +1,16 @@
 byte
 short
-long 					
-float 					
-double 					
-when 					
-then 					
-else 				
-while 					
-for 					
-read 					
-print 		
-return 	
+long
+float
+double
+when
+then
+else
+while
+for
+read
+return
+print
 
 nome // identificador
 nome2
@@ -41,11 +41,11 @@ aqui ele termina...
 $
 #
 
-<=					
->=					
-== 					
-!=					
-&&					
+<=
+>=
+==
+!=
+&&
 ||
 
 "string"
@@ -53,4 +53,4 @@ $
 12.2
 2.12
 3
-4		
+4
