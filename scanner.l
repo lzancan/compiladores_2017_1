@@ -59,6 +59,8 @@ ALPHANUMUNDER [a-zA-Z0-9_]
 "/*" 					BEGIN(MULTI_LINE_COMMENT);
 					
 "\n"					{lineNumber++;/* encontrou "\n", soma 1 ao numberLines */}
+
+[ \t\r]+                               {/*ignore blankspace*/}
 					
 . 					{return TOKEN_ERROR;/* coletor de lixo */}	
 			

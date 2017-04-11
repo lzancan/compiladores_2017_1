@@ -8,11 +8,11 @@ then
 else
 while
 for
-read
+read		
 return
-print
+print    
 
-nome // identificador
+nome //identificador    
 nome2
 _nome3
 /* comentario multiline
