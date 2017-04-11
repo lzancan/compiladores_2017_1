@@ -8,30 +8,27 @@
 
 #define HASH_SIZE 997
 
-/* estrutura para o nodo da hash */
+// estrutura do nodo da hash
 
-struct hashNode;
-struct hashNode
-{
+struct HASH_NODE{
 	int type;
 	char * value;
-	struct hashNode * next;
-	
+	struct HASH_NODE * next;	
 };
-typedef struct hashNode hashNode;
+typedef struct HASH_NODE HASH_NODE;
 
-// hash global
-hashNode * hashTable[HASH_SIZE];
+// hash (array de nodos com o tamanho de HASH_SIZE)
+HASH_NODE * hashTable[HASH_SIZE];
 
 
 void initHash();// inicializa a hash, fazendo os nodos serem null
-void printHash(); // imprime a hash toda
-void printToken(int token);// imprime um token
 int hashAddress(char *value); // gera o endereço hash baseado no nome (char *value)
-hashNode * insertHash(char * value, int type);
-void printNode(hashNode * node); // imprime um nodo da hash
-hashNode *getNode(char *value); // procura por um nodo na hash, retorna null se não encontrou
-char * addTerminator(char* value); // adiciona "\0" ao final de uma string
+HASH_NODE *hashFind(char *value); // procura por um nodo na hash, retorna NULL se não encontrou
+char * addStringTerminator(char* value); // adiciona "\0" ao final de uma string
+HASH_NODE * insertHash(int type,char * value);
+void printToken(int token);// imprime um token
+void printHashNode(HASH_NODE * node); // imprime um nodo da hash
+void printHash(); // imprime a hash toda
 
 
 

@@ -926,28 +926,28 @@ YY_RULE_SETUP
 case 21:
 YY_RULE_SETUP
 #line 50 "scanner.l"
-{insertHash(yytext,TK_IDENTIFIER); return TK_IDENTIFIER;/* identificador, insere na hash e retorna o token */}
+{insertHash(TK_IDENTIFIER,yytext); return TK_IDENTIFIER;/* identificador, insere na hash e retorna o token */}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 52 "scanner.l"
-{insertHash(yytext,LIT_INTEGER);return LIT_INTEGER;/* literais, insere na hash e retorna o token */}
+{insertHash(LIT_INTEGER,yytext);return LIT_INTEGER;/* literais, insere na hash e retorna o token */}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 53 "scanner.l"
-{insertHash(yytext,LIT_REAL);return LIT_REAL;}
+{insertHash(LIT_REAL,yytext);return LIT_REAL;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 54 "scanner.l"
-{insertHash(yytext,LIT_CHAR);return LIT_CHAR;}
+{insertHash(LIT_CHAR,yytext);return LIT_CHAR;}
 	YY_BREAK
 case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
 #line 55 "scanner.l"
-{insertHash(yytext,LIT_STRING);return LIT_STRING;}
+{insertHash(LIT_STRING,yytext);return LIT_STRING;}
 	YY_BREAK
 case 26:
 /* rule 26 can match eol */
@@ -2015,23 +2015,6 @@ int isRunning(void){
 
 void initMe(void){
 	initHash();
-}
-
-int openFile(char* filePath){
-	FILE* file = fopen(filePath,"r");
-
-	if(!file){
-		return 0;
-	}
-	else{
-		yyin = file;
-		return 1;
-	}
-}
-
-int closeFile(){
-	fclose(yyin);
-	return 1;
 }
 
 int yywrap()

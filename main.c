@@ -14,8 +14,13 @@ int main(int argc, char **argv){
 		exit(0);
 	}
 
-	if(!openFile(argv[1])){
-		exit(1);
+	FILE* file = fopen(argv[1],"r");
+
+	if(!file){
+		printf ("erro ao abrir o arquivo %s\n",argv[1]);
+	}
+	else{
+		yyin = file;
 	}
 
 	// inicializa
@@ -30,11 +35,12 @@ int main(int argc, char **argv){
 		printf("token: %d (line %d)\n", token, getLineNumber());
 	}
 
-	closeFile();
 
 	printf ("numero de linhas: %d\n",lineNumber-1);
 
 	printHash();
+
+	fclose(yyin);
 
 	exit(0);
 }
