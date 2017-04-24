@@ -15,7 +15,7 @@
 %}
 
 NUM [0-9]
-ALPHANUM [0-9a-fA-F]
+ALPHANUM [0-9a-zA-Z]
 ALPHAUNDER [a-zA-Z_]
 ALPHANUMUNDER [a-zA-Z0-9_]
 
@@ -23,7 +23,7 @@ ALPHANUMUNDER [a-zA-Z0-9_]
 
 %%
 					
-"byte"					{return KW_BYTE; printf ("byte\n"); /* palavras reservadas */}
+"byte"					{return KW_BYTE; /* palavras reservadas */}
 "short" 					{return KW_SHORT;}
 "long" 					{return KW_LONG;}
 "float" 					{return KW_FLOAT;}
@@ -33,6 +33,7 @@ ALPHANUMUNDER [a-zA-Z0-9_]
 "else" 					{return KW_ELSE;}
 "while" 					{return KW_WHILE;}
 "for" 					{return KW_FOR;}
+"to" 					{return KW_TO;}
 "read" 					{return KW_READ;}
 "return" 					{return KW_RETURN;}
 "print" 					{return KW_PRINT;}
