@@ -16,7 +16,7 @@ hash.o: hash.c
 y.tab.o: y.tab.c
 	gcc -c y.tab.c
 y.tab.c: parser.y
-	yacc -d parser.y
+	yacc -d parser.y -v
 lex.yy.o: lex.yy.c
 	gcc -c lex.yy.c
 lex.yy.c: scanner.l
