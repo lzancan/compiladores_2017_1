@@ -38,9 +38,9 @@ int main(int argc, char **argv){
 
 	yyparse();
 
-	printf ("numero de linhas: %d\n",getLineNumber()-1);
+	//printf ("numero de linhas: %d\n",getLineNumber()-1);
 
-	printHash();
+	//printHash();
 
 	fclose(yyin);
 
