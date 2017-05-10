@@ -7,6 +7,10 @@
 	int yylex(void);
 %}
 
+%union{ 
+	linkedList* symbol; 
+	AST_TREE* ast; 
+      }
 
 %token KW_TO
 %token KW_BYTE   
