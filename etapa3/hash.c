@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "hash.h"
 
 
@@ -61,6 +63,7 @@ HASH_NODE * insertHash(int type,char * value){
 		newNode=calloc(1,sizeof(HASH_NODE));
 		int i;
 		switch(type){
+/*
 			case TK_IDENTIFIER:
 				newNode->value = addStringTerminator(value);
 				break;
@@ -85,6 +88,28 @@ HASH_NODE * insertHash(int type,char * value){
 			default: 
 				newNode->value = addStringTerminator(value);  
 				break;
+*/
+			case SYMBOL_IDENTIFIER:
+				newNode->value = addStringTerminator(value);
+				break;
+
+			case SYMBOL_LIT_INTEGER:
+				newNode->value = addStringTerminator(value);
+				break;
+			case SYMBOL_LIT_REAL:
+				newNode->value = addStringTerminator(value);
+				break;
+			case SYMBOL_LIT_CHAR:
+				newNode->value = (char*)calloc(2,sizeof(char));
+				newNode->value[0] = value[1];
+				newNode->value[1] = '\0';
+				break;
+			case SYMBOL_LIT_STRING:
+				newNode->value = (char*)calloc(strlen(value)-1,sizeof(char));
+				for(i=1 ; i < strlen(value)-1 ; i++)
+				newNode->value[i-1]=value[i];
+				newNode->value[strlen(value)-2]='\0';
+				break;
 		}
 		// senão está na hash, insere
 		newNode->type = type;
@@ -102,6 +127,7 @@ HASH_NODE * insertHash(int type,char * value){
 // imprime um token
 void printToken(int token){
 	switch(token){
+/*
 		// PALAVRAS RESERVADAS
 		case KW_BYTE: fprintf(stderr,"BYTE"); 
 			break;
@@ -158,6 +184,19 @@ void printToken(int token){
 		case TOKEN_ERROR: fprintf(stderr,"TOKEN_ERROR"); 
 			break;
 		default: fprintf(stderr,"default");
+			break;
+*/
+		// identificador
+		case SYMBOL_IDENTIFIER: fprintf(stderr,"IDENTIFIER"); 
+			break;
+		// literais
+		case SYMBOL_LIT_INTEGER: fprintf(stderr,"LIT_INTEGER"); 
+			break;
+		case SYMBOL_LIT_REAL: fprintf(stderr,"LIT_REAL"); 
+			break;
+		case SYMBOL_LIT_CHAR: fprintf(stderr,"LIT_CHAR"); 
+			break;
+		case SYMBOL_LIT_STRING: fprintf(stderr,"LIT_STRING"); 
 			break;
 	}
 }

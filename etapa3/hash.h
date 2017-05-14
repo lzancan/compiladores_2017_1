@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "y.tab.h"
 
 #define HASH_SIZE 997
 
@@ -13,6 +12,10 @@
 #define SYMBOL_LIT_CHAR 3
 #define SYMBOL_LIT_STRING 4
 #define SYMBOL_IDENTIFIER 7
+
+int getLineNumber(void);
+int yyerror(char *value);
+int yylex(void);
 
 // estrutura do nodo da hash
 

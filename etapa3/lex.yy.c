@@ -532,7 +532,11 @@ char *yytext;
 #line 2 "scanner.l"
 	
 	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
 	#include "hash.h"
+	#include "astree.h"	
+	#include "y.tab.h"
 
 	// esboço das funções
 	int getLineNumber(void);
@@ -544,7 +548,7 @@ char *yytext;
 	int lineNumber = 1; // inicia com 1, pois só incrementa ao achar o \n (que vai para a próxima já)
 	int running = 1; // indica running da análise
 
-#line 548 "lex.yy.c"
+#line 552 "lex.yy.c"
 
 #define INITIAL 0
 #define MULTI_LINE_COMMENT 1
@@ -763,10 +767,10 @@ YY_DECL
 		}
 
 	{
-#line 24 "scanner.l"
+#line 28 "scanner.l"
 
 					
-#line 770 "lex.yy.c"
+#line 774 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -825,184 +829,185 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 26 "scanner.l"
+#line 30 "scanner.l"
 {return KW_BYTE; /* palavras reservadas */}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 27 "scanner.l"
+#line 31 "scanner.l"
 {return KW_SHORT;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 28 "scanner.l"
+#line 32 "scanner.l"
 {return KW_LONG;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 29 "scanner.l"
+#line 33 "scanner.l"
 {return KW_FLOAT;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 30 "scanner.l"
+#line 34 "scanner.l"
 {return KW_DOUBLE;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 31 "scanner.l"
+#line 35 "scanner.l"
 {return KW_WHEN;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 32 "scanner.l"
+#line 36 "scanner.l"
 {return KW_THEN;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 33 "scanner.l"
+#line 37 "scanner.l"
 {return KW_ELSE;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 34 "scanner.l"
+#line 38 "scanner.l"
 {return KW_WHILE;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 35 "scanner.l"
+#line 39 "scanner.l"
 {return KW_FOR;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 36 "scanner.l"
+#line 40 "scanner.l"
 {return KW_TO;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 37 "scanner.l"
+#line 41 "scanner.l"
 {return KW_READ;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 38 "scanner.l"
+#line 42 "scanner.l"
 {return KW_RETURN;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 39 "scanner.l"
+#line 43 "scanner.l"
 {return KW_PRINT;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 41 "scanner.l"
+#line 45 "scanner.l"
 {return yytext[0];/* codigo ascii */}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 43 "scanner.l"
+#line 47 "scanner.l"
 {return OPERATOR_LE;/* operadores compostos */}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 44 "scanner.l"
+#line 48 "scanner.l"
 {return OPERATOR_GE;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 45 "scanner.l"
+#line 49 "scanner.l"
 {return OPERATOR_EQ;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 46 "scanner.l"
+#line 50 "scanner.l"
 {return OPERATOR_NE;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 47 "scanner.l"
+#line 51 "scanner.l"
 {return OPERATOR_AND;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 48 "scanner.l"
+#line 52 "scanner.l"
 {return OPERATOR_OR;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 50 "scanner.l"
-{insertHash(TK_IDENTIFIER,yytext); return TK_IDENTIFIER;/* identificador, insere na hash e retorna o token */}
+#line 54 "scanner.l"
+{ yylval.symbol = insertHash(SYMBOL_IDENTIFIER,yytext); 
+					 return TK_IDENTIFIER;/* identificador, insere na hash e retorna o token */}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 52 "scanner.l"
-{insertHash(LIT_INTEGER,yytext);return LIT_INTEGER;/* literais, insere na hash e retorna o token */}
+#line 57 "scanner.l"
+{ yylval.symbol = insertHash(SYMBOL_LIT_INTEGER,yytext);return LIT_INTEGER;/* literais, insere na hash e retorna o token */}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 53 "scanner.l"
-{insertHash(LIT_REAL,yytext);return LIT_REAL;}
+#line 58 "scanner.l"
+{yylval.symbol = insertHash(SYMBOL_LIT_REAL,yytext); return LIT_REAL;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 54 "scanner.l"
-{insertHash(LIT_CHAR,yytext);return LIT_CHAR;}
+#line 59 "scanner.l"
+{yylval.symbol = insertHash(SYMBOL_LIT_CHAR,yytext); return LIT_CHAR;}
 	YY_BREAK
 case 26:
 /* rule 26 can match eol */
 YY_RULE_SETUP
-#line 55 "scanner.l"
-{insertHash(LIT_STRING,yytext);return LIT_STRING;}
+#line 60 "scanner.l"
+{yylval.symbol = insertHash(SYMBOL_LIT_STRING,yytext); return LIT_STRING;}
 	YY_BREAK
 case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
-#line 57 "scanner.l"
+#line 62 "scanner.l"
 {lineNumber++;/* comentario simples, com "\n" */}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 59 "scanner.l"
+#line 64 "scanner.l"
 BEGIN(MULTI_LINE_COMMENT);
 	YY_BREAK
 case 29:
 /* rule 29 can match eol */
 YY_RULE_SETUP
-#line 61 "scanner.l"
+#line 66 "scanner.l"
 {lineNumber++;/* encontrou "\n", soma 1 ao numberLines */}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 63 "scanner.l"
+#line 68 "scanner.l"
 {/*ignore blankspace*/}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 65 "scanner.l"
+#line 70 "scanner.l"
 {return TOKEN_ERROR;/* coletor de lixo */}	
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 67 "scanner.l"
+#line 72 "scanner.l"
 BEGIN(INITIAL);
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 68 "scanner.l"
+#line 73 "scanner.l"
 
 	YY_BREAK
 case 34:
 /* rule 34 can match eol */
 YY_RULE_SETUP
-#line 69 "scanner.l"
+#line 74 "scanner.l"
 {lineNumber++;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 71 "scanner.l"
+#line 76 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 1006 "lex.yy.c"
+#line 1011 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(MULTI_LINE_COMMENT):
 	yyterminate();
@@ -2004,7 +2009,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 71 "scanner.l"
+#line 76 "scanner.l"
 
 
 
