@@ -1,6 +1,8 @@
 %{
 	#include <stdio.h>
 	#include <stdlib.h>
+	#include "hash.h"
+	#include "astree.h"
 
 	int getLineNumber(void);
 	int yyerror(char *value);
@@ -8,8 +10,8 @@
 %}
 
 %union{ 
-	linkedList* symbol; 
-	AST_TREE* ast; 
+	HASH_NODE* symbol; 
+	ASTREE* astree; 
       }
 
 %token KW_TO
@@ -34,13 +36,43 @@
 %token OPERATOR_AND  
 %token OPERATOR_OR   
 
-%token TK_IDENTIFIER 
-%token LIT_INTEGER   
-%token LIT_REAL      
-%token LIT_CHAR      
-%token LIT_STRING    
+%token <symbol> TK_IDENTIFIER 
+%token <symbol> LIT_INTEGER   
+%token <symbol> LIT_REAL      
+%token <symbol> LIT_CHAR      
+%token <symbol> LIT_STRING    
 
 %token TOKEN_ERROR   
+
+%type <astree> PROGRAMA
+%type <astree> DECLARACAO
+%type <astree> VARIAVEL_GLOBAL
+%type <astree> VAR_GLOBAL_INIT_VEC
+%type <astree> VALOR
+%type <astree> VALOR_INICIALIZACAO_VETOR
+%type <astree> TIPO
+%type <astree> FUNCOES
+%type <astree> CABECALHO
+%type <astree> LISTA_PARAMETROS
+%type <astree> MAIS_PARAMETROS
+%type <astree> CORPO
+%type <astree> BLOCO_COMANDOS
+%type <astree> LISTA_COMANDOS
+%type <astree> COMANDO
+%type <astree> ATRIBUICAO
+%type <astree> READ
+%type <astree> PRINT
+%type <astree> LISTA_ELEMENTOS_PRINT
+%type <astree> ELEMENTO_PRINT
+%type <astree> RETURN
+%type <astree> EXPRESSAO
+%type <astree> LISTA_FUNCAO_PARAMETROS
+%type <astree> CONTROLE_FLUXO
+%type <astree> WHEN_THEN
+%type <astree> WHEN_THEN_ELSE
+%type <astree> WHILE
+%type <astree> FOR
+
 
 %left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE
 %left OPERATOR_AND OPERATOR_OR
@@ -55,9 +87,9 @@
 
 %%
 	
-	PROGRAMA: DECLARACAO PROGRAMA | /*vazio*/
+	PROGRAMA: DECLARACAO PROGRAMA {$$ = astreeCreate();}| /*vazio*/ {$$ = 0;}
 	;
-	DECLARACAO: FUNCOES | VARIAVEL_GLOBAL ';'
+	DECLARACAO: FUNCOES | VARIAVEL_GLOBAL ';' $$ = astreeCreate
 	;
 	VARIAVEL_GLOBAL: TK_IDENTIFIER ':' TIPO VAR_GLOBAL_INIT_VEC
 	;

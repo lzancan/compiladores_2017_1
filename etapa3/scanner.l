@@ -2,6 +2,7 @@
 	
 	#include <stdio.h>
 	#include "hash.h"
+	#include "astree.h"	
 
 	// esboço das funções
 	int getLineNumber(void);
@@ -47,12 +48,17 @@ ALPHANUMUNDER [a-zA-Z0-9_]
 "&&" 					{return OPERATOR_AND;}
 "||" 					{return OPERATOR_OR;}
 					
-{ALPHAUNDER}{ALPHANUMUNDER}*		{insertHash(TK_IDENTIFIER,yytext); return TK_IDENTIFIER;/* identificador, insere na hash e retorna o token */}
+{ALPHAUNDER}{ALPHANUMUNDER}*		{ yylval.symbol = addSymbol(yytext, SYMBOL_IDENTIFIER);	insertHash(TK_IDENTIFIER,yytext); 
+					 return TK_IDENTIFIER;/* identificador, insere na hash e retorna o token */}
 					
-{NUM}+ 					{insertHash(LIT_INTEGER,yytext);return LIT_INTEGER;/* literais, insere na hash e retorna o token */}
-{NUM}+.{NUM}+		 		{insertHash(LIT_REAL,yytext);return LIT_REAL;}
-\'.\'					{insertHash(LIT_CHAR,yytext);return LIT_CHAR;}
-\"([^\\\"]|\\.)*\"			{insertHash(LIT_STRING,yytext);return LIT_STRING;}
+{NUM}+ 					{ yylval.symbol = addSymbol(yytext, SYMBOL_LIT_INTEGER);	
+					 insertHash(LIT_INTEGER,yytext);return LIT_INTEGER;/* literais, insere na hash e retorna o token */}
+{NUM}+.{NUM}+		 		{yylval.symbol = addSymbol(yytext, SYMBOL_LIT_REAL);
+					insertHash(LIT_REAL,yytext);return LIT_REAL;}
+\'.\'					{yylval.symbol = addSymbol(yytext, SYMBOL_LIT_CHAR);
+					insertHash(LIT_CHAR,yytext);return LIT_CHAR;}
+\"([^\\\"]|\\.)*\"			{yylval.symbol = addSymbol(yytext, SYMBOL_LIT_STRING);
+					insertHash(LIT_STRING,yytext);return LIT_STRING;}
 					
 "//".*"\n" 				{lineNumber++;/* comentario simples, com "\n" */}
 					

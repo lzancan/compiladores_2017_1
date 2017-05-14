@@ -66,12 +66,14 @@
 
 	#include <stdio.h>
 	#include <stdlib.h>
+	#include "hash.h"
+	#include "astree.h"
 
 	int getLineNumber(void);
 	int yyerror(char *value);
 	int yylex(void);
 
-#line 75 "y.tab.c" /* yacc.c:339  */
+#line 77 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -164,7 +166,19 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 12 "parser.y" /* yacc.c:355  */
+ 
+	HASH_NODE* symbol; 
+	ASTREE* astree; 
+      
+
+#line 179 "y.tab.c" /* yacc.c:355  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -178,7 +192,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 182 "y.tab.c" /* yacc.c:358  */
+#line 196 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -478,14 +492,14 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    54,    54,    54,    56,    56,    58,    60,    60,    62,
-      63,    64,    66,    66,    68,    69,    70,    71,    72,    74,
-      76,    78,    78,    80,    80,    82,    84,    86,    86,    88,
-      89,    90,    91,    92,    93,    93,    96,    96,    98,   100,
-     102,   102,   104,   104,   106,   108,   109,   110,   111,   112,
-     113,   114,   115,   116,   117,   118,   119,   120,   121,   122,
-     123,   124,   125,   126,   127,   128,   129,   132,   132,   132,
-     134,   134,   134,   134,   136,   138,   140,   142
+       0,    90,    90,    90,    92,    92,    94,    96,    96,    98,
+      99,   100,   102,   102,   104,   105,   106,   107,   108,   110,
+     112,   114,   114,   116,   116,   118,   120,   122,   122,   124,
+     125,   126,   127,   128,   129,   129,   132,   132,   134,   136,
+     138,   138,   140,   140,   142,   144,   145,   146,   147,   148,
+     149,   150,   151,   152,   153,   154,   155,   156,   157,   158,
+     159,   160,   161,   162,   163,   164,   165,   168,   168,   168,
+     170,   170,   170,   170,   172,   174,   176,   178
 };
 #endif
 
@@ -1395,7 +1409,7 @@ yyreduce:
   switch (yyn)
     {
       
-#line 1399 "y.tab.c" /* yacc.c:1646  */
+#line 1413 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1623,7 +1637,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 146 "parser.y" /* yacc.c:1906  */
+#line 182 "parser.y" /* yacc.c:1906  */
 
 
 
