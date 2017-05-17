@@ -43,6 +43,8 @@
 
 %token TOKEN_ERROR   
 
+%type <astree> P
+%type <astree> DECLARACOES
 %type <astree> PROGRAMA
 %type <astree> DECLARACAO
 %type <astree> VARIAVEL_GLOBAL
@@ -86,15 +88,17 @@
 
 %%
 	
-	P: PROGRAMA {astreePrint($1);}
+	P: PROGRAMA{ astreePrint(0, $1); }
 	;
-	PROGRAMA: DECLARACAO PROGRAMA {$$ = astreeCreate(ASTREE_PROGRAMA, NULL, $1, $2, 0, 0);}
-		   | /*vazio*/ {$$ = 0;}
+	PROGRAMA: DECLARACOES { $$ = astreeCreate(ASTREE_PROGRAMA, NULL, $1, 0, 0, 0);}
+	;
+	DECLARACOES: DECLARACAO DECLARACOES {$$ = astreeCreate(ASTREE_DECLARACAO, NULL, $1, $2, 0, 0);}
+		   | /*vazio*/ { $$ = 0; }
 	;
 	DECLARACAO: FUNCOES 
-		    | VARIAVEL_GLOBAL ';'
+		    | VARIAVEL_GLOBAL ';' 
 	;
-	VARIAVEL_GLOBAL: TK_IDENTIFIER ':' TIPO VAR_GLOBAL_INIT_VEC { $$ = astreeCreate(ASTREE_DECLARACAO_VAR_GLOBAL, $1, $3, $4, 0, 0);}
+	VARIAVEL_GLOBAL: TK_IDENTIFIER ':' TIPO VAR_GLOBAL_INIT_VEC { $$ = astreeCreate(ASTREE_VAR_GLOBAL, $1, $3, $4, 0, 0);}
 	;
 	VAR_GLOBAL_INIT_VEC: VALOR 
 			     | '[' LIT_INTEGER ']' VALOR_INICIALIZACAO_VETOR { $$ = astreeCreate(ASTREE_VAR_GLOBAL_INIT_VEC, $2, $4, 0, 0, 0);}
@@ -104,15 +108,15 @@
 		LIT_CHAR { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);}
 	;
 	VALOR_INICIALIZACAO_VETOR: VALOR VALOR_INICIALIZACAO_VETOR 
-				   | /*vazio*/ {$$ = 0;}
+				   | /*vazio*/ { $$ = 0; }
 	;
-	TIPO: KW_BYTE  {$$ = astreeCreate(ASTREE_BYTE_TYPE, NULL, 0, 0, 0, 0);}| 
-	      KW_SHORT {$$ = astreeCreate(ASTREE_SHORT_TYPE, NULL, 0, 0, 0, 0);}|    
-	      KW_LONG  {$$ = astreeCreate(ASTREE_FLOAT_TYPE, NULL, 0, 0, 0, 0);}|  
- 	      KW_FLOAT {$$ = astreeCreate(ASTREE_FLOAT_TYPE, NULL, 0, 0, 0, 0);}|   
-	      KW_DOUBLE{$$ = astreeCreate(ASTREE_FLOAT_TYPE, NULL, 0, 0, 0, 0);}
+	TIPO: KW_BYTE  { $$ = 0; }| 
+	      KW_SHORT { $$ = 0; }|    
+	      KW_LONG  { $$ = 0; }|  
+ 	      KW_FLOAT { $$ = 0; }|   
+	      KW_DOUBLE{ $$ = 0; }
 	; 
-	FUNCOES: CABECALHO CORPO
+	FUNCOES: CABECALHO CORPO {$$ = astreeCreate(ASTREE_FUNCAO, NULL, $1, $2, 0, 0);}
 	;
 	CABECALHO: TIPO TK_IDENTIFIER '(' LISTA_PARAMETROS ')' {$$ = astreeCreate(ASTREE_FUNC_CABECALHO, $2, $1, $4, 0, 0);}
 	;
@@ -152,28 +156,28 @@
 	;
 	RETURN: KW_RETURN EXPRESSAO { $$ = astreeCreate(ASTREE_RETURN, NULL, $2, 0, 0, 0);}
 	;
-	EXPRESSAO: TK_IDENTIFIER { $$ = astreeCreate(ASTREE_EXPRESSAO_IDENTIFIER, $1, 0, 0, 0, 0);} |
+	EXPRESSAO: TK_IDENTIFIER { $$ = astreeCreate(ASTREE_IDENTIFIER, $1, 0, 0, 0, 0);} |
 		   TK_IDENTIFIER '[' EXPRESSAO ']' { $$ = astreeCreate(ASTREE_EXPRESSAO, $1, $3, 0, 0, 0);} |
 		   TK_IDENTIFIER '(' LISTA_FUNCAO_PARAMETROS ')' { $$ = astreeCreate(ASTREE_EXPRESSAO, $1, $3, 0, 0, 0);}  |
 		   '-' EXPRESSAO { $$ = astreeCreate(ASTREE_EXPRESSAO, NULL, $2, 0, 0, 0);} |
-		   LIT_INTEGER { $$ = astreeCreate(ASTREE_EXPRESSAO_LITERAL, $1, 0, 0, 0, 0);} |
-		   LIT_REAL { $$ = astreeCreate(ASTREE_EXPRESSAO_LITERAL, $1, 0, 0, 0, 0);} |
-		   LIT_CHAR { $$ = astreeCreate(ASTREE_EXPRESSAO_LITERAL, $1, 0, 0, 0, 0);}|
+		   LIT_INTEGER { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} |
+		   LIT_REAL { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} |
+		   LIT_CHAR { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);}|
 		   '('EXPRESSAO')' { $$ = astreeCreate(ASTREE_EXPRESSAO, NULL, $2, 0, 0, 0);} |
 		   '[' EXPRESSAO ']'  { $$ = astreeCreate(ASTREE_EXPRESSAO, NULL, $2, 0, 0, 0);} |
-		   EXPRESSAO '+' EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_ADD, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO '-' EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_SUB, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO '*' EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_MUL, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO '/' EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_DIV, NULL, $1, $3, 0, 0);} |
-	           EXPRESSAO '>' EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_LESS_THAN, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO '<' EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_GREATER_THAN, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO OPERATOR_LE EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_LE, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO OPERATOR_GE EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_GE, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO OPERATOR_EQ EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_EQ, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO OPERATOR_NE EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_NE, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO OPERATOR_AND EXPRESSAO { $$ = astreeCreate(ASTREE_EXPRESSAO_AND, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO OPERATOR_OR EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_OR, NULL, $1, $3, 0, 0);} | 
-		   '!'EXPRESSAO { $$ = astreeCreate(ASTREE_EXPRESSAO_NEG, NULL, $2, 0, 0, 0);} 
+		   EXPRESSAO '+' EXPRESSAO  { $$ = astreeCreate(ASTREE_ADD, NULL, $1, $3, 0, 0);} | 
+		   EXPRESSAO '-' EXPRESSAO  { $$ = astreeCreate(ASTREE_SUB, NULL, $1, $3, 0, 0);} |
+		   EXPRESSAO '*' EXPRESSAO  { $$ = astreeCreate(ASTREE_MUL, NULL, $1, $3, 0, 0);} |
+		   EXPRESSAO '/' EXPRESSAO  { $$ = astreeCreate(ASTREE_DIV, NULL, $1, $3, 0, 0);} |
+	           EXPRESSAO '>' EXPRESSAO  { $$ = astreeCreate(ASTREE_LESS_THAN, NULL, $1, $3, 0, 0);} |
+		   EXPRESSAO '<' EXPRESSAO  { $$ = astreeCreate(ASTREE_GREATER_THAN, NULL, $1, $3, 0, 0);} | 
+		   EXPRESSAO OPERATOR_LE EXPRESSAO  { $$ = astreeCreate(ASTREE_LE, NULL, $1, $3, 0, 0);} | 
+		   EXPRESSAO OPERATOR_GE EXPRESSAO  { $$ = astreeCreate(ASTREE_GE, NULL, $1, $3, 0, 0);} |
+		   EXPRESSAO OPERATOR_EQ EXPRESSAO  { $$ = astreeCreate(ASTREE_EQ, NULL, $1, $3, 0, 0);} | 
+		   EXPRESSAO OPERATOR_NE EXPRESSAO  { $$ = astreeCreate(ASTREE_NE, NULL, $1, $3, 0, 0);} | 
+		   EXPRESSAO OPERATOR_AND EXPRESSAO { $$ = astreeCreate(ASTREE_AND, NULL, $1, $3, 0, 0);} |
+		   EXPRESSAO OPERATOR_OR EXPRESSAO  { $$ = astreeCreate(ASTREE_OR, NULL, $1, $3, 0, 0);} | 
+		   '!'EXPRESSAO { $$ = astreeCreate(ASTREE_EXPRESSAO, NULL, $2, 0, 0, 0);} 
 	;		  
 
 	LISTA_FUNCAO_PARAMETROS: EXPRESSAO ',' LISTA_FUNCAO_PARAMETROS { $$ = astreeCreate(ASTREE_LISTA_FUNC_PARAMETROS, NULL, $1, $3, 0, 0);}

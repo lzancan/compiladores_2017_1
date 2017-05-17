@@ -17,17 +17,27 @@ ASTREE* astreeCreate (int type, HASH_NODE* symbol, ASTREE* son0, ASTREE* son1, A
 
 }
 
-void astreePrint(ASTREE* node){
+void astreePrint(int level, ASTREE* node){
 	int i =0;
 	if(!node) return;
-	fprintf(stderr, "ASTREE(");
+	
+	switch (level){
+		case 0: break;
+		case 1: fprintf(stderr, "   "); break;
+		case 2: fprintf(stderr, "      "); break;
+		case 3: fprintf(stderr, "         "); break;
+		case 4: fprintf(stderr, "            "); break;
+		default: break;
+	}
 
+	fprintf(stderr, "ASTREE(");
 	switch(node -> type){
+		case ASTREE_DECLARACAO: fprintf (stderr, "ASTREE_DECLARACAO"); break;
 		case ASTREE_SYMBOL: fprintf(stderr, "ASTREE_SYMBOL"); break;	
 		case ASTREE_PROGRAMA: fprintf(stderr, "ASTREE_PROGRAMA"); break;
-		case ASTREE_DECLARACAO_VAR_GLOBAL: fprintf(stderr, "ASTREE_DECLARACAO_VAR_GLOBAL"); break;
+		case ASTREE_FUNCAO: fprintf(stderr, "ASTREE_FUNCAO"); break;
+		case ASTREE_VAR_GLOBAL: fprintf(stderr, "ASTREE_VAR_GLOBAL"); break;
 		case ASTREE_VAR_GLOBAL_INIT_VEC: fprintf(stderr, "ASTREE_VAR_GLOBAL_INIT_VEC"); break;
-		case ASTREE_LITERAL: fprintf(stderr, "ASTREE_LITERAL"); break;
 		case ASTREE_BYTE_TYPE: fprintf(stderr, "ASTREE_BYTE_TYPE"); break;
 		case ASTREE_SHORT_TYPE: fprintf(stderr, "ASTREE_SHORT_TYPE"); break;
 		case ASTREE_LONG_TYPE:  fprintf(stderr, "ASTREE_LONG_TYPE"); break;
@@ -42,37 +52,41 @@ void astreePrint(ASTREE* node){
 		case ASTREE_READ: fprintf(stderr, "ASTREE_READ"); break;
 		case ASTREE_PRINT: fprintf(stderr, "ASTREE_PRINT"); break;
 		case ASTREE_RETURN: fprintf(stderr, "ASTREE_RETURN"); break;
-		case ASTREE_EXPRESSAO: fprintf(stderr, "ASTREE_EXPRESSAO"); break;
-		case ASTREE_EXPRESSAO_IDENTIFIER: fprintf(stderr, "ASTREE_EXPRESSAO_IDENTIFIER"); break;
-		case ASTREE_EXPRESSAO_LITERAL: fprintf(stderr, "ASTREE_EXPRESSAO_LITERAL"); break;
-		case ASTREE_EXPRESSAO_ADD: fprintf(stderr, "ASTREE_EXPRESSAO_ADD"); break;
-		case ASTREE_EXPRESSAO_SUB: fprintf(stderr, "ASTREE_EXPRESSAO_SUB"); break;
-		case ASTREE_EXPRESSAO_MUL: fprintf(stderr, "ASTREE_EXPRESSAO_MUL"); break;
-		case ASTREE_EXPRESSAO_DIV: fprintf(stderr, "ASTREE_EXPRESSAO_DIV"); break;
-		case ASTREE_EXPRESSAO_LESS_THAN: fprintf(stderr, "ASTREE_EXPRESSAO_LESS_THAN"); break;
-		case ASTREE_EXPRESSAO_GREATER_THAN: fprintf(stderr, "ASTREE_EXPRESSAO_GREATER_THAN"); break;
-		case ASTREE_EXPRESSAO_LE: fprintf(stderr, "ASTREE_EXPRESSAO_LE"); break;
-		case ASTREE_EXPRESSAO_GE: fprintf(stderr, "ASTREE_EXPRESSAO_GE"); break;
-		case ASTREE_EXPRESSAO_EQ: fprintf(stderr, "ASTREE_EXPRESSAO_EQ"); break;
-		case ASTREE_EXPRESSAO_NE: fprintf(stderr, "ASTREE_EXPRESSAO_NE"); break;
-		case ASTREE_EXPRESSAO_AND: fprintf(stderr, "ASTREE_EXPRESSAO_AND"); break;
-		case ASTREE_EXPRESSAO_OR: fprintf(stderr, "ASTREE_EXPRESSAO_OR"); break;
-		case ASTREE_EXPRESSAO_NEG: fprintf(stderr, "ASTREE_EXPRESSAO_NEG"); break;
+		
+	
 		case ASTREE_LISTA_FUNC_PARAMETROS: fprintf(stderr, "ASTREE_LISTA_FUNC_PARAMETROS"); break;
 		case ASTREE_WHEN_THEN: fprintf(stderr, "ASTREE_WHEN_THEN"); break;
 		case ASTREE_WHEN_THEN_ELSE: fprintf(stderr, "ASTREE_WHEN_THEN_ELSE"); break;
 		case ASTREE_WHILE: fprintf(stderr, "ASTREE_WHILE"); break;
 		case ASTREE_FOR: fprintf(stderr, "ASTREE_FOR"); break;
+
+		// expressão:
+		case ASTREE_EXPRESSAO: fprintf(stderr, "ASTREE_EXPRESSAO"); break;
+		case ASTREE_IDENTIFIER: fprintf(stderr, "ASTREE_IDENTIFIER"); break;
+		case ASTREE_LITERAL: fprintf(stderr, "ASTREE_LITERAL"); break;
+		case ASTREE_ADD: fprintf(stderr, "ASTREE_ADD"); break;
+		case ASTREE_SUB: fprintf(stderr, "ASTREE_SUB"); break;
+		case ASTREE_MUL: fprintf(stderr, "ASTREE_MUL"); break;
+		case ASTREE_DIV: fprintf(stderr, "ASTREE_DIV"); break;
+		case ASTREE_LESS_THAN: fprintf(stderr, "ASTREE_LESS_THAN"); break;
+		case ASTREE_GREATER_THAN: fprintf(stderr, "ASTREE_GREATER_THAN"); break;
+		case ASTREE_LE: fprintf(stderr, "ASTREE_LE"); break;
+		case ASTREE_GE: fprintf(stderr, "ASTREE_GE"); break;
+		case ASTREE_EQ: fprintf(stderr, "ASTREE_EQ"); break;
+		case ASTREE_NE: fprintf(stderr, "ASTREE_NE"); break;
+		case ASTREE_AND: fprintf(stderr, "ASTREE_AND"); break;
+		case ASTREE_OR: fprintf(stderr, "ASTREE_OR"); break;
+		default: break;
 	}
 	
 	if(node -> symbol){
-		fprintf(stderr, ", %s]\n", node->symbol->value);	
+		fprintf(stderr, ", [%s] )\n", node->symbol->value);	
 	} else{
-		fprintf(stderr, ",]\n");	
+		fprintf(stderr, ")\n");	
 	}
 
-	for(i = 0; i < MAX_SONS; i++){
-		astreePrint(node -> son[i]);
+	for(i = 0; i <= MAX_SONS; i++){
+		astreePrint(i, node -> son[i]);
 	}
 
 }
