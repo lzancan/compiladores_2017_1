@@ -88,46 +88,46 @@
 	
 	P: PROGRAMA {astreePrint($1);}
 	;
-	PROGRAMA: DECLARACAO PROGRAMA {$$ = astreeCreate(ASTREE_PROGRAMA, NULL, $1, $2, 0, 0);}
-		   | /*vazio*/ {$$ = 0;}
+	PROGRAMA: DECLARACAO PROGRAMA 
+		   | /*vazio*/ 
 	;
-	DECLARACAO: FUNCOES 
-		    | VARIAVEL_GLOBAL ';'
+	DECLARACAO: FUNCOES {$$ = astreeCreate(ASTREE_FUNCAO, NULL, $1, 0, 0, 0);}
+		    | VARIAVEL_GLOBAL ';' {$$ = astreeCreate(ASTREE_VAR_GLOBAL, NULL, $1, 0, 0, 0);}
 	;
-	VARIAVEL_GLOBAL: TK_IDENTIFIER ':' TIPO VAR_GLOBAL_INIT_VEC { $$ = astreeCreate(ASTREE_DECLARACAO_VAR_GLOBAL, $1, $3, $4, 0, 0);}
+	VARIAVEL_GLOBAL: TK_IDENTIFIER ':' TIPO VAR_GLOBAL_INIT_VEC {$$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);}
 	;
 	VAR_GLOBAL_INIT_VEC: VALOR 
-			     | '[' LIT_INTEGER ']' VALOR_INICIALIZACAO_VETOR { $$ = astreeCreate(ASTREE_VAR_GLOBAL_INIT_VEC, $2, $4, 0, 0, 0);}
+			     | '[' LIT_INTEGER ']' VALOR_INICIALIZACAO_VETOR
 	;
 	VALOR: 	LIT_INTEGER { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} |
 		LIT_REAL { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} |
 		LIT_CHAR { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);}
 	;
 	VALOR_INICIALIZACAO_VETOR: VALOR VALOR_INICIALIZACAO_VETOR 
-				   | /*vazio*/ {$$ = 0;}
+				   | /*vazio*/
 	;
-	TIPO: KW_BYTE  {$$ = astreeCreate(ASTREE_BYTE_TYPE, NULL, 0, 0, 0, 0);}| 
-	      KW_SHORT {$$ = astreeCreate(ASTREE_SHORT_TYPE, NULL, 0, 0, 0, 0);}|    
-	      KW_LONG  {$$ = astreeCreate(ASTREE_FLOAT_TYPE, NULL, 0, 0, 0, 0);}|  
- 	      KW_FLOAT {$$ = astreeCreate(ASTREE_FLOAT_TYPE, NULL, 0, 0, 0, 0);}|   
-	      KW_DOUBLE{$$ = astreeCreate(ASTREE_FLOAT_TYPE, NULL, 0, 0, 0, 0);}
+	TIPO: KW_BYTE  | 
+	      KW_SHORT |    
+	      KW_LONG  |  
+ 	      KW_FLOAT |   
+	      KW_DOUBLE
 	; 
 	FUNCOES: CABECALHO CORPO
 	;
-	CABECALHO: TIPO TK_IDENTIFIER '(' LISTA_PARAMETROS ')' {$$ = astreeCreate(ASTREE_FUNC_CABECALHO, $2, $1, $4, 0, 0);}
+	CABECALHO: TIPO TK_IDENTIFIER '(' LISTA_PARAMETROS ')' 
 	;
-	LISTA_PARAMETROS: TIPO TK_IDENTIFIER MAIS_PARAMETROS {$$ = astreeCreate(ASTREE_LISTA_PARAMETROS, $2, $1, $3, 0, 0);}
-			| /*vazio*/ {$$ = 0;}
+	LISTA_PARAMETROS: TIPO TK_IDENTIFIER MAIS_PARAMETROS 
+			| /*vazio*/
 	;
-	MAIS_PARAMETROS: ',' TIPO TK_IDENTIFIER MAIS_PARAMETROS  {$$ = astreeCreate(ASTREE_MAIS_PARAMETROS, $3, $2, $4, 0, 0);}
-			| /*vazio*/ {$$ = 0;}
+	MAIS_PARAMETROS: ',' TIPO TK_IDENTIFIER MAIS_PARAMETROS  
+			| /*vazio*/ 
 	;
 	CORPO: COMANDO ';'
 	;
 	BLOCO_COMANDOS: '{'LISTA_COMANDOS'}' {$$ = astreeCreate(ASTREE_BLOCO_COMANDOS, NULL, $2, 0, 0, 0);}
 	;
 	LISTA_COMANDOS: COMANDO';' LISTA_COMANDOS {$$ = astreeCreate(ASTREE_LISTA_COMANDOS, NULL, $1, $3, 0, 0);}
-			| /*vazio*/ {$$ = 0;}
+			| /*vazio*/ 
 	;
 	COMANDO: ATRIBUICAO|
 		 CONTROLE_FLUXO|
@@ -135,63 +135,63 @@
 		 PRINT|
 		 RETURN|
 		 BLOCO_COMANDOS|
-		 /*vazio*/ {$$ = 0;}
+		 /*vazio*/ 
 	;
 	ATRIBUICAO: TK_IDENTIFIER '='EXPRESSAO {$$ = astreeCreate(ASTREE_ATRIBUICAO, $1, $3, 0, 0, 0);}
 		  | TK_IDENTIFIER '#'EXPRESSAO'='EXPRESSAO {$$ = astreeCreate(ASTREE_ATRIBUICAO, $1, $3, $5, 0, 0);}
 	;
-	READ: KW_READ TK_IDENTIFIER {$$ = astreeCreate(ASTREE_READ, $2, 0, 0, 0, 0);}
+	READ: KW_READ TK_IDENTIFIER 
 	;
-	PRINT: KW_PRINT LISTA_ELEMENTOS_PRINT {$$ = astreeCreate(ASTREE_PRINT, NULL, $2, 0, 0, 0);}
+	PRINT: KW_PRINT LISTA_ELEMENTOS_PRINT
 	;
 	LISTA_ELEMENTOS_PRINT: ELEMENTO_PRINT LISTA_ELEMENTOS_PRINT 
 				| ELEMENTO_PRINT 
 	;
-	ELEMENTO_PRINT: LIT_STRING { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);}
+	ELEMENTO_PRINT: LIT_STRING
 			| EXPRESSAO
 	;
-	RETURN: KW_RETURN EXPRESSAO { $$ = astreeCreate(ASTREE_RETURN, NULL, $2, 0, 0, 0);}
+	RETURN: KW_RETURN EXPRESSAO
 	;
-	EXPRESSAO: TK_IDENTIFIER { $$ = astreeCreate(ASTREE_EXPRESSAO_IDENTIFIER, $1, 0, 0, 0, 0);} |
+	EXPRESSAO: TK_IDENTIFIER { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} |
 		   TK_IDENTIFIER '[' EXPRESSAO ']' { $$ = astreeCreate(ASTREE_EXPRESSAO, $1, $3, 0, 0, 0);} |
 		   TK_IDENTIFIER '(' LISTA_FUNCAO_PARAMETROS ')' { $$ = astreeCreate(ASTREE_EXPRESSAO, $1, $3, 0, 0, 0);}  |
 		   '-' EXPRESSAO { $$ = astreeCreate(ASTREE_EXPRESSAO, NULL, $2, 0, 0, 0);} |
-		   LIT_INTEGER { $$ = astreeCreate(ASTREE_EXPRESSAO_LITERAL, $1, 0, 0, 0, 0);} |
-		   LIT_REAL { $$ = astreeCreate(ASTREE_EXPRESSAO_LITERAL, $1, 0, 0, 0, 0);} |
-		   LIT_CHAR { $$ = astreeCreate(ASTREE_EXPRESSAO_LITERAL, $1, 0, 0, 0, 0);}|
+		   LIT_INTEGER { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0); fprintf (stderr,"achei um lit");} |
+		   LIT_REAL { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} |
+		   LIT_CHAR { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);}|
 		   '('EXPRESSAO')' { $$ = astreeCreate(ASTREE_EXPRESSAO, NULL, $2, 0, 0, 0);} |
 		   '[' EXPRESSAO ']'  { $$ = astreeCreate(ASTREE_EXPRESSAO, NULL, $2, 0, 0, 0);} |
-		   EXPRESSAO '+' EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_ADD, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO '-' EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_SUB, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO '*' EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_MUL, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO '/' EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_DIV, NULL, $1, $3, 0, 0);} |
-	           EXPRESSAO '>' EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_LESS_THAN, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO '<' EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_GREATER_THAN, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO OPERATOR_LE EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_LE, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO OPERATOR_GE EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_GE, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO OPERATOR_EQ EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_EQ, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO OPERATOR_NE EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_NE, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO OPERATOR_AND EXPRESSAO { $$ = astreeCreate(ASTREE_EXPRESSAO_AND, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO OPERATOR_OR EXPRESSAO  { $$ = astreeCreate(ASTREE_EXPRESSAO_OR, NULL, $1, $3, 0, 0);} | 
-		   '!'EXPRESSAO { $$ = astreeCreate(ASTREE_EXPRESSAO_NEG, NULL, $2, 0, 0, 0);} 
+		   EXPRESSAO '+' EXPRESSAO  { $$ = astreeCreate(ASTREE_ADD, NULL, $1, $3, 0, 0);} | 
+		   EXPRESSAO '-' EXPRESSAO  { $$ = astreeCreate(ASTREE_SUB, NULL, $1, $3, 0, 0);} |
+		   EXPRESSAO '*' EXPRESSAO  { $$ = astreeCreate(ASTREE_MUL, NULL, $1, $3, 0, 0);} |
+		   EXPRESSAO '/' EXPRESSAO  { $$ = astreeCreate(ASTREE_DIV, NULL, $1, $3, 0, 0);} |
+	           EXPRESSAO '>' EXPRESSAO  { $$ = astreeCreate(ASTREE_LESS_THAN, NULL, $1, $3, 0, 0);} |
+		   EXPRESSAO '<' EXPRESSAO  { $$ = astreeCreate(ASTREE_GREATER_THAN, NULL, $1, $3, 0, 0);} | 
+		   EXPRESSAO OPERATOR_LE EXPRESSAO  { $$ = astreeCreate(ASTREE_LE, NULL, $1, $3, 0, 0);} | 
+		   EXPRESSAO OPERATOR_GE EXPRESSAO  { $$ = astreeCreate(ASTREE_GE, NULL, $1, $3, 0, 0);} |
+		   EXPRESSAO OPERATOR_EQ EXPRESSAO  { $$ = astreeCreate(ASTREE_EQ, NULL, $1, $3, 0, 0);} | 
+		   EXPRESSAO OPERATOR_NE EXPRESSAO  { $$ = astreeCreate(ASTREE_NE, NULL, $1, $3, 0, 0);} | 
+		   EXPRESSAO OPERATOR_AND EXPRESSAO { $$ = astreeCreate(ASTREE_AND, NULL, $1, $3, 0, 0);} |
+		   EXPRESSAO OPERATOR_OR EXPRESSAO  { $$ = astreeCreate(ASTREE_OR, NULL, $1, $3, 0, 0);} | 
+		   '!'EXPRESSAO { $$ = astreeCreate(ASTREE_EXPRESSAO, NULL, $2, 0, 0, 0);} 
 	;		  
 
-	LISTA_FUNCAO_PARAMETROS: EXPRESSAO ',' LISTA_FUNCAO_PARAMETROS { $$ = astreeCreate(ASTREE_LISTA_FUNC_PARAMETROS, NULL, $1, $3, 0, 0);}
+	LISTA_FUNCAO_PARAMETROS: EXPRESSAO ',' LISTA_FUNCAO_PARAMETROS
 			        | EXPRESSAO 
-				|/*VAZIO*/ {$$ = 0;}
+				|/*VAZIO*/
 	;
 	CONTROLE_FLUXO: WHEN_THEN 
 			| WHEN_THEN_ELSE 
 			| FOR 
 			| WHILE
 	;
-	WHEN_THEN: KW_WHEN '('EXPRESSAO')' KW_THEN COMANDO  { $$ = astreeCreate(ASTREE_WHEN_THEN, NULL, $3, $6, 0, 0);}
+	WHEN_THEN: KW_WHEN '('EXPRESSAO')' KW_THEN COMANDO 
 	;
-	WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO { $$ = astreeCreate(ASTREE_WHEN_THEN_ELSE, NULL, $3, $6, $8, 0);}
+	WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO 
 	;
-	WHILE: KW_WHILE '(' EXPRESSAO ')' COMANDO { $$ = astreeCreate(ASTREE_WHILE, NULL, $3, $5, 0, 0);}
+	WHILE: KW_WHILE '(' EXPRESSAO ')' COMANDO
 	;
-	FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO { $$ = astreeCreate(ASTREE_FOR, $3, $5, $7, $9, 0);}
+	FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
 	;
 	
 
