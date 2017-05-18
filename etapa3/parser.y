@@ -107,7 +107,7 @@
 		LIT_REAL { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} |
 		LIT_CHAR { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);}
 	;
-	VALOR_INICIALIZACAO_VETOR: VALOR VALOR_INICIALIZACAO_VETOR 
+	VALOR_INICIALIZACAO_VETOR: VALOR VALOR_INICIALIZACAO_VETOR { $$ = astreeCreate(ASTREE_VAR_GLOBAL_VEC_VALORES, NULL, $1, $2, 0, 0);}
 				   | /*vazio*/ {$$ = 0;}
 	;
 	TIPO: KW_BYTE  { $$ = astreeCreate(ASTREE_BYTE_TYPE, 0, 0, 0, 0, 0);}| 
@@ -148,11 +148,11 @@
 	;
 	PRINT: KW_PRINT LISTA_ELEMENTOS_PRINT {$$ = astreeCreate(ASTREE_PRINT, NULL, $2, 0, 0, 0);}
 	;
-	LISTA_ELEMENTOS_PRINT: ELEMENTO_PRINT LISTA_ELEMENTOS_PRINT {$$ = astreeCreate(ASTREE_DEBUG, NULL, $1, $2, 0, 0);}
-				| ELEMENTO_PRINT 
+	LISTA_ELEMENTOS_PRINT: ELEMENTO_PRINT LISTA_ELEMENTOS_PRINT {$$ = astreeCreate(ASTREE_PRINT_LISTA, NULL, $1, $2, 0, 0);}
+				| ELEMENTO_PRINT {$$=$1;}
 	;
 	ELEMENTO_PRINT: LIT_STRING { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);}
-			| EXPRESSAO
+			| EXPRESSAO {$$=$1;}
 	;
 	RETURN: KW_RETURN EXPRESSAO { $$ = astreeCreate(ASTREE_RETURN, NULL, $2, 0, 0, 0);}
 	;
@@ -169,8 +169,8 @@
 		   EXPRESSAO '-' EXPRESSAO  { $$ = astreeCreate(ASTREE_SUB, NULL, $1, $3, 0, 0);} |
 		   EXPRESSAO '*' EXPRESSAO  { $$ = astreeCreate(ASTREE_MUL, NULL, $1, $3, 0, 0);} |
 		   EXPRESSAO '/' EXPRESSAO  { $$ = astreeCreate(ASTREE_DIV, NULL, $1, $3, 0, 0);} |
-	           EXPRESSAO '>' EXPRESSAO  { $$ = astreeCreate(ASTREE_LESS_THAN, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO '<' EXPRESSAO  { $$ = astreeCreate(ASTREE_GREATER_THAN, NULL, $1, $3, 0, 0);} | 
+	           EXPRESSAO '>' EXPRESSAO  { $$ = astreeCreate(ASTREE_GREATER_THAN, NULL, $1, $3, 0, 0);} |
+		   EXPRESSAO '<' EXPRESSAO  { $$ = astreeCreate(ASTREE_LESS_THAN, NULL, $1, $3, 0, 0);} | 
 		   EXPRESSAO OPERATOR_LE EXPRESSAO  { $$ = astreeCreate(ASTREE_LE, NULL, $1, $3, 0, 0);} | 
 		   EXPRESSAO OPERATOR_GE EXPRESSAO  { $$ = astreeCreate(ASTREE_GE, NULL, $1, $3, 0, 0);} |
 		   EXPRESSAO OPERATOR_EQ EXPRESSAO  { $$ = astreeCreate(ASTREE_EQ, NULL, $1, $3, 0, 0);} | 

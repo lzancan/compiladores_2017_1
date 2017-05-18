@@ -1,6 +1,9 @@
+/*Gabriel Ammes e Luciano Zancan
+Para executar use ./etapa2 arquivo_de_entrada arquivo_de_saida*/
+
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "astree.h"
 extern char* yytext;
 extern FILE *yyin;
 void initMe(void);
@@ -18,7 +21,7 @@ int main(int argc, char **argv){
 	int token;
 	// exit (0) = ok; exit(1) = erro abrir ; exit(2) erro arquivo n existe; exit(3) = erro de sintaxe
 
-	if(argc < 2){ 
+	if(argc < 3){ 
 		exit(0);
 		printf("chame como \"./etapa2 input.txt\"\n");
 	}
@@ -30,6 +33,11 @@ int main(int argc, char **argv){
 	}
 	else{
 		yyin = file;
+	}
+
+	outfile = fopen(argv[2],"wt");
+	if(!outfile){
+		printf ("erro ao criar o arquivo");
 	}
 
 	// inicializa

@@ -11,6 +11,7 @@ enum nodeType
 	ASTREE_PROGRAMA,
 	ASTREE_VAR_GLOBAL,
 	ASTREE_VAR_GLOBAL_INIT_VEC,
+	ASTREE_VAR_GLOBAL_VEC_VALORES,
 	ASTREE_LITERAL,
 	ASTREE_BYTE_TYPE,
 	ASTREE_SHORT_TYPE,
@@ -52,7 +53,8 @@ enum nodeType
 	ASTREE_COLCHETES,
 	ASTREE_NEGATIVO,
 	ASTREE_NEGADO,
-	ASTREE_DEBUG
+	ASTREE_DEBUG,
+	ASTREE_PRINT_LISTA
 };
 
 
@@ -68,3 +70,4 @@ typedef struct ASTREE ASTREE;
 ASTREE* astreeCreate (int type, HASH_NODE* symbol, ASTREE* son0, ASTREE* son1, ASTREE* son2, ASTREE* son3);
 //void astreePrint(int level, ASTREE* node);
 int uncompile(ASTREE* node);
+FILE* outfile;

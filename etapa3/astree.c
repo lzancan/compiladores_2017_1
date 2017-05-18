@@ -108,230 +108,261 @@ int uncompile(ASTREE* node)
 			uncompile(node->son[0]);
 			uncompile(node->son[1]);
 		}; break;
-		case ASTREE_SYMBOL: fprintf(stderr, "ASTREE_SYMBOL"); break; //????????
+		case ASTREE_SYMBOL: fprintf(outfile, "ASTREE_SYMBOL"); break; //????????
 		case ASTREE_PROGRAMA: uncompile(node->son[0]); break;
 		case ASTREE_FUNCAO:  {
 			uncompile(node->son[0]);
-			uncompile(node->son[1]);
+			uncompile(node->son[1]); 
+			fprintf(outfile,";");
+			fprintf(outfile,"\n");
 		}; break;
 		case ASTREE_VAR_GLOBAL: {
-			fprintf(stderr, node->symbol->value); //não sei se é isso
-			fprintf(stderr, ": ");
+			fprintf(outfile,"%s", node->symbol->value); //não sei se é isso
+			fprintf(outfile, ": ");
 			uncompile(node->son[0]);
-			fprintf(stderr, " ");
+			fprintf(outfile, " ");
 			uncompile(node->son[1]);
-			fprintf(stderr, ";\n");
+			fprintf(outfile, ";\n");
 			} break;
 		case ASTREE_VAR_GLOBAL_INIT_VEC: {
-			fprintf(stderr, "[");
-			fprintf(stderr, node->symbol->value); //não sei se é isso
-			fprintf(stderr, "]");
+			fprintf(outfile, "[");
+			fprintf(outfile,"%s", node->symbol->value); //não sei se é isso
+			fprintf(outfile, "]");
 			uncompile(node->son[0]);
 			} break;
-		case ASTREE_BYTE_TYPE: fprintf(stderr, "byte"); break;
-		case ASTREE_SHORT_TYPE: fprintf(stderr, "short"); break;
-		case ASTREE_LONG_TYPE:  fprintf(stderr, "long"); break;
-		case ASTREE_FLOAT_TYPE:  fprintf(stderr, "float"); break;
-		case ASTREE_DOUBLE_TYPE: fprintf(stderr, "double"); break;
+		case ASTREE_BYTE_TYPE: fprintf(outfile, "byte "); break;
+		case ASTREE_SHORT_TYPE: fprintf(outfile, "short "); break;
+		case ASTREE_LONG_TYPE:  fprintf(outfile, "long "); break;
+		case ASTREE_FLOAT_TYPE:  fprintf(outfile, "float "); break;
+		case ASTREE_DOUBLE_TYPE: fprintf(outfile, "double "); break;
 		case ASTREE_FUNC_CABECALHO: {
+			fprintf(outfile, "\n");
 			uncompile(node->son[0]);
-			fprintf(stderr, " ");
+			fprintf(outfile, " ");
 			if(node->symbol)
-			fprintf(stderr, node->symbol->value); //não sei se é isso
-			fprintf(stderr, "(");
+			fprintf(outfile,"%s", node->symbol->value); //não sei se é isso
+			fprintf(outfile, "(");
 			uncompile(node->son[1]);
-			fprintf(stderr, ")\n");
+			fprintf(outfile, ")\n");
 			} break;
 		case ASTREE_LISTA_PARAMETROS:  {
 			uncompile(node->son[0]);
 			if(node->symbol)
-			fprintf(stderr, node->symbol->value); //não sei se é isso
+			fprintf(outfile,"%s", node->symbol->value); //não sei se é isso
 			uncompile(node->son[1]);
 		}; break;
 		case ASTREE_MAIS_PARAMETROS:  {
-			fprintf(stderr, ",");
+			fprintf(outfile, ",");
 			uncompile(node->son[0]);
 			if(node->symbol)
-			fprintf(stderr, node->symbol->value); //não sei se é isso
+			fprintf(outfile,"%s", node->symbol->value); //não sei se é isso
 			uncompile(node->son[1]);
 		}; break;
 		case ASTREE_BLOCO_COMANDOS: {
-			fprintf(stderr, "{");
+			fprintf(outfile, "{\n");
 			uncompile(node->son[0]);
-			fprintf(stderr, "}");
+			fprintf(outfile, "}\n");
 		}; break;
 		case ASTREE_LISTA_COMANDOS: {
 			uncompile(node->son[0]);
-			fprintf(stderr, ";");
+			fprintf(outfile, ";\n");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_ATRIBUICAO: {
 			if(node->symbol)
-			fprintf(stderr, node->symbol->value); //não sei se é isso
-			fprintf(stderr, "=");
+			fprintf(outfile,"%s", node->symbol->value); //não sei se é isso
+			fprintf(outfile, "=");
 			uncompile(node->son[0]);
 			} break;
 		case ASTREE_ATRIBUICAO_VETOR: {
 			if(node->symbol)
-			fprintf(stderr, node->symbol->value); //não sei se é isso
-			fprintf(stderr, "#");
+			fprintf(outfile,"%s", node->symbol->value); //não sei se é isso
+			fprintf(outfile, "#");
 			uncompile(node->son[0]);
-			fprintf(stderr, "=");
+			fprintf(outfile, "=");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_READ:{
-			fprintf(stderr, "read");
+			fprintf(outfile, "read ");
 			if(node->symbol)
-			fprintf(stderr, node->symbol->value); //não sei se é isso
+			fprintf(outfile,"%s", node->symbol->value); //não sei se é isso
 			} break;
 		case ASTREE_PRINT: {
-			fprintf(stderr, "print \"");
+			fprintf(outfile, "print ");
+			if(node->son[0]->type == ASTREE_LITERAL)
+				fprintf (outfile,"\"");
 			uncompile(node->son[0]);
-			fprintf(stderr, "\"");
+			if(node->son[0]->type == ASTREE_LITERAL)
+				fprintf (outfile,"\"");
 			} break;
-		case ASTREE_RETURN: {
-			fprintf(stderr, "return");
+		case ASTREE_PRINT_LISTA: {
+			if(node->son[0]->type == ASTREE_LITERAL)
+				fprintf (outfile,"\"");
 			uncompile(node->son[0]);
+			if(node->son[0]->type == ASTREE_LITERAL)
+				fprintf (outfile,"\"");
+			if(node->son[1]->type == ASTREE_LITERAL)
+				fprintf (outfile,"\"");
+			uncompile(node->son[1]);
+			if(node->son[1]->type == ASTREE_LITERAL)
+				fprintf (outfile,"\"");
+		} break;
+		case ASTREE_RETURN: {
+			fprintf(outfile, "return ");
+			uncompile(node->son[0]);
+
 			} break;
 		case ASTREE_LISTA_FUNC_PARAMETROS: {
 			uncompile(node->son[0]);
-			fprintf(stderr, ",");
+			fprintf(outfile, ",");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_WHEN_THEN:  {
-			fprintf(stderr, "when");
-			fprintf(stderr, "(");
+			fprintf(outfile, "when ");
+			fprintf(outfile, "(");
 			uncompile(node->son[0]);
-			fprintf(stderr, ")");
-			fprintf(stderr, "then");
+			fprintf(outfile, ")");
+			fprintf(outfile, "then ");
 			uncompile(node->son[1]);
+			fprintf(outfile, "\n");
 			} break;
 		case ASTREE_WHEN_THEN_ELSE: {
-			fprintf(stderr, "when");
-			fprintf(stderr, "(");
+			fprintf(outfile, "when ");
+			fprintf(outfile, "(");
 			uncompile(node->son[0]);
-			fprintf(stderr, ")");
-			fprintf(stderr, "then");
+			fprintf(outfile, ")");
+			fprintf(outfile, "then ");
 			uncompile(node->son[1]);
-			fprintf(stderr, "else");
+			fprintf(outfile, "else ");
 			uncompile(node->son[2]);
+			fprintf(outfile, "\n");
 			} break;
 		case ASTREE_WHILE: {
-			fprintf(stderr, "while");
-			fprintf(stderr, "(");
+			fprintf(outfile, "while");
+			fprintf(outfile, "(");
 			uncompile(node->son[0]);
-			fprintf(stderr, ")");
+			fprintf(outfile, ")");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_FOR: {
-			fprintf(stderr, "for");
-			fprintf(stderr, "(");
+			fprintf(outfile, "for");
+			fprintf(outfile, "(");
 			if(node->symbol)
-			fprintf(stderr, node->symbol->value); //não sei se é isso
-			fprintf(stderr, "=");
+			fprintf(outfile,"%s", node->symbol->value); //não sei se é isso
+			fprintf(outfile, "=");
 			uncompile(node->son[0]);
-			fprintf(stderr, "to");
+			fprintf(outfile, " to ");
 			uncompile(node->son[1]);
-			fprintf(stderr, ")");
+			fprintf(outfile, ")");
 			uncompile(node->son[2]);
 			} break;
 		case ASTREE_EXPRESSAO_FUNCAO: {
 			if(node->symbol)
-			fprintf(stderr, node->symbol->value); //não sei se é isso
-			fprintf(stderr, "(");
+			fprintf(outfile,"%s", node->symbol->value); //não sei se é isso
+			fprintf(outfile, "(");
 			uncompile(node->son[0]);
-			fprintf(stderr, ")");
+			fprintf(outfile, ")");
 			} break;
 		case ASTREE_EXPRESSAO_VETOR: {
 			if(node->symbol)
-			fprintf(stderr, node->symbol->value); //não sei se é isso
+			fprintf(outfile,"%s", node->symbol->value); //não sei se é isso
 			uncompile(node->son[0]);
 			} break;
 		case ASTREE_PARENTESES: {
-			fprintf(stderr, "(");
+			fprintf(outfile, "(");
 			uncompile(node->son[0]);
-			fprintf(stderr, ")");
+			fprintf(outfile, ")");
 			} break;
 		case ASTREE_COLCHETES: {
-			fprintf(stderr, "[");
+			fprintf(outfile, "[");
 			uncompile(node->son[0]);
-			fprintf(stderr, "]");
+			fprintf(outfile, "]");
 			} break;
 		case ASTREE_NEGATIVO: {
-			fprintf(stderr, "-");
+			fprintf(outfile, "-");
 			uncompile(node->son[0]);
 			} break;
 		case ASTREE_NEGADO: {
-			fprintf(stderr, "!");
+			fprintf(outfile, "!");
 			uncompile(node->son[0]);
 			} break;
 		case ASTREE_IDENTIFIER: 			
 			if(node->symbol) 
-				fprintf(stderr, node->symbol->value); break; //não sei se é isso
-		case ASTREE_LITERAL: 			
+				fprintf(outfile,"%s", node->symbol->value); break; //não sei se é isso
+		case ASTREE_LITERAL: { 
 			if(node->symbol) 
-				fprintf(stderr, node->symbol->value); break; //não sei se é isso
+				if(node->symbol->type == SYMBOL_LIT_CHAR) 
+					fprintf (outfile,"\'"); 
+			fprintf(outfile,"%s", node->symbol->value); 
+			if(node->symbol->type == SYMBOL_LIT_CHAR) 
+				fprintf (outfile,"\'"); 
+			} break;
 		case ASTREE_ADD: {
 			uncompile(node->son[0]);
-			fprintf(stderr, "+");
+			fprintf(outfile, "+");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_SUB: {
 			uncompile(node->son[0]);
-			fprintf(stderr, "-");
+			fprintf(outfile, "-");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_MUL:  {
 			uncompile(node->son[0]);
-			fprintf(stderr, "*");
+			fprintf(outfile, "*");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_DIV:  {
 			uncompile(node->son[0]);
-			fprintf(stderr, "/");
+			fprintf(outfile, "/");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_LESS_THAN:  {
 			uncompile(node->son[0]);
-			fprintf(stderr, "<");
+			fprintf(outfile, "<");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_GREATER_THAN:  {
 			uncompile(node->son[0]);
-			fprintf(stderr, ">");
+			fprintf(outfile, ">");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_LE:  {
 			uncompile(node->son[0]);
-			fprintf(stderr, "<=");
+			fprintf(outfile, "<=");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_GE:  {
 			uncompile(node->son[0]);
-			fprintf(stderr, ">=");
+			fprintf(outfile, ">=");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_EQ:  {
 			uncompile(node->son[0]);
-			fprintf(stderr, "==");
+			fprintf(outfile, "==");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_NE:  {
 			uncompile(node->son[0]);
-			fprintf(stderr, "!=");
+			fprintf(outfile, "!=");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_AND:  {
 			uncompile(node->son[0]);
-			fprintf(stderr, "&&");
+			fprintf(outfile, "&&");
 			uncompile(node->son[1]);
 			} break;
 		case ASTREE_OR:  {
 			uncompile(node->son[0]);
-			fprintf(stderr, "||");
+			fprintf(outfile, "||");
 			uncompile(node->son[1]);
 			} break;
+		case ASTREE_VAR_GLOBAL_VEC_VALORES: { 
+			fprintf (outfile," "); 
+			uncompile(node->son[0]); 
+			uncompile(node->son[1]); 
+			} break;
 		case ASTREE_DEBUG: break;
-		default: fprintf(stderr, "\nDEFAULT\n");break;
+		default: fprintf(outfile, "\nDEFAULT\n");break;
 	}
 }
