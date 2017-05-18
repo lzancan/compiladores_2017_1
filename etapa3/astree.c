@@ -16,7 +16,7 @@ ASTREE* astreeCreate (int type, HASH_NODE* symbol, ASTREE* son0, ASTREE* son1, A
 	return new_node;
 
 }
-
+/*
 void astreePrint(int level, ASTREE* node){
 	int i =0;
 	if(!node) return;
@@ -99,8 +99,10 @@ void astreePrint(int level, ASTREE* node){
 	}
 
 }
+*/
 int uncompile(ASTREE* node)
 {
+	if(!node) return;
 	switch(node -> type){
 		case ASTREE_DECLARACAO: {
 			uncompile(node->son[0]);
@@ -183,8 +185,9 @@ int uncompile(ASTREE* node)
 			fprintf(stderr, node->symbol->value); //não sei se é isso
 			} break;
 		case ASTREE_PRINT: {
-			fprintf(stderr, "print");
+			fprintf(stderr, "print \"");
 			uncompile(node->son[0]);
+			fprintf(stderr, "\"");
 			} break;
 		case ASTREE_RETURN: {
 			fprintf(stderr, "return");
@@ -328,6 +331,7 @@ int uncompile(ASTREE* node)
 			fprintf(stderr, "||");
 			uncompile(node->son[1]);
 			} break;
-		default: fprintf(stderr, "TESTE");break;
+		case ASTREE_DEBUG: break;
+		default: fprintf(stderr, "\nDEFAULT\n");break;
 	}
 }

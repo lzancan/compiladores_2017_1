@@ -4,7 +4,7 @@
 	#include "hash.h"
 	#include "astree.h"
 	
-	
+	ASTREE* root;
 
 %}
 
@@ -88,17 +88,15 @@
 
 %%
 	
-	P: PROGRAMA{	 astreePrint(0, $1);
-			 uncompile($1); 
-	}
+	P: PROGRAMA{	 uncompile($1); }
 	;
 	PROGRAMA: DECLARACOES { $$ = astreeCreate(ASTREE_PROGRAMA, NULL, $1, 0, 0, 0);}
 	;
 	DECLARACOES: DECLARACAO DECLARACOES {$$ = astreeCreate(ASTREE_DECLARACAO, NULL, $1, $2, 0, 0);}
 		   | /*vazio*/ { $$ = 0; }
 	;
-	DECLARACAO: FUNCOES 
-		    | VARIAVEL_GLOBAL ';' 
+	DECLARACAO: FUNCOES {$$ = $1;}
+		    | VARIAVEL_GLOBAL ';' {$$ = $1;}
 	;
 	VARIAVEL_GLOBAL: TK_IDENTIFIER ':' TIPO VAR_GLOBAL_INIT_VEC { $$ = astreeCreate(ASTREE_VAR_GLOBAL, $1, $3, $4, 0, 0);}
 	;
@@ -110,7 +108,7 @@
 		LIT_CHAR { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);}
 	;
 	VALOR_INICIALIZACAO_VETOR: VALOR VALOR_INICIALIZACAO_VETOR 
-				   | /*vazio*/ { $$ = 0; }
+				   | /*vazio*/ {$$ = 0;}
 	;
 	TIPO: KW_BYTE  { $$ = astreeCreate(ASTREE_BYTE_TYPE, 0, 0, 0, 0, 0);}| 
 	      KW_SHORT { $$ = astreeCreate(ASTREE_SHORT_TYPE, 0, 0, 0, 0, 0); }|    
@@ -150,7 +148,7 @@
 	;
 	PRINT: KW_PRINT LISTA_ELEMENTOS_PRINT {$$ = astreeCreate(ASTREE_PRINT, NULL, $2, 0, 0, 0);}
 	;
-	LISTA_ELEMENTOS_PRINT: ELEMENTO_PRINT LISTA_ELEMENTOS_PRINT 
+	LISTA_ELEMENTOS_PRINT: ELEMENTO_PRINT LISTA_ELEMENTOS_PRINT {$$ = astreeCreate(ASTREE_DEBUG, NULL, $1, $2, 0, 0);}
 				| ELEMENTO_PRINT 
 	;
 	ELEMENTO_PRINT: LIT_STRING { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);}

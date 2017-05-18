@@ -51,7 +51,8 @@ enum nodeType
 	ASTREE_PARENTESES,
 	ASTREE_COLCHETES,
 	ASTREE_NEGATIVO,
-	ASTREE_NEGADO
+	ASTREE_NEGADO,
+	ASTREE_DEBUG
 };
 
 
@@ -65,5 +66,5 @@ typedef struct ASTREE ASTREE;
 
 
 ASTREE* astreeCreate (int type, HASH_NODE* symbol, ASTREE* son0, ASTREE* son1, ASTREE* son2, ASTREE* son3);
-void astreePrint(int level, ASTREE* node);
+//void astreePrint(int level, ASTREE* node);
 int uncompile(ASTREE* node);
