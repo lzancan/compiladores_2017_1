@@ -13,6 +13,18 @@
 #define SYMBOL_LIT_STRING 4
 #define SYMBOL_IDENTIFIER 7
 
+#define NATURE_ESCALAR 10
+#define NATURE_FUNCTION 11
+#define NATURE_VECTOR 12
+
+#define DATATYPE_BYTE 20
+#define DATATYPE_SHORT 21
+#define DATATYPE_LONG 22
+#define DATATYPE_FLOAT 23
+#define DATATYPE_DOUBLE 24
+
+
+
 int getLineNumber(void);
 int yyerror(char *value);
 int yylex(void);
@@ -22,6 +34,8 @@ int yylex(void);
 struct HASH_NODE{
 	int type;
 	char * value;
+	int nature;
+	int dataType;
 	struct HASH_NODE * next;	
 };
 typedef struct HASH_NODE HASH_NODE;

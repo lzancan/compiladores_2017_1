@@ -49,15 +49,15 @@ char * addStringTerminator(char* value){
 
 // insere nodo na hash
 HASH_NODE * insertHash(int type,char * value){
-	
+
 	HASH_NODE * newNode;
 
 	int newAddress = hashAddress(value);
-	
+
 
 	// se esta na hash retorna o proprio nodo
 	if(newNode = hashFind (value)){
-		return newNode;	
+		return newNode;
 	}
 	else{
 		newNode=calloc(1,sizeof(HASH_NODE));
@@ -85,8 +85,8 @@ HASH_NODE * insertHash(int type,char * value){
 				newNode->value[i-1]=value[i];
 				newNode->value[strlen(value)-2]='\0';
 				break;
-			default: 
-				newNode->value = addStringTerminator(value);  
+			default:
+				newNode->value = addStringTerminator(value);
 				break;
 */
 			case SYMBOL_IDENTIFIER:
@@ -117,8 +117,10 @@ HASH_NODE * insertHash(int type,char * value){
 		hashTable[newAddress] = newNode;
 
 		if(!newNode){
-			fprintf (stderr,"newNode return NULL in insertHash\n");		
+			fprintf (stderr,"newNode return NULL in insertHash\n");
 		}
+		newNode->nature = 0;
+		newNode->dataType = 0;
 		return newNode;
 	}
 }
@@ -129,74 +131,74 @@ void printToken(int token){
 	switch(token){
 /*
 		// PALAVRAS RESERVADAS
-		case KW_BYTE: fprintf(stderr,"BYTE"); 
+		case KW_BYTE: fprintf(stderr,"BYTE");
 			break;
-		case KW_SHORT: fprintf(stderr,"SHORT"); 
+		case KW_SHORT: fprintf(stderr,"SHORT");
 			break;
-		case KW_LONG: fprintf(stderr,"LONG"); 
+		case KW_LONG: fprintf(stderr,"LONG");
 			break;
-		case KW_FLOAT: fprintf(stderr,"FLOAT"); 
+		case KW_FLOAT: fprintf(stderr,"FLOAT");
 			break;
-		case KW_DOUBLE: fprintf(stderr,"DOUBLE"); 
+		case KW_DOUBLE: fprintf(stderr,"DOUBLE");
 			break;
-		case KW_WHEN: fprintf(stderr,"WHEN"); 
+		case KW_WHEN: fprintf(stderr,"WHEN");
 			break;
-		case KW_THEN: fprintf(stderr,"THEN"); 
+		case KW_THEN: fprintf(stderr,"THEN");
 			break;
-		case KW_ELSE: fprintf(stderr,"ELSE"); 
+		case KW_ELSE: fprintf(stderr,"ELSE");
 			break;
-		case KW_WHILE: fprintf(stderr,"WHILE"); 
+		case KW_WHILE: fprintf(stderr,"WHILE");
 			break;
-		case KW_FOR: fprintf(stderr,"FOR"); 
+		case KW_FOR: fprintf(stderr,"FOR");
 			break;
-		case KW_READ: fprintf(stderr,"READ"); 
+		case KW_READ: fprintf(stderr,"READ");
 			break;
-		case KW_RETURN: fprintf(stderr,"RETURN"); 
+		case KW_RETURN: fprintf(stderr,"RETURN");
 			break;
-		case KW_PRINT: fprintf(stderr,"PRINT"); 
+		case KW_PRINT: fprintf(stderr,"PRINT");
 			break;
 		// operadores duplos
-		case OPERATOR_LE: fprintf(stderr,"OPERATOR_LE"); 
+		case OPERATOR_LE: fprintf(stderr,"OPERATOR_LE");
 			break;
-		case OPERATOR_GE: fprintf(stderr,"OPERATOR_GE"); 
+		case OPERATOR_GE: fprintf(stderr,"OPERATOR_GE");
 			break;
-		case OPERATOR_EQ: fprintf(stderr,"OPERATOR_EQ"); 
+		case OPERATOR_EQ: fprintf(stderr,"OPERATOR_EQ");
 			break;
-		case OPERATOR_NE: fprintf(stderr,"OPERATOR_NE"); 	
+		case OPERATOR_NE: fprintf(stderr,"OPERATOR_NE");
 			break;
-		case OPERATOR_AND: fprintf(stderr,"OPERATOR_AND"); 
+		case OPERATOR_AND: fprintf(stderr,"OPERATOR_AND");
 			break;
-		case OPERATOR_OR: fprintf(stderr,"OPERATOR_OR"); 
+		case OPERATOR_OR: fprintf(stderr,"OPERATOR_OR");
 			break;
 		// identificador
-		case TK_IDENTIFIER: fprintf(stderr,"TK_IDENTIFIER"); 
+		case TK_IDENTIFIER: fprintf(stderr,"TK_IDENTIFIER");
 			break;
 		// literais
-		case LIT_INTEGER: fprintf(stderr,"LIT_INTEGER"); 
+		case LIT_INTEGER: fprintf(stderr,"LIT_INTEGER");
 			break;
-		case LIT_REAL: fprintf(stderr,"LIT_REAL"); 
+		case LIT_REAL: fprintf(stderr,"LIT_REAL");
 			break;
-		case LIT_CHAR: fprintf(stderr,"LIT_CHAR"); 
+		case LIT_CHAR: fprintf(stderr,"LIT_CHAR");
 			break;
-		case LIT_STRING: fprintf(stderr,"LIT_STRING"); 
+		case LIT_STRING: fprintf(stderr,"LIT_STRING");
 			break;
 		// erro
-		case TOKEN_ERROR: fprintf(stderr,"TOKEN_ERROR"); 
+		case TOKEN_ERROR: fprintf(stderr,"TOKEN_ERROR");
 			break;
 		default: fprintf(stderr,"default");
 			break;
 */
 		// identificador
-		case SYMBOL_IDENTIFIER: fprintf(stderr,"IDENTIFIER"); 
+		case SYMBOL_IDENTIFIER: fprintf(stderr,"IDENTIFIER");
 			break;
 		// literais
-		case SYMBOL_LIT_INTEGER: fprintf(stderr,"LIT_INTEGER"); 
+		case SYMBOL_LIT_INTEGER: fprintf(stderr,"LIT_INTEGER");
 			break;
-		case SYMBOL_LIT_REAL: fprintf(stderr,"LIT_REAL"); 
+		case SYMBOL_LIT_REAL: fprintf(stderr,"LIT_REAL");
 			break;
-		case SYMBOL_LIT_CHAR: fprintf(stderr,"LIT_CHAR"); 
+		case SYMBOL_LIT_CHAR: fprintf(stderr,"LIT_CHAR");
 			break;
-		case SYMBOL_LIT_STRING: fprintf(stderr,"LIT_STRING"); 
+		case SYMBOL_LIT_STRING: fprintf(stderr,"LIT_STRING");
 			break;
 	}
 }
@@ -209,7 +211,7 @@ void printHashNode(HASH_NODE * node){
 		printToken(node->type);
 		fprintf(stderr,", Value: %s",node->value);
 		fprintf(stderr,", HashAddress: %d\n",hashAddress(node->value));
-	}	
+	}
 }
 
 // imprime a hash toda
@@ -223,7 +225,7 @@ void printHash(){
 			printHashNode(node);
 		}
 	}
-	fprintf(stderr,"Termino de impressao\n");	
+	fprintf(stderr,"Termino de impressao\n");
 }
 
 
