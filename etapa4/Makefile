@@ -7,14 +7,16 @@
 # Therefore, there must be a header of it to be included in scanner.l
 #
 
-etapa3: y.tab.o lex.yy.o main.o hash.o astree.o
-	gcc -o etapa4 lex.yy.o main.o hash.o astree.o y.tab.o
+etapa3: y.tab.o lex.yy.o main.o hash.o astree.o semantic.o
+	gcc -o etapa4 lex.yy.o main.o hash.o astree.o semantic.o y.tab.o
 main.o: main.c
 	gcc -c main.c
 hash.o: hash.c
 	gcc -c hash.c
 astree.o: astree.c
 	gcc -c astree.c
+semantic.o: semantic.c
+	gcc -c semantic.c
 y.tab.o: y.tab.c
 	gcc -c y.tab.c
 y.tab.c: parser.y

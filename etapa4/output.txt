@@ -24,7 +24,7 @@ when (a==5)then print "Parou no meio\n"
 ;
 when (a==11)then 
 ;
-when (a==11)then else 
+when (a==11)then  else 
 ;
 ;
 ;
