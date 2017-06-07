@@ -23,6 +23,12 @@
 #define DATATYPE_FLOAT 23
 #define DATATYPE_DOUBLE 24
 
+#define VALUETYPE_INTEGER 30
+#define VALUETYPE_REAL 31
+#define VALUETYPE_CHAR 32
+
+#define VALUETYPE_BOOL 33
+
 
 
 int getLineNumber(void);

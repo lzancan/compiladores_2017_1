@@ -55,7 +55,7 @@ ALPHANUMUNDER [a-zA-Z0-9_]
 					 return TK_IDENTIFIER;/* identificador, insere na hash e retorna o token */}
 					
 {NUM}+ 					{ yylval.symbol = insertHash(SYMBOL_LIT_INTEGER,yytext);return LIT_INTEGER;/* literais, insere na hash e retorna o token */}
-{NUM}+.{NUM}+		 		{yylval.symbol = insertHash(SYMBOL_LIT_REAL,yytext); return LIT_REAL;}
+{NUM}+"."{NUM}+		 		{yylval.symbol = insertHash(SYMBOL_LIT_REAL,yytext); return LIT_REAL;}
 \'.\'					{yylval.symbol = insertHash(SYMBOL_LIT_CHAR,yytext); return LIT_CHAR;}
 \"([^\\\"]|\\.)*\"			{yylval.symbol = insertHash(SYMBOL_LIT_STRING,yytext); return LIT_STRING;}
 					

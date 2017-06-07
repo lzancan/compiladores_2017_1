@@ -61,13 +61,12 @@ enum nodeType
 struct ASTREE
 {
 	int type;
+	int valueType;
 	HASH_NODE* symbol;
 	struct ASTREE* son[MAX_SONS];
 };
 typedef struct ASTREE ASTREE;
 
-// função que seta o nature e o datatype na tabela hash já na passada da árvore
-void setNature_dataType(int nature, HASH_NODE * hashNode, ASTREE* astreeNode); 
 ASTREE* astreeCreate (int type, HASH_NODE* symbol, ASTREE* son0, ASTREE* son1, ASTREE* son2, ASTREE* son3);
 int uncompile(ASTREE* node);
 FILE* outfile;
