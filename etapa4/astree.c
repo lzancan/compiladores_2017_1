@@ -2,6 +2,21 @@
 #include <stdlib.h>
 #include "astree.h"
 
+void setNature_dataType(int nature, HASH_NODE * hashNode, ASTREE* astreeNode){
+	if(hashNode->nature != 0 || hashNode->dataType != 0){
+		fprintf(stderr,"Erro semantico, [%s] já declarada\n",hashNode->value);
+		//exit(4); // TODO verificar onde deve dar o exit(4)...	
+	}
+	hashNode->nature = nature;
+	switch (astreeNode->type){
+		case ASTREE_BYTE_TYPE: hashNode->dataType = DATATYPE_BYTE; break;
+		case ASTREE_SHORT_TYPE: hashNode->dataType = DATATYPE_SHORT; break;
+		case ASTREE_LONG_TYPE: hashNode->dataType = DATATYPE_LONG; break;
+		case ASTREE_FLOAT_TYPE: hashNode->dataType = DATATYPE_FLOAT; break;
+		case ASTREE_DOUBLE_TYPE: hashNode->dataType = DATATYPE_DOUBLE; break;
+		default: break;	
+	}	
+}
 ASTREE* astreeCreate (int type, HASH_NODE* symbol, ASTREE* son0, ASTREE* son1, ASTREE* son2, ASTREE* son3){
 	ASTREE* new_node = 0;
 	

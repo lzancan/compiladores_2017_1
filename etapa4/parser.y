@@ -98,32 +98,37 @@
 	DECLARACAO: FUNCOES {$$ = $1;}
 		    | VARIAVEL_GLOBAL ';' {$$ = $1;}
 	;
-	VARIAVEL_GLOBAL: TK_IDENTIFIER ':' TIPO VAR_GLOBAL_INIT_VEC { $$ = astreeCreate(ASTREE_VAR_GLOBAL, $1, $3, $4, 0, 0);}
+	VARIAVEL_GLOBAL: TK_IDENTIFIER ':' TIPO VAR_GLOBAL_INIT_VEC { if($4->type == ASTREE_VAR_GLOBAL_INIT_VEC){
+									setNature_dataType(NATURE_VECTOR,$1,$3);
+								      } else 
+									setNature_dataType(NATURE_ESCALAR,$1,$3);
+								      $$ = astreeCreate(ASTREE_VAR_GLOBAL, $1, $3, $4, 0, 0);
+								    }
 	;
 	VAR_GLOBAL_INIT_VEC: VALOR 
 			     | '[' LIT_INTEGER ']' VALOR_INICIALIZACAO_VETOR { $$ = astreeCreate(ASTREE_VAR_GLOBAL_INIT_VEC, $2, $4, 0, 0, 0);}
 	;
-	VALOR: 	LIT_INTEGER { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} |
+	VALOR: 	LIT_INTEGER { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} /* TODO:ver isso depois! (valor retornado... int real e char pra comparar e etc... */|
 		LIT_REAL { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} |
 		LIT_CHAR { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);}
 	;
 	VALOR_INICIALIZACAO_VETOR: VALOR VALOR_INICIALIZACAO_VETOR { $$ = astreeCreate(ASTREE_VAR_GLOBAL_VEC_VALORES, NULL, $1, $2, 0, 0);}
 				   | /*vazio*/ {$$ = 0;}
 	;
-	TIPO: KW_BYTE  { $$ = astreeCreate(ASTREE_BYTE_TYPE, 0, 0, 0, 0, 0);}| 
-	      KW_SHORT { $$ = astreeCreate(ASTREE_SHORT_TYPE, 0, 0, 0, 0, 0); }|    
-	      KW_LONG  { $$ = astreeCreate(ASTREE_LONG_TYPE, 0, 0, 0, 0, 0);}|  
- 	      KW_FLOAT { $$ = astreeCreate(ASTREE_FLOAT_TYPE, 0, 0, 0, 0, 0); }|   
-	      KW_DOUBLE{ $$ = astreeCreate(ASTREE_DOUBLE_TYPE, 0, 0, 0, 0, 0); }
+	TIPO: KW_BYTE  { $$ = astreeCreate(ASTREE_BYTE_TYPE, NULL, 0, 0, 0, 0);}| 
+	      KW_SHORT { $$ = astreeCreate(ASTREE_SHORT_TYPE, NULL, 0, 0, 0, 0); }|    
+	      KW_LONG  { $$ = astreeCreate(ASTREE_LONG_TYPE, NULL, 0, 0, 0, 0);}|  
+ 	      KW_FLOAT { $$ = astreeCreate(ASTREE_FLOAT_TYPE, NULL, 0, 0, 0, 0); }|   
+	      KW_DOUBLE { $$ = astreeCreate(ASTREE_DOUBLE_TYPE, NULL, 0, 0, 0, 0); }
 	; 
-	FUNCOES: CABECALHO CORPO {$$ = astreeCreate(ASTREE_FUNCAO, NULL, $1, $2, 0, 0);}
+	FUNCOES: CABECALHO CORPO { $$ = astreeCreate(ASTREE_FUNCAO, NULL, $1, $2, 0, 0);}
 	;
-	CABECALHO: TIPO TK_IDENTIFIER '(' LISTA_PARAMETROS ')' {$$ = astreeCreate(ASTREE_FUNC_CABECALHO, $2, $1, $4, 0, 0);}
+	CABECALHO: TIPO TK_IDENTIFIER '(' LISTA_PARAMETROS ')' { setNature_dataType(NATURE_FUNCTION,$2,$1); $$ = astreeCreate(ASTREE_FUNC_CABECALHO, $2, $1, $4, 0, 0);}
 	;
-	LISTA_PARAMETROS: TIPO TK_IDENTIFIER MAIS_PARAMETROS {$$ = astreeCreate(ASTREE_LISTA_PARAMETROS, $2, $1, $3, 0, 0);}
+	LISTA_PARAMETROS: TIPO TK_IDENTIFIER MAIS_PARAMETROS { setNature_dataType(NATURE_ESCALAR,$2,$1); $$ = astreeCreate(ASTREE_LISTA_PARAMETROS, $2, $1, $3, 0, 0);}
 			| /*vazio*/ {$$ = 0;}
 	;
-	MAIS_PARAMETROS: ',' TIPO TK_IDENTIFIER MAIS_PARAMETROS  {$$ = astreeCreate(ASTREE_MAIS_PARAMETROS, $3, $2, $4, 0, 0);}
+	MAIS_PARAMETROS: ',' TIPO TK_IDENTIFIER MAIS_PARAMETROS  {setNature_dataType(NATURE_ESCALAR,$3,$2); $$ = astreeCreate(ASTREE_MAIS_PARAMETROS, $3, $2, $4, 0, 0);}
 			| /*vazio*/ {$$ = 0;}
 	;
 	CORPO: COMANDO ';'
