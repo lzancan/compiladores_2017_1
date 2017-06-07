@@ -1,8 +1,8 @@
-// UFRGS - Compiladores - Marcelo Johann - 2017/1
+// UFRGS - Compiladores - Marcelo Johann - 2017/1lll
 
 a: short 0;
 i: long 0;
-v: long[10] 0 0 0 0 0 0 0 0 0 0; 
+v: long[10] 0 0 0 0.0 0 0 0 0 0 0; 
 mat: long[10]; 
 f: float 10.55;
 c: byte 'x';

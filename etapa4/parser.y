@@ -2,7 +2,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include "hash.h"
-	#include "astree.h"
+	#include "semantic.h"
 	
 	ASTREE* root;
 
@@ -105,14 +105,22 @@
 								      $$ = astreeCreate(ASTREE_VAR_GLOBAL, $1, $3, $4, 0, 0);
 								    }
 	;
-	VAR_GLOBAL_INIT_VEC: VALOR 
-			     | '[' LIT_INTEGER ']' VALOR_INICIALIZACAO_VETOR { $$ = astreeCreate(ASTREE_VAR_GLOBAL_INIT_VEC, $2, $4, 0, 0, 0);}
+	VAR_GLOBAL_INIT_VEC: VALOR
+			     | '[' LIT_INTEGER ']' VALOR_INICIALIZACAO_VETOR { $$ = astreeCreate(ASTREE_VAR_GLOBAL_INIT_VEC, $2, $4, 0, 0, 0); testVectorInit($4,atoi($2->value));}
 	;
-	VALOR: 	LIT_INTEGER { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} /* TODO:ver isso depois! (valor retornado... int real e char pra comparar e etc... */|
-		LIT_REAL { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} |
-		LIT_CHAR { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);}
+	VALOR: 	LIT_INTEGER { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0); 
+			      $$->valueType = VALUETYPE_INTEGER;
+			     } |
+		LIT_REAL { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0); 
+			   $$->valueType = VALUETYPE_REAL;
+			 } |
+		LIT_CHAR { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0); 
+			   $$->valueType = VALUETYPE_CHAR;
+			 }
 	;
-	VALOR_INICIALIZACAO_VETOR: VALOR VALOR_INICIALIZACAO_VETOR { $$ = astreeCreate(ASTREE_VAR_GLOBAL_VEC_VALORES, NULL, $1, $2, 0, 0);}
+	VALOR_INICIALIZACAO_VETOR: VALOR VALOR_INICIALIZACAO_VETOR { $$ = astreeCreate(ASTREE_VAR_GLOBAL_VEC_VALORES, NULL, $1, $2, 0, 0);
+								     $$->valueType = $1->valueType;
+								   }
 				   | /*vazio*/ {$$ = 0;}
 	;
 	TIPO: KW_BYTE  { $$ = astreeCreate(ASTREE_BYTE_TYPE, NULL, 0, 0, 0, 0);}| 
