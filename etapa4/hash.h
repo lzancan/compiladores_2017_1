@@ -29,6 +29,8 @@
 #define VALUETYPE_BOOLEAN 33
 #define VALUETYPE_STRING 34
 
+#define VALUETYPE_STRING 33
+#define VALUETYPE_BOOL 34
 
 int getLineNumber(void);
 int yyerror(char *value);
@@ -41,7 +43,8 @@ struct HASH_NODE{
 	char * value;
 	int nature;
 	int dataType;
-	struct HASH_NODE * next;	
+	struct HASH_NODE * next;
+	struct ASTREE* astreeNode;	
 };
 typedef struct HASH_NODE HASH_NODE;
 

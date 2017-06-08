@@ -10,6 +10,9 @@ d: byte 65;
 //10
 
 
+long incn (long x)
+  return x+n;
+
 long main()
   {
   a = 10;
@@ -28,7 +31,7 @@ long main()
   read i;
   while (i<10)
     {
-    a = incn(a,1); //23
+    a = incn(5); //23
     i = i + 1;
     a = i * d;
     };
@@ -44,8 +47,7 @@ long main()
   {};
   };
 
-long incn (long x, long n)
-  return x+n;
+
 
 short voidfunc() ;
   

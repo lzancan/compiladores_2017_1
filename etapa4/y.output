@@ -3,12 +3,21 @@ Terminals unused in grammar
    TOKEN_ERROR
 
 
+<<<<<<< Updated upstream
 State 46 conflicts: 8 shift/reduce
 State 58 conflicts: 1 shift/reduce
 State 76 conflicts: 12 shift/reduce
 State 80 conflicts: 12 shift/reduce
 State 104 conflicts: 1 shift/reduce
 State 134 conflicts: 1 shift/reduce
+=======
+Estado 46 conflitos: 8 de deslocamento/redução
+Estado 58 conflitos: 1 de deslocamento/redução
+Estado 76 conflitos: 12 de deslocamento/redução
+Estado 80 conflitos: 12 de deslocamento/redução
+Estado 104 conflitos: 1 de deslocamento/redução
+Estado 135 conflitos: 1 de deslocamento/redução
+>>>>>>> Stashed changes
 
 
 Grammar
@@ -106,22 +115,30 @@ Grammar
    66          | EXPRESSAO OPERATOR_OR EXPRESSAO
    67          | '!' EXPRESSAO
 
+<<<<<<< Updated upstream
    68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO ',' LISTA_FUNCAO_PARAMETROS
    69                        | EXPRESSAO
    70                        | /* empty */
+=======
+   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO LISTA_FUNCAO_MAIS_PARAMETROS
+   69                        | %empty
+>>>>>>> Stashed changes
 
-   71 CONTROLE_FLUXO: WHEN_THEN
-   72               | WHEN_THEN_ELSE
-   73               | FOR
-   74               | WHILE
+   70 LISTA_FUNCAO_MAIS_PARAMETROS: ',' EXPRESSAO LISTA_FUNCAO_MAIS_PARAMETROS
+   71                             | %empty
 
-   75 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO
+   72 CONTROLE_FLUXO: WHEN_THEN
+   73               | WHEN_THEN_ELSE
+   74               | FOR
+   75               | WHILE
 
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO
 
-   77 WHILE: KW_WHILE '(' EXPRESSAO ')' COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO
 
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
+   78 WHILE: KW_WHILE '(' EXPRESSAO ')' COMANDO
+
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
 
 
 Terminals, with rules where they appear
@@ -129,34 +146,34 @@ Terminals, with rules where they appear
 $end (0) 0
 '!' (33) 67
 '#' (35) 38
-'(' (40) 21 48 53 75 76 77 78
-')' (41) 21 48 53 75 76 77 78
+'(' (40) 21 48 53 76 77 78 79
+')' (41) 21 48 53 76 77 78 79
 '*' (42) 57
 '+' (43) 55
-',' (44) 24 68
+',' (44) 24 70
 '-' (45) 49 56
 '/' (47) 58
 ':' (58) 7
 ';' (59) 6 26 28
 '<' (60) 60
-'=' (61) 37 38 78
+'=' (61) 37 38 79
 '>' (62) 59
 '[' (91) 9 54
 ']' (93) 9 54
 '{' (123) 27
 '}' (125) 27
 error (256)
-KW_TO (258) 78
+KW_TO (258) 79
 KW_BYTE (259) 15
 KW_SHORT (260) 16
 KW_LONG (261) 17
 KW_FLOAT (262) 18
 KW_DOUBLE (263) 19
-KW_WHEN (264) 75 76
-KW_THEN (265) 75 76
-KW_ELSE (266) 76
-KW_WHILE (267) 77
-KW_FOR (268) 78
+KW_WHEN (264) 76 77
+KW_THEN (265) 76 77
+KW_ELSE (266) 77
+KW_WHILE (267) 78
+KW_FOR (268) 79
 KW_READ (269) 39
 KW_RETURN (270) 45
 KW_PRINT (271) 40
@@ -166,7 +183,7 @@ OPERATOR_EQ (274) 63
 OPERATOR_NE (275) 64
 OPERATOR_AND (276) 65
 OPERATOR_OR (277) 66
-TK_IDENTIFIER (278) 7 21 22 24 37 38 39 46 47 48 78
+TK_IDENTIFIER (278) 7 21 22 24 37 38 39 46 47 48 79
 LIT_INTEGER (279) 9 10 50
 LIT_REAL (280) 11 51
 LIT_CHAR (281) 12 52
@@ -211,7 +228,11 @@ BLOCO_COMANDOS (62)
 LISTA_COMANDOS (63)
     on left: 28 29, on right: 27 28
 COMANDO (64)
+<<<<<<< Updated upstream
     on left: 30 31 32 33 34 35 36, on right: 26 28 75 76 77 78
+=======
+    à esquerda: 30 31 32 33 34 35 36, à direita: 26 28 76 77 78 79
+>>>>>>> Stashed changes
 ATRIBUICAO (65)
     on left: 37 38, on right: 30
 READ (66)
@@ -225,6 +246,7 @@ ELEMENTO_PRINT (69)
 RETURN (70)
     on left: 45, on right: 34
 EXPRESSAO (71)
+<<<<<<< Updated upstream
     on left: 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63
     64 65 66 67, on right: 37 38 44 45 47 49 53 54 55 56 57 58 59 60
     61 62 63 64 65 66 67 68 69 75 76 77 78
@@ -240,6 +262,25 @@ WHILE (76)
     on left: 77, on right: 74
 FOR (77)
     on left: 78, on right: 73
+=======
+    à esquerda: 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62
+    63 64 65 66 67, à direita: 37 38 44 45 47 49 53 54 55 56 57 58
+    59 60 61 62 63 64 65 66 67 68 70 76 77 78 79
+LISTA_FUNCAO_PARAMETROS (72)
+    à esquerda: 68 69, à direita: 48
+LISTA_FUNCAO_MAIS_PARAMETROS (73)
+    à esquerda: 70 71, à direita: 68 70
+CONTROLE_FLUXO (74)
+    à esquerda: 72 73 74 75, à direita: 31
+WHEN_THEN (75)
+    à esquerda: 76, à direita: 72
+WHEN_THEN_ELSE (76)
+    à esquerda: 77, à direita: 73
+WHILE (77)
+    à esquerda: 78, à direita: 75
+FOR (78)
+    à esquerda: 79, à direita: 74
+>>>>>>> Stashed changes
 
 
 state 0
@@ -442,22 +483,22 @@ state 19
 
 state 20
 
-   75 WHEN_THEN: KW_WHEN . '(' EXPRESSAO ')' KW_THEN COMANDO
-   76 WHEN_THEN_ELSE: KW_WHEN . '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN . '(' EXPRESSAO ')' KW_THEN COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN . '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO
 
     '('  shift, and go to state 42
 
 
 state 21
 
-   77 WHILE: KW_WHILE . '(' EXPRESSAO ')' COMANDO
+   78 WHILE: KW_WHILE . '(' EXPRESSAO ')' COMANDO
 
     '('  shift, and go to state 43
 
 
 state 22
 
-   78 FOR: KW_FOR . '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
+   79 FOR: KW_FOR . '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
 
     '('  shift, and go to state 44
 
@@ -601,30 +642,46 @@ state 35
 
 state 36
 
-   71 CONTROLE_FLUXO: WHEN_THEN .
+   72 CONTROLE_FLUXO: WHEN_THEN .
 
+<<<<<<< Updated upstream
     $default  reduce using rule 71 (CONTROLE_FLUXO)
+=======
+    $padrão  reduzir usando a regra 72 (CONTROLE_FLUXO)
+>>>>>>> Stashed changes
 
 
 state 37
 
-   72 CONTROLE_FLUXO: WHEN_THEN_ELSE .
+   73 CONTROLE_FLUXO: WHEN_THEN_ELSE .
 
+<<<<<<< Updated upstream
     $default  reduce using rule 72 (CONTROLE_FLUXO)
+=======
+    $padrão  reduzir usando a regra 73 (CONTROLE_FLUXO)
+>>>>>>> Stashed changes
 
 
 state 38
 
-   74 CONTROLE_FLUXO: WHILE .
+   75 CONTROLE_FLUXO: WHILE .
 
+<<<<<<< Updated upstream
     $default  reduce using rule 74 (CONTROLE_FLUXO)
+=======
+    $padrão  reduzir usando a regra 75 (CONTROLE_FLUXO)
+>>>>>>> Stashed changes
 
 
 state 39
 
-   73 CONTROLE_FLUXO: FOR .
+   74 CONTROLE_FLUXO: FOR .
 
+<<<<<<< Updated upstream
     $default  reduce using rule 73 (CONTROLE_FLUXO)
+=======
+    $padrão  reduzir usando a regra 74 (CONTROLE_FLUXO)
+>>>>>>> Stashed changes
 
 
 state 40
@@ -658,8 +715,8 @@ state 41
 
 state 42
 
-   75 WHEN_THEN: KW_WHEN '(' . EXPRESSAO ')' KW_THEN COMANDO
-   76 WHEN_THEN_ELSE: KW_WHEN '(' . EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN '(' . EXPRESSAO ')' KW_THEN COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' . EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO
 
     TK_IDENTIFIER  shift, and go to state 46
     LIT_INTEGER    shift, and go to state 47
@@ -675,7 +732,7 @@ state 42
 
 state 43
 
-   77 WHILE: KW_WHILE '(' . EXPRESSAO ')' COMANDO
+   78 WHILE: KW_WHILE '(' . EXPRESSAO ')' COMANDO
 
     TK_IDENTIFIER  shift, and go to state 46
     LIT_INTEGER    shift, and go to state 47
@@ -691,7 +748,7 @@ state 43
 
 state 44
 
-   78 FOR: KW_FOR '(' . TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
+   79 FOR: KW_FOR '(' . TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
 
     TK_IDENTIFIER  shift, and go to state 74
 
@@ -1040,8 +1097,8 @@ state 72
    64          | EXPRESSAO . OPERATOR_NE EXPRESSAO
    65          | EXPRESSAO . OPERATOR_AND EXPRESSAO
    66          | EXPRESSAO . OPERATOR_OR EXPRESSAO
-   75 WHEN_THEN: KW_WHEN '(' EXPRESSAO . ')' KW_THEN COMANDO
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO . ')' KW_THEN COMANDO KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN '(' EXPRESSAO . ')' KW_THEN COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO . ')' KW_THEN COMANDO KW_ELSE COMANDO
 
     OPERATOR_LE   shift, and go to state 81
     OPERATOR_GE   shift, and go to state 82
@@ -1072,7 +1129,7 @@ state 73
    64          | EXPRESSAO . OPERATOR_NE EXPRESSAO
    65          | EXPRESSAO . OPERATOR_AND EXPRESSAO
    66          | EXPRESSAO . OPERATOR_OR EXPRESSAO
-   77 WHILE: KW_WHILE '(' EXPRESSAO . ')' COMANDO
+   78 WHILE: KW_WHILE '(' EXPRESSAO . ')' COMANDO
 
     OPERATOR_LE   shift, and go to state 81
     OPERATOR_GE   shift, and go to state 82
@@ -1091,7 +1148,7 @@ state 73
 
 state 74
 
-   78 FOR: KW_FOR '(' TK_IDENTIFIER . '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
+   79 FOR: KW_FOR '(' TK_IDENTIFIER . '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
 
     '='  shift, and go to state 103
 
@@ -1110,7 +1167,11 @@ state 75
     '('            shift, and go to state 52
     '!'            shift, and go to state 53
 
+<<<<<<< Updated upstream
     $default  reduce using rule 70 (LISTA_FUNCAO_PARAMETROS)
+=======
+    $padrão  reduzir usando a regra 69 (LISTA_FUNCAO_PARAMETROS)
+>>>>>>> Stashed changes
 
     EXPRESSAO                go to state 104
     LISTA_FUNCAO_PARAMETROS  go to state 105
@@ -1614,15 +1675,15 @@ state 100
 
 state 101
 
-   75 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' . KW_THEN COMANDO
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' . KW_THEN COMANDO KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' . KW_THEN COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' . KW_THEN COMANDO KW_ELSE COMANDO
 
     KW_THEN  shift, and go to state 125
 
 
 state 102
 
-   77 WHILE: KW_WHILE '(' EXPRESSAO ')' . COMANDO
+   78 WHILE: KW_WHILE '(' EXPRESSAO ')' . COMANDO
 
     KW_WHEN        shift, and go to state 20
     KW_WHILE       shift, and go to state 21
@@ -1650,7 +1711,7 @@ state 102
 
 state 103
 
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' . EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' . EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
 
     TK_IDENTIFIER  shift, and go to state 46
     LIT_INTEGER    shift, and go to state 47
@@ -1679,8 +1740,7 @@ state 104
    64          | EXPRESSAO . OPERATOR_NE EXPRESSAO
    65          | EXPRESSAO . OPERATOR_AND EXPRESSAO
    66          | EXPRESSAO . OPERATOR_OR EXPRESSAO
-   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO . ',' LISTA_FUNCAO_PARAMETROS
-   69                        | EXPRESSAO .
+   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO . LISTA_FUNCAO_MAIS_PARAMETROS
 
     OPERATOR_LE   shift, and go to state 81
     OPERATOR_GE   shift, and go to state 82
@@ -1697,14 +1757,24 @@ state 104
     ')'           shift, and go to state 107
     ','           shift, and go to state 128
 
+<<<<<<< Updated upstream
     ')'  [reduce using rule 69 (LISTA_FUNCAO_PARAMETROS)]
+=======
+    ')'  [reduzir usando a regra 71 (LISTA_FUNCAO_MAIS_PARAMETROS)]
+
+    LISTA_FUNCAO_MAIS_PARAMETROS  ir ao estado 129
+>>>>>>> Stashed changes
 
 
 state 105
 
    48 EXPRESSAO: TK_IDENTIFIER '(' LISTA_FUNCAO_PARAMETROS . ')'
 
+<<<<<<< Updated upstream
     ')'  shift, and go to state 129
+=======
+    ')'  deslocar, e ir ao estado 130
+>>>>>>> Stashed changes
 
 
 state 106
@@ -2020,7 +2090,11 @@ state 120
     '('            shift, and go to state 52
     '!'            shift, and go to state 53
 
+<<<<<<< Updated upstream
     EXPRESSAO  go to state 130
+=======
+    EXPRESSAO  ir ao estado 131
+>>>>>>> Stashed changes
 
 
 state 121
@@ -2040,8 +2114,13 @@ state 122
 
     $default  reduce using rule 14 (VALOR_INICIALIZACAO_VETOR)
 
+<<<<<<< Updated upstream
     VALOR                      go to state 131
     VALOR_INICIALIZACAO_VETOR  go to state 132
+=======
+    VALOR                      ir ao estado 132
+    VALOR_INICIALIZACAO_VETOR  ir ao estado 133
+>>>>>>> Stashed changes
 
 
 state 123
@@ -2054,7 +2133,11 @@ state 123
     KW_FLOAT   shift, and go to state 4
     KW_DOUBLE  shift, and go to state 5
 
+<<<<<<< Updated upstream
     TIPO  go to state 133
+=======
+    TIPO  ir ao estado 134
+>>>>>>> Stashed changes
 
 
 state 124
@@ -2066,8 +2149,8 @@ state 124
 
 state 125
 
-   75 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' KW_THEN . COMANDO
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN . COMANDO KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' KW_THEN . COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN . COMANDO KW_ELSE COMANDO
 
     KW_WHEN        shift, and go to state 20
     KW_WHILE       shift, and go to state 21
@@ -2080,6 +2163,7 @@ state 125
 
     $default  reduce using rule 36 (COMANDO)
 
+<<<<<<< Updated upstream
     BLOCO_COMANDOS  go to state 29
     COMANDO         go to state 134
     ATRIBUICAO      go to state 31
@@ -2091,13 +2175,30 @@ state 125
     WHEN_THEN_ELSE  go to state 37
     WHILE           go to state 38
     FOR             go to state 39
+=======
+    BLOCO_COMANDOS  ir ao estado 29
+    COMANDO         ir ao estado 135
+    ATRIBUICAO      ir ao estado 31
+    READ            ir ao estado 32
+    PRINT           ir ao estado 33
+    RETURN          ir ao estado 34
+    CONTROLE_FLUXO  ir ao estado 35
+    WHEN_THEN       ir ao estado 36
+    WHEN_THEN_ELSE  ir ao estado 37
+    WHILE           ir ao estado 38
+    FOR             ir ao estado 39
+>>>>>>> Stashed changes
 
 
 state 126
 
-   77 WHILE: KW_WHILE '(' EXPRESSAO ')' COMANDO .
+   78 WHILE: KW_WHILE '(' EXPRESSAO ')' COMANDO .
 
+<<<<<<< Updated upstream
     $default  reduce using rule 77 (WHILE)
+=======
+    $padrão  reduzir usando a regra 78 (WHILE)
+>>>>>>> Stashed changes
 
 
 state 127
@@ -2114,8 +2215,9 @@ state 127
    64          | EXPRESSAO . OPERATOR_NE EXPRESSAO
    65          | EXPRESSAO . OPERATOR_AND EXPRESSAO
    66          | EXPRESSAO . OPERATOR_OR EXPRESSAO
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO . KW_TO EXPRESSAO ')' COMANDO
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO . KW_TO EXPRESSAO ')' COMANDO
 
+<<<<<<< Updated upstream
     KW_TO         shift, and go to state 135
     OPERATOR_LE   shift, and go to state 81
     OPERATOR_GE   shift, and go to state 82
@@ -2129,11 +2231,26 @@ state 127
     '-'           shift, and go to state 90
     '*'           shift, and go to state 91
     '/'           shift, and go to state 92
+=======
+    KW_TO         deslocar, e ir ao estado 136
+    OPERATOR_LE   deslocar, e ir ao estado 81
+    OPERATOR_GE   deslocar, e ir ao estado 82
+    OPERATOR_EQ   deslocar, e ir ao estado 83
+    OPERATOR_NE   deslocar, e ir ao estado 84
+    OPERATOR_AND  deslocar, e ir ao estado 85
+    OPERATOR_OR   deslocar, e ir ao estado 86
+    '<'           deslocar, e ir ao estado 87
+    '>'           deslocar, e ir ao estado 88
+    '+'           deslocar, e ir ao estado 89
+    '-'           deslocar, e ir ao estado 90
+    '*'           deslocar, e ir ao estado 91
+    '/'           deslocar, e ir ao estado 92
+>>>>>>> Stashed changes
 
 
 state 128
 
-   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO ',' . LISTA_FUNCAO_PARAMETROS
+   70 LISTA_FUNCAO_MAIS_PARAMETROS: ',' . EXPRESSAO LISTA_FUNCAO_MAIS_PARAMETROS
 
     TK_IDENTIFIER  shift, and go to state 46
     LIT_INTEGER    shift, and go to state 47
@@ -2144,20 +2261,35 @@ state 128
     '('            shift, and go to state 52
     '!'            shift, and go to state 53
 
+<<<<<<< Updated upstream
     $default  reduce using rule 70 (LISTA_FUNCAO_PARAMETROS)
 
     EXPRESSAO                go to state 136
     LISTA_FUNCAO_PARAMETROS  go to state 137
+=======
+    EXPRESSAO  ir ao estado 137
+>>>>>>> Stashed changes
 
 
 state 129
+
+   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO LISTA_FUNCAO_MAIS_PARAMETROS .
+
+    $padrão  reduzir usando a regra 68 (LISTA_FUNCAO_PARAMETROS)
+
+
+Estado 130
 
    48 EXPRESSAO: TK_IDENTIFIER '(' LISTA_FUNCAO_PARAMETROS ')' .
 
     $default  reduce using rule 48 (EXPRESSAO)
 
 
+<<<<<<< Updated upstream
 state 130
+=======
+Estado 131
+>>>>>>> Stashed changes
 
    38 ATRIBUICAO: TK_IDENTIFIER '#' EXPRESSAO '=' EXPRESSAO .
    55 EXPRESSAO: EXPRESSAO . '+' EXPRESSAO
@@ -2189,7 +2321,11 @@ state 130
     $default  reduce using rule 38 (ATRIBUICAO)
 
 
+<<<<<<< Updated upstream
 state 131
+=======
+Estado 132
+>>>>>>> Stashed changes
 
    13 VALOR_INICIALIZACAO_VETOR: VALOR . VALOR_INICIALIZACAO_VETOR
 
@@ -2199,38 +2335,62 @@ state 131
 
     $default  reduce using rule 14 (VALOR_INICIALIZACAO_VETOR)
 
+<<<<<<< Updated upstream
     VALOR                      go to state 131
     VALOR_INICIALIZACAO_VETOR  go to state 138
 
 
 state 132
+=======
+    VALOR                      ir ao estado 132
+    VALOR_INICIALIZACAO_VETOR  ir ao estado 138
+
+
+Estado 133
+>>>>>>> Stashed changes
 
     9 VAR_GLOBAL_INIT_VEC: '[' LIT_INTEGER ']' VALOR_INICIALIZACAO_VETOR .
 
     $default  reduce using rule 9 (VAR_GLOBAL_INIT_VEC)
 
 
+<<<<<<< Updated upstream
 state 133
+=======
+Estado 134
+>>>>>>> Stashed changes
 
    24 MAIS_PARAMETROS: ',' TIPO . TK_IDENTIFIER MAIS_PARAMETROS
 
     TK_IDENTIFIER  shift, and go to state 139
 
 
+<<<<<<< Updated upstream
 state 134
+=======
+Estado 135
+>>>>>>> Stashed changes
 
-   75 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO .
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO . KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO .
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO . KW_ELSE COMANDO
 
     KW_ELSE  shift, and go to state 140
 
+<<<<<<< Updated upstream
     KW_ELSE   [reduce using rule 75 (WHEN_THEN)]
     $default  reduce using rule 75 (WHEN_THEN)
 
 
 state 135
+=======
+    KW_ELSE   [reduzir usando a regra 76 (WHEN_THEN)]
+    $padrão  reduzir usando a regra 76 (WHEN_THEN)
 
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO . EXPRESSAO ')' COMANDO
+
+Estado 136
+>>>>>>> Stashed changes
+
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO . EXPRESSAO ')' COMANDO
 
     TK_IDENTIFIER  shift, and go to state 46
     LIT_INTEGER    shift, and go to state 47
@@ -2244,7 +2404,11 @@ state 135
     EXPRESSAO  go to state 141
 
 
+<<<<<<< Updated upstream
 state 136
+=======
+Estado 137
+>>>>>>> Stashed changes
 
    55 EXPRESSAO: EXPRESSAO . '+' EXPRESSAO
    56          | EXPRESSAO . '-' EXPRESSAO
@@ -2258,8 +2422,7 @@ state 136
    64          | EXPRESSAO . OPERATOR_NE EXPRESSAO
    65          | EXPRESSAO . OPERATOR_AND EXPRESSAO
    66          | EXPRESSAO . OPERATOR_OR EXPRESSAO
-   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO . ',' LISTA_FUNCAO_PARAMETROS
-   69                        | EXPRESSAO .
+   70 LISTA_FUNCAO_MAIS_PARAMETROS: ',' EXPRESSAO . LISTA_FUNCAO_MAIS_PARAMETROS
 
     OPERATOR_LE   shift, and go to state 81
     OPERATOR_GE   shift, and go to state 82
@@ -2275,6 +2438,7 @@ state 136
     '/'           shift, and go to state 92
     ','           shift, and go to state 128
 
+<<<<<<< Updated upstream
     $default  reduce using rule 69 (LISTA_FUNCAO_PARAMETROS)
 
 
@@ -2283,6 +2447,11 @@ state 137
    68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO ',' LISTA_FUNCAO_PARAMETROS .
 
     $default  reduce using rule 68 (LISTA_FUNCAO_PARAMETROS)
+=======
+    $padrão  reduzir usando a regra 71 (LISTA_FUNCAO_MAIS_PARAMETROS)
+
+    LISTA_FUNCAO_MAIS_PARAMETROS  ir ao estado 142
+>>>>>>> Stashed changes
 
 
 state 138
@@ -2300,12 +2469,16 @@ state 139
 
     $default  reduce using rule 25 (MAIS_PARAMETROS)
 
+<<<<<<< Updated upstream
     MAIS_PARAMETROS  go to state 142
+=======
+    MAIS_PARAMETROS  ir ao estado 143
+>>>>>>> Stashed changes
 
 
 state 140
 
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE . COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE . COMANDO
 
     KW_WHEN        shift, and go to state 20
     KW_WHILE       shift, and go to state 21
@@ -2318,6 +2491,7 @@ state 140
 
     $default  reduce using rule 36 (COMANDO)
 
+<<<<<<< Updated upstream
     BLOCO_COMANDOS  go to state 29
     COMANDO         go to state 143
     ATRIBUICAO      go to state 31
@@ -2329,6 +2503,19 @@ state 140
     WHEN_THEN_ELSE  go to state 37
     WHILE           go to state 38
     FOR             go to state 39
+=======
+    BLOCO_COMANDOS  ir ao estado 29
+    COMANDO         ir ao estado 144
+    ATRIBUICAO      ir ao estado 31
+    READ            ir ao estado 32
+    PRINT           ir ao estado 33
+    RETURN          ir ao estado 34
+    CONTROLE_FLUXO  ir ao estado 35
+    WHEN_THEN       ir ao estado 36
+    WHEN_THEN_ELSE  ir ao estado 37
+    WHILE           ir ao estado 38
+    FOR             ir ao estado 39
+>>>>>>> Stashed changes
 
 
 state 141
@@ -2345,8 +2532,9 @@ state 141
    64          | EXPRESSAO . OPERATOR_NE EXPRESSAO
    65          | EXPRESSAO . OPERATOR_AND EXPRESSAO
    66          | EXPRESSAO . OPERATOR_OR EXPRESSAO
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO . ')' COMANDO
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO . ')' COMANDO
 
+<<<<<<< Updated upstream
     OPERATOR_LE   shift, and go to state 81
     OPERATOR_GE   shift, and go to state 82
     OPERATOR_EQ   shift, and go to state 83
@@ -2360,25 +2548,55 @@ state 141
     '*'           shift, and go to state 91
     '/'           shift, and go to state 92
     ')'           shift, and go to state 144
+=======
+    OPERATOR_LE   deslocar, e ir ao estado 81
+    OPERATOR_GE   deslocar, e ir ao estado 82
+    OPERATOR_EQ   deslocar, e ir ao estado 83
+    OPERATOR_NE   deslocar, e ir ao estado 84
+    OPERATOR_AND  deslocar, e ir ao estado 85
+    OPERATOR_OR   deslocar, e ir ao estado 86
+    '<'           deslocar, e ir ao estado 87
+    '>'           deslocar, e ir ao estado 88
+    '+'           deslocar, e ir ao estado 89
+    '-'           deslocar, e ir ao estado 90
+    '*'           deslocar, e ir ao estado 91
+    '/'           deslocar, e ir ao estado 92
+    ')'           deslocar, e ir ao estado 145
+>>>>>>> Stashed changes
 
 
 state 142
 
-   24 MAIS_PARAMETROS: ',' TIPO TK_IDENTIFIER MAIS_PARAMETROS .
+   70 LISTA_FUNCAO_MAIS_PARAMETROS: ',' EXPRESSAO LISTA_FUNCAO_MAIS_PARAMETROS .
 
+<<<<<<< Updated upstream
     $default  reduce using rule 24 (MAIS_PARAMETROS)
+=======
+    $padrão  reduzir usando a regra 70 (LISTA_FUNCAO_MAIS_PARAMETROS)
+>>>>>>> Stashed changes
 
 
 state 143
 
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO .
+   24 MAIS_PARAMETROS: ',' TIPO TK_IDENTIFIER MAIS_PARAMETROS .
 
+<<<<<<< Updated upstream
     $default  reduce using rule 76 (WHEN_THEN_ELSE)
+=======
+    $padrão  reduzir usando a regra 24 (MAIS_PARAMETROS)
+>>>>>>> Stashed changes
 
 
 state 144
 
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' . COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO .
+
+    $padrão  reduzir usando a regra 77 (WHEN_THEN_ELSE)
+
+
+Estado 145
+
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' . COMANDO
 
     KW_WHEN        shift, and go to state 20
     KW_WHILE       shift, and go to state 21
@@ -2391,6 +2609,7 @@ state 144
 
     $default  reduce using rule 36 (COMANDO)
 
+<<<<<<< Updated upstream
     BLOCO_COMANDOS  go to state 29
     COMANDO         go to state 145
     ATRIBUICAO      go to state 31
@@ -2405,7 +2624,27 @@ state 144
 
 
 state 145
+=======
+    BLOCO_COMANDOS  ir ao estado 29
+    COMANDO         ir ao estado 146
+    ATRIBUICAO      ir ao estado 31
+    READ            ir ao estado 32
+    PRINT           ir ao estado 33
+    RETURN          ir ao estado 34
+    CONTROLE_FLUXO  ir ao estado 35
+    WHEN_THEN       ir ao estado 36
+    WHEN_THEN_ELSE  ir ao estado 37
+    WHILE           ir ao estado 38
+    FOR             ir ao estado 39
 
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO .
 
+Estado 146
+>>>>>>> Stashed changes
+
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO .
+
+<<<<<<< Updated upstream
     $default  reduce using rule 78 (FOR)
+=======
+    $padrão  reduzir usando a regra 79 (FOR)
+>>>>>>> Stashed changes
