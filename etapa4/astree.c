@@ -13,6 +13,7 @@ ASTREE* astreeCreate (int type, HASH_NODE* symbol, ASTREE* son0, ASTREE* son1, A
 	new_node -> son[2] = son2;
 	new_node -> son[3] = son3;
 	new_node -> valueType = 0;
+	new_node -> valueType = 0;
 
 	return new_node;
 
@@ -132,9 +133,15 @@ int uncompile(ASTREE* node)
 			} break;
 		case ASTREE_LISTA_FUNC_PARAMETROS: {
 			uncompile(node->son[0]);
-			fprintf(outfile, ",");
 			uncompile(node->son[1]);
 			} break;
+		case ASTREE_LISTA_FUNC_MAIS_PARAMETROS:  {
+			fprintf(outfile, ",");
+			uncompile(node->son[0]);
+			if(node->symbol)
+			fprintf(outfile,"%s", node->symbol->value); //não sei se é isso
+			uncompile(node->son[1]);
+		}; break;
 		case ASTREE_WHEN_THEN:  {
 			fprintf(outfile, "when ");
 			fprintf(outfile, "(");

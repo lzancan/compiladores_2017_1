@@ -2,7 +2,7 @@
 
 a: short 0;
 i: long 0;
-v: long[10] 0 0 0 0.0 0 0 0 0 0 0; 
+v: long[10] 0 0 0 0 0 0 0 0 0 0; 
 mat: long[10]; 
 f: float 10.55;
 c: byte 'x';
@@ -10,12 +10,15 @@ d: byte 65;
 //10
 
 
+long incn (long x)
+  return x+n;
+
 long main()
   {
   a = 10;
   v#2 = v[10-1];
 	//
-  v#[a+1] = 10; // certo... corrigido
+  //v#[a+1] = 10; // certo... corrigido
 	
    //a=10,10; // errado
 
@@ -28,8 +31,9 @@ long main()
   read i;
   while (i<10)
     {
-    a = incn(a,1); //23
+    a = incn(5); //23
     i = i + 1;
+    a = i * d;
     };
   print "Incrementado algumas vezes fica " a "\n";
   when (a==5) then 
@@ -43,8 +47,7 @@ long main()
   {};
   };
 
-long incn (long x, long n)
-  return x+n;
+
 
 short voidfunc() ;
   

@@ -8,7 +8,7 @@ Estado 58 conflitos: 1 de deslocamento/redução
 Estado 76 conflitos: 12 de deslocamento/redução
 Estado 80 conflitos: 12 de deslocamento/redução
 Estado 104 conflitos: 1 de deslocamento/redução
-Estado 134 conflitos: 1 de deslocamento/redução
+Estado 135 conflitos: 1 de deslocamento/redução
 
 
 Gramática
@@ -106,22 +106,24 @@ Gramática
    66          | EXPRESSAO OPERATOR_OR EXPRESSAO
    67          | '!' EXPRESSAO
 
-   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO ',' LISTA_FUNCAO_PARAMETROS
-   69                        | EXPRESSAO
-   70                        | %empty
+   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO LISTA_FUNCAO_MAIS_PARAMETROS
+   69                        | %empty
 
-   71 CONTROLE_FLUXO: WHEN_THEN
-   72               | WHEN_THEN_ELSE
-   73               | FOR
-   74               | WHILE
+   70 LISTA_FUNCAO_MAIS_PARAMETROS: ',' EXPRESSAO LISTA_FUNCAO_MAIS_PARAMETROS
+   71                             | %empty
 
-   75 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO
+   72 CONTROLE_FLUXO: WHEN_THEN
+   73               | WHEN_THEN_ELSE
+   74               | FOR
+   75               | WHILE
 
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO
 
-   77 WHILE: KW_WHILE '(' EXPRESSAO ')' COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO
 
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
+   78 WHILE: KW_WHILE '(' EXPRESSAO ')' COMANDO
+
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
 
 
 Terminais, com as regras onde eles aparecem
@@ -129,34 +131,34 @@ Terminais, com as regras onde eles aparecem
 $end (0) 0
 '!' (33) 67
 '#' (35) 38
-'(' (40) 21 48 53 75 76 77 78
-')' (41) 21 48 53 75 76 77 78
+'(' (40) 21 48 53 76 77 78 79
+')' (41) 21 48 53 76 77 78 79
 '*' (42) 57
 '+' (43) 55
-',' (44) 24 68
+',' (44) 24 70
 '-' (45) 49 56
 '/' (47) 58
 ':' (58) 7
 ';' (59) 6 26 28
 '<' (60) 60
-'=' (61) 37 38 78
+'=' (61) 37 38 79
 '>' (62) 59
 '[' (91) 9 54
 ']' (93) 9 54
 '{' (123) 27
 '}' (125) 27
 error (256)
-KW_TO (258) 78
+KW_TO (258) 79
 KW_BYTE (259) 15
 KW_SHORT (260) 16
 KW_LONG (261) 17
 KW_FLOAT (262) 18
 KW_DOUBLE (263) 19
-KW_WHEN (264) 75 76
-KW_THEN (265) 75 76
-KW_ELSE (266) 76
-KW_WHILE (267) 77
-KW_FOR (268) 78
+KW_WHEN (264) 76 77
+KW_THEN (265) 76 77
+KW_ELSE (266) 77
+KW_WHILE (267) 78
+KW_FOR (268) 79
 KW_READ (269) 39
 KW_RETURN (270) 45
 KW_PRINT (271) 40
@@ -166,7 +168,7 @@ OPERATOR_EQ (274) 63
 OPERATOR_NE (275) 64
 OPERATOR_AND (276) 65
 OPERATOR_OR (277) 66
-TK_IDENTIFIER (278) 7 21 22 24 37 38 39 46 47 48 78
+TK_IDENTIFIER (278) 7 21 22 24 37 38 39 46 47 48 79
 LIT_INTEGER (279) 9 10 50
 LIT_REAL (280) 11 51
 LIT_CHAR (281) 12 52
@@ -211,7 +213,7 @@ BLOCO_COMANDOS (62)
 LISTA_COMANDOS (63)
     à esquerda: 28 29, à direita: 27 28
 COMANDO (64)
-    à esquerda: 30 31 32 33 34 35 36, à direita: 26 28 75 76 77 78
+    à esquerda: 30 31 32 33 34 35 36, à direita: 26 28 76 77 78 79
 ATRIBUICAO (65)
     à esquerda: 37 38, à direita: 30
 READ (66)
@@ -227,19 +229,21 @@ RETURN (70)
 EXPRESSAO (71)
     à esquerda: 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62
     63 64 65 66 67, à direita: 37 38 44 45 47 49 53 54 55 56 57 58
-    59 60 61 62 63 64 65 66 67 68 69 75 76 77 78
+    59 60 61 62 63 64 65 66 67 68 70 76 77 78 79
 LISTA_FUNCAO_PARAMETROS (72)
-    à esquerda: 68 69 70, à direita: 48 68
-CONTROLE_FLUXO (73)
-    à esquerda: 71 72 73 74, à direita: 31
-WHEN_THEN (74)
-    à esquerda: 75, à direita: 71
-WHEN_THEN_ELSE (75)
+    à esquerda: 68 69, à direita: 48
+LISTA_FUNCAO_MAIS_PARAMETROS (73)
+    à esquerda: 70 71, à direita: 68 70
+CONTROLE_FLUXO (74)
+    à esquerda: 72 73 74 75, à direita: 31
+WHEN_THEN (75)
     à esquerda: 76, à direita: 72
-WHILE (76)
-    à esquerda: 77, à direita: 74
-FOR (77)
-    à esquerda: 78, à direita: 73
+WHEN_THEN_ELSE (76)
+    à esquerda: 77, à direita: 73
+WHILE (77)
+    à esquerda: 78, à direita: 75
+FOR (78)
+    à esquerda: 79, à direita: 74
 
 
 Estado 0
@@ -442,22 +446,22 @@ Estado 19
 
 Estado 20
 
-   75 WHEN_THEN: KW_WHEN . '(' EXPRESSAO ')' KW_THEN COMANDO
-   76 WHEN_THEN_ELSE: KW_WHEN . '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN . '(' EXPRESSAO ')' KW_THEN COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN . '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO
 
     '('  deslocar, e ir ao estado 42
 
 
 Estado 21
 
-   77 WHILE: KW_WHILE . '(' EXPRESSAO ')' COMANDO
+   78 WHILE: KW_WHILE . '(' EXPRESSAO ')' COMANDO
 
     '('  deslocar, e ir ao estado 43
 
 
 Estado 22
 
-   78 FOR: KW_FOR . '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
+   79 FOR: KW_FOR . '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
 
     '('  deslocar, e ir ao estado 44
 
@@ -601,30 +605,30 @@ Estado 35
 
 Estado 36
 
-   71 CONTROLE_FLUXO: WHEN_THEN .
-
-    $padrão  reduzir usando a regra 71 (CONTROLE_FLUXO)
-
-
-Estado 37
-
-   72 CONTROLE_FLUXO: WHEN_THEN_ELSE .
+   72 CONTROLE_FLUXO: WHEN_THEN .
 
     $padrão  reduzir usando a regra 72 (CONTROLE_FLUXO)
 
 
+Estado 37
+
+   73 CONTROLE_FLUXO: WHEN_THEN_ELSE .
+
+    $padrão  reduzir usando a regra 73 (CONTROLE_FLUXO)
+
+
 Estado 38
 
-   74 CONTROLE_FLUXO: WHILE .
+   75 CONTROLE_FLUXO: WHILE .
 
-    $padrão  reduzir usando a regra 74 (CONTROLE_FLUXO)
+    $padrão  reduzir usando a regra 75 (CONTROLE_FLUXO)
 
 
 Estado 39
 
-   73 CONTROLE_FLUXO: FOR .
+   74 CONTROLE_FLUXO: FOR .
 
-    $padrão  reduzir usando a regra 73 (CONTROLE_FLUXO)
+    $padrão  reduzir usando a regra 74 (CONTROLE_FLUXO)
 
 
 Estado 40
@@ -658,8 +662,8 @@ Estado 41
 
 Estado 42
 
-   75 WHEN_THEN: KW_WHEN '(' . EXPRESSAO ')' KW_THEN COMANDO
-   76 WHEN_THEN_ELSE: KW_WHEN '(' . EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN '(' . EXPRESSAO ')' KW_THEN COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' . EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO
 
     TK_IDENTIFIER  deslocar, e ir ao estado 46
     LIT_INTEGER    deslocar, e ir ao estado 47
@@ -675,7 +679,7 @@ Estado 42
 
 Estado 43
 
-   77 WHILE: KW_WHILE '(' . EXPRESSAO ')' COMANDO
+   78 WHILE: KW_WHILE '(' . EXPRESSAO ')' COMANDO
 
     TK_IDENTIFIER  deslocar, e ir ao estado 46
     LIT_INTEGER    deslocar, e ir ao estado 47
@@ -691,7 +695,7 @@ Estado 43
 
 Estado 44
 
-   78 FOR: KW_FOR '(' . TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
+   79 FOR: KW_FOR '(' . TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
 
     TK_IDENTIFIER  deslocar, e ir ao estado 74
 
@@ -1040,8 +1044,8 @@ Estado 72
    64          | EXPRESSAO . OPERATOR_NE EXPRESSAO
    65          | EXPRESSAO . OPERATOR_AND EXPRESSAO
    66          | EXPRESSAO . OPERATOR_OR EXPRESSAO
-   75 WHEN_THEN: KW_WHEN '(' EXPRESSAO . ')' KW_THEN COMANDO
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO . ')' KW_THEN COMANDO KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN '(' EXPRESSAO . ')' KW_THEN COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO . ')' KW_THEN COMANDO KW_ELSE COMANDO
 
     OPERATOR_LE   deslocar, e ir ao estado 81
     OPERATOR_GE   deslocar, e ir ao estado 82
@@ -1072,7 +1076,7 @@ Estado 73
    64          | EXPRESSAO . OPERATOR_NE EXPRESSAO
    65          | EXPRESSAO . OPERATOR_AND EXPRESSAO
    66          | EXPRESSAO . OPERATOR_OR EXPRESSAO
-   77 WHILE: KW_WHILE '(' EXPRESSAO . ')' COMANDO
+   78 WHILE: KW_WHILE '(' EXPRESSAO . ')' COMANDO
 
     OPERATOR_LE   deslocar, e ir ao estado 81
     OPERATOR_GE   deslocar, e ir ao estado 82
@@ -1091,7 +1095,7 @@ Estado 73
 
 Estado 74
 
-   78 FOR: KW_FOR '(' TK_IDENTIFIER . '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
+   79 FOR: KW_FOR '(' TK_IDENTIFIER . '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
 
     '='  deslocar, e ir ao estado 103
 
@@ -1110,7 +1114,7 @@ Estado 75
     '('            deslocar, e ir ao estado 52
     '!'            deslocar, e ir ao estado 53
 
-    $padrão  reduzir usando a regra 70 (LISTA_FUNCAO_PARAMETROS)
+    $padrão  reduzir usando a regra 69 (LISTA_FUNCAO_PARAMETROS)
 
     EXPRESSAO                ir ao estado 104
     LISTA_FUNCAO_PARAMETROS  ir ao estado 105
@@ -1614,15 +1618,15 @@ Estado 100
 
 Estado 101
 
-   75 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' . KW_THEN COMANDO
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' . KW_THEN COMANDO KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' . KW_THEN COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' . KW_THEN COMANDO KW_ELSE COMANDO
 
     KW_THEN  deslocar, e ir ao estado 125
 
 
 Estado 102
 
-   77 WHILE: KW_WHILE '(' EXPRESSAO ')' . COMANDO
+   78 WHILE: KW_WHILE '(' EXPRESSAO ')' . COMANDO
 
     KW_WHEN        deslocar, e ir ao estado 20
     KW_WHILE       deslocar, e ir ao estado 21
@@ -1650,7 +1654,7 @@ Estado 102
 
 Estado 103
 
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' . EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' . EXPRESSAO KW_TO EXPRESSAO ')' COMANDO
 
     TK_IDENTIFIER  deslocar, e ir ao estado 46
     LIT_INTEGER    deslocar, e ir ao estado 47
@@ -1679,8 +1683,7 @@ Estado 104
    64          | EXPRESSAO . OPERATOR_NE EXPRESSAO
    65          | EXPRESSAO . OPERATOR_AND EXPRESSAO
    66          | EXPRESSAO . OPERATOR_OR EXPRESSAO
-   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO . ',' LISTA_FUNCAO_PARAMETROS
-   69                        | EXPRESSAO .
+   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO . LISTA_FUNCAO_MAIS_PARAMETROS
 
     OPERATOR_LE   deslocar, e ir ao estado 81
     OPERATOR_GE   deslocar, e ir ao estado 82
@@ -1697,14 +1700,16 @@ Estado 104
     ')'           deslocar, e ir ao estado 107
     ','           deslocar, e ir ao estado 128
 
-    ')'  [reduzir usando a regra 69 (LISTA_FUNCAO_PARAMETROS)]
+    ')'  [reduzir usando a regra 71 (LISTA_FUNCAO_MAIS_PARAMETROS)]
+
+    LISTA_FUNCAO_MAIS_PARAMETROS  ir ao estado 129
 
 
 Estado 105
 
    48 EXPRESSAO: TK_IDENTIFIER '(' LISTA_FUNCAO_PARAMETROS . ')'
 
-    ')'  deslocar, e ir ao estado 129
+    ')'  deslocar, e ir ao estado 130
 
 
 Estado 106
@@ -2020,7 +2025,7 @@ Estado 120
     '('            deslocar, e ir ao estado 52
     '!'            deslocar, e ir ao estado 53
 
-    EXPRESSAO  ir ao estado 130
+    EXPRESSAO  ir ao estado 131
 
 
 Estado 121
@@ -2040,8 +2045,8 @@ Estado 122
 
     $padrão  reduzir usando a regra 14 (VALOR_INICIALIZACAO_VETOR)
 
-    VALOR                      ir ao estado 131
-    VALOR_INICIALIZACAO_VETOR  ir ao estado 132
+    VALOR                      ir ao estado 132
+    VALOR_INICIALIZACAO_VETOR  ir ao estado 133
 
 
 Estado 123
@@ -2054,7 +2059,7 @@ Estado 123
     KW_FLOAT   deslocar, e ir ao estado 4
     KW_DOUBLE  deslocar, e ir ao estado 5
 
-    TIPO  ir ao estado 133
+    TIPO  ir ao estado 134
 
 
 Estado 124
@@ -2066,8 +2071,8 @@ Estado 124
 
 Estado 125
 
-   75 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' KW_THEN . COMANDO
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN . COMANDO KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' KW_THEN . COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN . COMANDO KW_ELSE COMANDO
 
     KW_WHEN        deslocar, e ir ao estado 20
     KW_WHILE       deslocar, e ir ao estado 21
@@ -2081,7 +2086,7 @@ Estado 125
     $padrão  reduzir usando a regra 36 (COMANDO)
 
     BLOCO_COMANDOS  ir ao estado 29
-    COMANDO         ir ao estado 134
+    COMANDO         ir ao estado 135
     ATRIBUICAO      ir ao estado 31
     READ            ir ao estado 32
     PRINT           ir ao estado 33
@@ -2095,9 +2100,9 @@ Estado 125
 
 Estado 126
 
-   77 WHILE: KW_WHILE '(' EXPRESSAO ')' COMANDO .
+   78 WHILE: KW_WHILE '(' EXPRESSAO ')' COMANDO .
 
-    $padrão  reduzir usando a regra 77 (WHILE)
+    $padrão  reduzir usando a regra 78 (WHILE)
 
 
 Estado 127
@@ -2114,9 +2119,9 @@ Estado 127
    64          | EXPRESSAO . OPERATOR_NE EXPRESSAO
    65          | EXPRESSAO . OPERATOR_AND EXPRESSAO
    66          | EXPRESSAO . OPERATOR_OR EXPRESSAO
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO . KW_TO EXPRESSAO ')' COMANDO
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO . KW_TO EXPRESSAO ')' COMANDO
 
-    KW_TO         deslocar, e ir ao estado 135
+    KW_TO         deslocar, e ir ao estado 136
     OPERATOR_LE   deslocar, e ir ao estado 81
     OPERATOR_GE   deslocar, e ir ao estado 82
     OPERATOR_EQ   deslocar, e ir ao estado 83
@@ -2133,7 +2138,7 @@ Estado 127
 
 Estado 128
 
-   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO ',' . LISTA_FUNCAO_PARAMETROS
+   70 LISTA_FUNCAO_MAIS_PARAMETROS: ',' . EXPRESSAO LISTA_FUNCAO_MAIS_PARAMETROS
 
     TK_IDENTIFIER  deslocar, e ir ao estado 46
     LIT_INTEGER    deslocar, e ir ao estado 47
@@ -2144,20 +2149,24 @@ Estado 128
     '('            deslocar, e ir ao estado 52
     '!'            deslocar, e ir ao estado 53
 
-    $padrão  reduzir usando a regra 70 (LISTA_FUNCAO_PARAMETROS)
-
-    EXPRESSAO                ir ao estado 136
-    LISTA_FUNCAO_PARAMETROS  ir ao estado 137
+    EXPRESSAO  ir ao estado 137
 
 
 Estado 129
+
+   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO LISTA_FUNCAO_MAIS_PARAMETROS .
+
+    $padrão  reduzir usando a regra 68 (LISTA_FUNCAO_PARAMETROS)
+
+
+Estado 130
 
    48 EXPRESSAO: TK_IDENTIFIER '(' LISTA_FUNCAO_PARAMETROS ')' .
 
     $padrão  reduzir usando a regra 48 (EXPRESSAO)
 
 
-Estado 130
+Estado 131
 
    38 ATRIBUICAO: TK_IDENTIFIER '#' EXPRESSAO '=' EXPRESSAO .
    55 EXPRESSAO: EXPRESSAO . '+' EXPRESSAO
@@ -2189,7 +2198,7 @@ Estado 130
     $padrão  reduzir usando a regra 38 (ATRIBUICAO)
 
 
-Estado 131
+Estado 132
 
    13 VALOR_INICIALIZACAO_VETOR: VALOR . VALOR_INICIALIZACAO_VETOR
 
@@ -2199,38 +2208,38 @@ Estado 131
 
     $padrão  reduzir usando a regra 14 (VALOR_INICIALIZACAO_VETOR)
 
-    VALOR                      ir ao estado 131
+    VALOR                      ir ao estado 132
     VALOR_INICIALIZACAO_VETOR  ir ao estado 138
 
 
-Estado 132
+Estado 133
 
     9 VAR_GLOBAL_INIT_VEC: '[' LIT_INTEGER ']' VALOR_INICIALIZACAO_VETOR .
 
     $padrão  reduzir usando a regra 9 (VAR_GLOBAL_INIT_VEC)
 
 
-Estado 133
+Estado 134
 
    24 MAIS_PARAMETROS: ',' TIPO . TK_IDENTIFIER MAIS_PARAMETROS
 
     TK_IDENTIFIER  deslocar, e ir ao estado 139
 
 
-Estado 134
+Estado 135
 
-   75 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO .
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO . KW_ELSE COMANDO
+   76 WHEN_THEN: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO .
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO . KW_ELSE COMANDO
 
     KW_ELSE  deslocar, e ir ao estado 140
 
-    KW_ELSE   [reduzir usando a regra 75 (WHEN_THEN)]
-    $padrão  reduzir usando a regra 75 (WHEN_THEN)
+    KW_ELSE   [reduzir usando a regra 76 (WHEN_THEN)]
+    $padrão  reduzir usando a regra 76 (WHEN_THEN)
 
 
-Estado 135
+Estado 136
 
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO . EXPRESSAO ')' COMANDO
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO . EXPRESSAO ')' COMANDO
 
     TK_IDENTIFIER  deslocar, e ir ao estado 46
     LIT_INTEGER    deslocar, e ir ao estado 47
@@ -2244,7 +2253,7 @@ Estado 135
     EXPRESSAO  ir ao estado 141
 
 
-Estado 136
+Estado 137
 
    55 EXPRESSAO: EXPRESSAO . '+' EXPRESSAO
    56          | EXPRESSAO . '-' EXPRESSAO
@@ -2258,8 +2267,7 @@ Estado 136
    64          | EXPRESSAO . OPERATOR_NE EXPRESSAO
    65          | EXPRESSAO . OPERATOR_AND EXPRESSAO
    66          | EXPRESSAO . OPERATOR_OR EXPRESSAO
-   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO . ',' LISTA_FUNCAO_PARAMETROS
-   69                        | EXPRESSAO .
+   70 LISTA_FUNCAO_MAIS_PARAMETROS: ',' EXPRESSAO . LISTA_FUNCAO_MAIS_PARAMETROS
 
     OPERATOR_LE   deslocar, e ir ao estado 81
     OPERATOR_GE   deslocar, e ir ao estado 82
@@ -2275,14 +2283,9 @@ Estado 136
     '/'           deslocar, e ir ao estado 92
     ','           deslocar, e ir ao estado 128
 
-    $padrão  reduzir usando a regra 69 (LISTA_FUNCAO_PARAMETROS)
+    $padrão  reduzir usando a regra 71 (LISTA_FUNCAO_MAIS_PARAMETROS)
 
-
-Estado 137
-
-   68 LISTA_FUNCAO_PARAMETROS: EXPRESSAO ',' LISTA_FUNCAO_PARAMETROS .
-
-    $padrão  reduzir usando a regra 68 (LISTA_FUNCAO_PARAMETROS)
+    LISTA_FUNCAO_MAIS_PARAMETROS  ir ao estado 142
 
 
 Estado 138
@@ -2300,12 +2303,12 @@ Estado 139
 
     $padrão  reduzir usando a regra 25 (MAIS_PARAMETROS)
 
-    MAIS_PARAMETROS  ir ao estado 142
+    MAIS_PARAMETROS  ir ao estado 143
 
 
 Estado 140
 
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE . COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE . COMANDO
 
     KW_WHEN        deslocar, e ir ao estado 20
     KW_WHILE       deslocar, e ir ao estado 21
@@ -2319,7 +2322,7 @@ Estado 140
     $padrão  reduzir usando a regra 36 (COMANDO)
 
     BLOCO_COMANDOS  ir ao estado 29
-    COMANDO         ir ao estado 143
+    COMANDO         ir ao estado 144
     ATRIBUICAO      ir ao estado 31
     READ            ir ao estado 32
     PRINT           ir ao estado 33
@@ -2345,7 +2348,7 @@ Estado 141
    64          | EXPRESSAO . OPERATOR_NE EXPRESSAO
    65          | EXPRESSAO . OPERATOR_AND EXPRESSAO
    66          | EXPRESSAO . OPERATOR_OR EXPRESSAO
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO . ')' COMANDO
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO . ')' COMANDO
 
     OPERATOR_LE   deslocar, e ir ao estado 81
     OPERATOR_GE   deslocar, e ir ao estado 82
@@ -2359,26 +2362,33 @@ Estado 141
     '-'           deslocar, e ir ao estado 90
     '*'           deslocar, e ir ao estado 91
     '/'           deslocar, e ir ao estado 92
-    ')'           deslocar, e ir ao estado 144
+    ')'           deslocar, e ir ao estado 145
 
 
 Estado 142
+
+   70 LISTA_FUNCAO_MAIS_PARAMETROS: ',' EXPRESSAO LISTA_FUNCAO_MAIS_PARAMETROS .
+
+    $padrão  reduzir usando a regra 70 (LISTA_FUNCAO_MAIS_PARAMETROS)
+
+
+Estado 143
 
    24 MAIS_PARAMETROS: ',' TIPO TK_IDENTIFIER MAIS_PARAMETROS .
 
     $padrão  reduzir usando a regra 24 (MAIS_PARAMETROS)
 
 
-Estado 143
-
-   76 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO .
-
-    $padrão  reduzir usando a regra 76 (WHEN_THEN_ELSE)
-
-
 Estado 144
 
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' . COMANDO
+   77 WHEN_THEN_ELSE: KW_WHEN '(' EXPRESSAO ')' KW_THEN COMANDO KW_ELSE COMANDO .
+
+    $padrão  reduzir usando a regra 77 (WHEN_THEN_ELSE)
+
+
+Estado 145
+
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' . COMANDO
 
     KW_WHEN        deslocar, e ir ao estado 20
     KW_WHILE       deslocar, e ir ao estado 21
@@ -2392,7 +2402,7 @@ Estado 144
     $padrão  reduzir usando a regra 36 (COMANDO)
 
     BLOCO_COMANDOS  ir ao estado 29
-    COMANDO         ir ao estado 145
+    COMANDO         ir ao estado 146
     ATRIBUICAO      ir ao estado 31
     READ            ir ao estado 32
     PRINT           ir ao estado 33
@@ -2404,8 +2414,8 @@ Estado 144
     FOR             ir ao estado 39
 
 
-Estado 145
+Estado 146
 
-   78 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO .
+   79 FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO .
 
-    $padrão  reduzir usando a regra 78 (FOR)
+    $padrão  reduzir usando a regra 79 (FOR)
