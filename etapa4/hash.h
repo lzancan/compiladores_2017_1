@@ -26,9 +26,8 @@
 #define VALUETYPE_INTEGER 30
 #define VALUETYPE_REAL 31
 #define VALUETYPE_CHAR 32
-
-#define VALUETYPE_BOOL 33
-
+#define VALUETYPE_BOOLEAN 33
+#define VALUETYPE_STRING 34
 
 
 int getLineNumber(void);

@@ -1,6 +1,6 @@
 a: short  0;
 i: long  0;
-v: long  [10] 0 0 0 0.0 0 0 0 0 0 0;
+v: long  [10] 0 0 0 0 0 0 0 0 0 0;
 mat: long  [10];
 f: float  10.55;
 c: byte  'x';
@@ -10,13 +10,13 @@ long  main()
 {
 a=10;
 v#2=v[10-1];
-v#[a+1]=10;
 for(i=1 to 10)print i" ";
 print " Digite um numero: \n";
 read i;
 while(i<10){
 a=incn(a,1);
 i=i+1;
+a=i*d;
 }
 ;
 print "Incrementado algumas vezes fica "a"\n";

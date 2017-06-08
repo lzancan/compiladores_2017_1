@@ -13,6 +13,7 @@ ASTREE* astreeCreate (int type, HASH_NODE* symbol, ASTREE* son0, ASTREE* son1, A
 	new_node -> son[2] = son2;
 	new_node -> son[3] = son3;
 	new_node -> valueType = 0;
+	new_node -> valueType = 0;
 
 	return new_node;
 

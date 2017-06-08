@@ -2,7 +2,7 @@
 
 a: short 0;
 i: long 0;
-v: long[10] 0 0 0 0.0 0 0 0 0 0 0; 
+v: long[10] 0 0 0 0 0 0 0 0 0 0; 
 mat: long[10]; 
 f: float 10.55;
 c: byte 'x';
@@ -15,7 +15,7 @@ long main()
   a = 10;
   v#2 = v[10-1];
 	//
-  v#[a+1] = 10; // certo... corrigido
+  //v#[a+1] = 10; // certo... corrigido
 	
    //a=10,10; // errado
 
@@ -30,6 +30,7 @@ long main()
     {
     a = incn(a,1); //23
     i = i + 1;
+    a = i * d;
     };
   print "Incrementado algumas vezes fica " a "\n";
   when (a==5) then 
