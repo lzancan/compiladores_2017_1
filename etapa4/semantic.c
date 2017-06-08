@@ -3,11 +3,9 @@
 #include "semantic.h"
 
 void setNature_dataType(int nature, HASH_NODE * hashNode, ASTREE* astreeNode){
-<<<<<<< Updated upstream
 	if(hashNode->nature != 0 || hashNode->dataType != 0){
 		fprintf(stderr,"Erro semantico, [%s] já declarada\n",hashNode->value);
 		//exit(4); // TODO verificar onde deve dar o exit(4)...
-=======
 	if(hashNode->nature != 0){
 		switch(hashNode->nature){
 			case NATURE_ESCALAR: fprintf(stderr,"Variavel [%s] já declarada na linha %d\n",hashNode->value, getLineNumber()); 							break;
@@ -17,7 +15,6 @@ void setNature_dataType(int nature, HASH_NODE * hashNode, ASTREE* astreeNode){
 			default: break;
 		}
 		exit(4); // TODO verificar onde deve dar o exit(4)...	
->>>>>>> Stashed changes
 	}
 	hashNode->nature = nature;
 	switch (astreeNode->type){
@@ -34,6 +31,7 @@ void setNature_dataType(int nature, HASH_NODE * hashNode, ASTREE* astreeNode){
 		default: break;
 	}
 }
+}
 
 int testVectorInit(ASTREE* astreeNode,int numberArguments){
 	if(!astreeNode)
@@ -44,11 +42,7 @@ int testVectorInit(ASTREE* astreeNode,int numberArguments){
 		numberArguments--;
 		if (numberArguments != 0){
 			fprintf(stderr,"Numero de argumentos diferentes da declaracao na linha %d\n",getLineNumber());
-<<<<<<< Updated upstream
-			//exit(4); // TODO verificar onde deve dar o exit(4)...
-=======
 			exit(4); // TODO verificar onde deve dar o exit(4)...	
->>>>>>> Stashed changes
 		}
 	}
 
@@ -58,17 +52,14 @@ int testVectorInit(ASTREE* astreeNode,int numberArguments){
 			//fprintf(stderr,"valueType %d son[0] igual son [1] na linha %d\n",astreeNode->son[0]->valueType,getLineNumber());
 		} else{
 			fprintf(stderr,"Filhos com valueTypes diferentes [%d] e [%d] na linha %d\n",astreeNode->son[0]->valueType,astreeNode->son[1]->valueType,getLineNumber());
-<<<<<<< Updated upstream
-			//exit(4); // TODO verificar onde deve dar o exit(4)...
-=======
 			exit(4); // TODO verificar onde deve dar o exit(4)...	
->>>>>>> Stashed changes
 		}
 	}
 	testVectorInit(astreeNode->son[0],numberArguments);
 	testVectorInit(astreeNode->son[1],numberArguments);
 
 }
+
 int setValueType(ASTREE* node){
 	switch (node->type){
 		case ASTREE_ADD: {
@@ -242,7 +233,7 @@ int ajustLitValue(ASTREE* node){
 }
 
 int mustBeBoolType(ASTREE* astreeNode){
-	if(astreeNode->valueType != VALUETYPE_BOOL){
+	if(astreeNode->valueType != VALUETYPE_BOOLEAN){
 		fprintf(stderr,"Expressao nao e booleana em %d\n",getLineNumber());
 		//exit(4);	
 		return -1;
@@ -305,6 +296,7 @@ int testFunctionParams(ASTREE* astreeNode1, ASTREE* astreeNode2){
 	
 }
 
+
 int testIndiceVetor(ASTREE* astreeNode){
 	if(astreeNode->valueType != VALUETYPE_INTEGER && astreeNode->valueType != VALUETYPE_CHAR){
 		fprintf(stderr,"Atribuicao de vetor com numero nao inteiro, nem char na linha %d\n",getLineNumber());	
@@ -312,6 +304,7 @@ int testIndiceVetor(ASTREE* astreeNode){
 		return -1;
 	}
 }
+
 
 int testAtribuicao(HASH_NODE * hashNode, ASTREE* astreeNode){
 	switch(hashNode->dataType){

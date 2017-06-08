@@ -29,9 +29,6 @@
 #define VALUETYPE_BOOLEAN 33
 #define VALUETYPE_STRING 34
 
-#define VALUETYPE_STRING 33
-#define VALUETYPE_BOOL 34
-
 int getLineNumber(void);
 int yyerror(char *value);
 int yylex(void);

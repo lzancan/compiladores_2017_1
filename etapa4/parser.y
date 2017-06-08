@@ -174,23 +174,25 @@
 				| ELEMENTO_PRINT {$$=$1;}
 	;
 	ELEMENTO_PRINT: LIT_STRING { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);
-<<<<<<< Updated upstream
 				     $$->valueType = VALUETYPE_STRING;}
-			| EXPRESSAO {$$=$1;}
-=======
-				     $$->valueType = VALUETYPE_STRING;
-				   }
 			| EXPRESSAO { $$=$1;
 				      $$->valueType = VALUETYPE_STRING;
                                     }
->>>>>>> Stashed changes
 	;
 	RETURN: KW_RETURN EXPRESSAO { $$ = astreeCreate(ASTREE_RETURN, NULL, $2, 0, 0, 0);}
 	;
 	EXPRESSAO: TK_IDENTIFIER { $$ = astreeCreate(ASTREE_IDENTIFIER, $1, 0, 0, 0, 0);} |
-<<<<<<< Updated upstream
-		   TK_IDENTIFIER EXPRESSAO { $$ = astreeCreate(ASTREE_EXPRESSAO_VETOR, $1, $2, 0, 0, 0);} | 
-		   TK_IDENTIFIER '(' LISTA_FUNCAO_PARAMETROS ')' { $$ = astreeCreate(ASTREE_EXPRESSAO_FUNCAO, $1, $3, 0, 0, 0);}  |
+
+		   TK_IDENTIFIER EXPRESSAO { $$ = astreeCreate(ASTREE_EXPRESSAO_VETOR, $1, $2, 0, 0, 0); 
+					    if($1->nature == NATURE_FUNCTION){
+						$$ = astreeCreate(ASTREE_EXPRESSAO_FUNCAO, $1, $2, 0, 0, 0);
+					        getFunctCallAstreeNode($1,$2);
+					    }
+					   } | 
+		   TK_IDENTIFIER '(' LISTA_FUNCAO_PARAMETROS ')' { $$ = astreeCreate(ASTREE_EXPRESSAO_FUNCAO, $1, $3, 0, 0, 0);
+								   getFunctCallAstreeNode($1,$3);
+								   //$$->dataType = $1->dataType;
+								 } |
 		   '-' EXPRESSAO { $$ = astreeCreate(ASTREE_NEGATIVO, NULL, $2, 0, 0, 0);setValueType($$);} |
 		   LIT_INTEGER { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);$$->valueType = VALUETYPE_INTEGER;} |
 		   LIT_REAL { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);$$->valueType = VALUETYPE_REAL;} |
@@ -210,37 +212,6 @@
 		   EXPRESSAO OPERATOR_AND EXPRESSAO { $$ = astreeCreate(ASTREE_AND, NULL, $1, $3, 0, 0);setValueType($$);} |
 		   EXPRESSAO OPERATOR_OR EXPRESSAO  { $$ = astreeCreate(ASTREE_OR, NULL, $1, $3, 0, 0);setValueType($$);} | 
 		   '!'EXPRESSAO { $$ = astreeCreate(ASTREE_NEGADO, NULL, $2, 0, 0, 0);setValueType($$);} 
-=======
-		   TK_IDENTIFIER EXPRESSAO { $$ = astreeCreate(ASTREE_EXPRESSAO_VETOR, $1, $2, 0, 0, 0); 
-					    if($1->nature == NATURE_FUNCTION){
-						$$ = astreeCreate(ASTREE_EXPRESSAO_FUNCAO, $1, $2, 0, 0, 0);
-					        getFunctCallAstreeNode($1,$2);
-					    }
-					   } | 
-		   TK_IDENTIFIER '(' LISTA_FUNCAO_PARAMETROS ')' { $$ = astreeCreate(ASTREE_EXPRESSAO_FUNCAO, $1, $3, 0, 0, 0);
-								   getFunctCallAstreeNode($1,$3);
-								   //$$->dataType = $1->dataType;
-								 } |
-		   '-' EXPRESSAO { $$ = astreeCreate(ASTREE_NEGATIVO, NULL, $2, 0, 0, 0);} |
-		   LIT_INTEGER { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} |
-		   LIT_REAL { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);} |
-		   LIT_CHAR { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);}|
-		   '('EXPRESSAO')' { $$ = astreeCreate(ASTREE_PARENTESES, NULL, $2, 0, 0, 0);} |
-		   '[' EXPRESSAO ']'  { $$ = astreeCreate(ASTREE_COLCHETES, NULL, $2, 0, 0, 0);} |
-		   EXPRESSAO '+' EXPRESSAO  { $$ = astreeCreate(ASTREE_ADD, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO '-' EXPRESSAO  { $$ = astreeCreate(ASTREE_SUB, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO '*' EXPRESSAO  { $$ = astreeCreate(ASTREE_MUL, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO '/' EXPRESSAO  { $$ = astreeCreate(ASTREE_DIV, NULL, $1, $3, 0, 0);} |
-	           EXPRESSAO '>' EXPRESSAO  { $$ = astreeCreate(ASTREE_GREATER_THAN, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO '<' EXPRESSAO  { $$ = astreeCreate(ASTREE_LESS_THAN, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO OPERATOR_LE EXPRESSAO  { $$ = astreeCreate(ASTREE_LE, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO OPERATOR_GE EXPRESSAO  { $$ = astreeCreate(ASTREE_GE, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO OPERATOR_EQ EXPRESSAO  { $$ = astreeCreate(ASTREE_EQ, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO OPERATOR_NE EXPRESSAO  { $$ = astreeCreate(ASTREE_NE, NULL, $1, $3, 0, 0);} | 
-		   EXPRESSAO OPERATOR_AND EXPRESSAO { $$ = astreeCreate(ASTREE_AND, NULL, $1, $3, 0, 0);} |
-		   EXPRESSAO OPERATOR_OR EXPRESSAO  { $$ = astreeCreate(ASTREE_OR, NULL, $1, $3, 0, 0);} | 
-		   '!'EXPRESSAO { $$ = astreeCreate(ASTREE_NEGADO, NULL, $2, 0, 0, 0);} 
->>>>>>> Stashed changes
 	;		  
 
 	LISTA_FUNCAO_PARAMETROS: EXPRESSAO LISTA_FUNCAO_MAIS_PARAMETROS { $$ = astreeCreate(ASTREE_LISTA_FUNC_PARAMETROS, NULL, $1, $2, 0, 0);}
