@@ -5,7 +5,7 @@
 void setNature_dataType(int nature, HASH_NODE * hashNode, ASTREE* astreeNode){
 	if(hashNode->nature != 0 || hashNode->dataType != 0){
 		fprintf(stderr,"Erro semantico, [%s] já declarada\n",hashNode->value);
-		//exit(4); // TODO verificar onde deve dar o exit(4)...
+		exit(4); // TODO verificar onde deve dar o exit(4)...
 	if(hashNode->nature != 0){
 		switch(hashNode->nature){
 			case NATURE_ESCALAR: fprintf(stderr,"Variavel [%s] já declarada na linha %d\n",hashNode->value, getLineNumber()); 							break;
@@ -235,7 +235,7 @@ int ajustLitValue(ASTREE* node){
 int mustBeBoolType(ASTREE* astreeNode){
 	if(astreeNode->valueType != VALUETYPE_BOOLEAN){
 		fprintf(stderr,"Expressao nao e booleana em %d\n",getLineNumber());
-		//exit(4);	
+		exit(4);	
 		return -1;
 	}
 	return 0;
@@ -300,7 +300,7 @@ int testFunctionParams(ASTREE* astreeNode1, ASTREE* astreeNode2){
 int testIndiceVetor(ASTREE* astreeNode){
 	if(astreeNode->valueType != VALUETYPE_INTEGER && astreeNode->valueType != VALUETYPE_CHAR){
 		fprintf(stderr,"Atribuicao de vetor com numero nao inteiro, nem char na linha %d\n",getLineNumber());	
-		//exit(4); //TODO verificar...		
+		exit(4); //TODO verificar...		
 		return -1;
 	}
 }
@@ -310,27 +310,27 @@ int testAtribuicao(HASH_NODE * hashNode, ASTREE* astreeNode){
 	switch(hashNode->dataType){
 		case DATATYPE_BYTE: 	if(astreeNode->valueType != VALUETYPE_INTEGER){
 						fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());		
-						//exit(4);
+						exit(4);
 					}
 					break;
 		case DATATYPE_SHORT:	if(astreeNode->valueType != VALUETYPE_INTEGER){
 						fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());		
-						//exit(4);
+						exit(4);
 					}
 					break;
 		case DATATYPE_LONG:	if(astreeNode->valueType != VALUETYPE_INTEGER){
 						fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());		
-						//exit(4);
+						exit(4);
 					}
 					break;
 		case DATATYPE_FLOAT:	if(astreeNode->valueType != VALUETYPE_REAL){
 						fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());		
-						//exit(4);
+						exit(4);
 					}
 					break;
 		case DATATYPE_DOUBLE:	if(astreeNode->valueType != VALUETYPE_REAL){
 						fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());		
-						//exit(4);
+						exit(4);
 					}
 					break;
 		default: break;
