@@ -14,5 +14,5 @@ int getFunctCallAstreeNode(HASH_NODE* hashNode, ASTREE* astreeNode);
 int testFunctionParams(ASTREE* astreeNode1, ASTREE* astreeNode2);
 int testIndiceVetor(ASTREE* astreeNode);
 int testAtribuicao(HASH_NODE * hashNode, ASTREE* astreeNode);
-
+int testFor(HASH_NODE* hashNode, ASTREE* astreeNode1, ASTREE* astreeNode2);
 

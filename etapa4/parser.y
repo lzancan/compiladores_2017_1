@@ -184,10 +184,22 @@
 	EXPRESSAO: TK_IDENTIFIER { $$ = astreeCreate(ASTREE_IDENTIFIER, $1, 0, 0, 0, 0);} |
 
 		   TK_IDENTIFIER EXPRESSAO { $$ = astreeCreate(ASTREE_EXPRESSAO_VETOR, $1, $2, 0, 0, 0); 
-					    if($1->nature == NATURE_FUNCTION){
+					     if($1->nature == NATURE_FUNCTION){
 						$$ = astreeCreate(ASTREE_EXPRESSAO_FUNCAO, $1, $2, 0, 0, 0);
 					        getFunctCallAstreeNode($1,$2);
-					    }
+					     }
+					     if($1->nature == NATURE_VECTOR){
+						if($2->valueType != VALUETYPE_INTEGER){
+							fprintf(stderr,"Erro atribuicao de vetor no parser.y na linha %d\n",getLineNumber());							
+							exit(4);
+						}
+						if($2->type != ASTREE_COLCHETES){
+							fprintf(stderr,"Erro atribuicao de vetor sem colchetes em parser.y na linha %d\n",getLineNumber());							
+							exit(4);
+						}
+						
+					     }
+						//fprintf(stderr,"debug\n");
 					   } | 
 		   TK_IDENTIFIER '(' LISTA_FUNCAO_PARAMETROS ')' { $$ = astreeCreate(ASTREE_EXPRESSAO_FUNCAO, $1, $3, 0, 0, 0);
 								   getFunctCallAstreeNode($1,$3);
@@ -237,7 +249,9 @@
 						    $$ = astreeCreate(ASTREE_WHILE, NULL, $3, $5, 0, 0);
 						  }
 	;
-	FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO {/*TODO for*/$$ = astreeCreate(ASTREE_FOR, $3, $5, $7, $9, 0);}
+	FOR: KW_FOR '(' TK_IDENTIFIER '=' EXPRESSAO KW_TO EXPRESSAO ')' COMANDO { $$ = astreeCreate(ASTREE_FOR, $3, $5, $7, $9, 0);
+										  testFor($3, $5, $7);	
+										}
 	;
 	
 

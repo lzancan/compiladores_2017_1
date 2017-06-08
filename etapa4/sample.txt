@@ -1,6 +1,6 @@
 // UFRGS - Compiladores - Marcelo Johann - 2017/1lll
 
-a: short 0;
+a: long 0;
 i: long 0;
 v: long[10] 0 0 0 0 0 0 0 0 0 0; 
 mat: long[10]; 
@@ -16,7 +16,7 @@ long incn (long x)
 long main()
   {
   a = 10;
-  v#2 = v[1.1];
+  v#2 = v[1];
 	//
   //v#[a+1] = 10; // certo... corrigido
 	

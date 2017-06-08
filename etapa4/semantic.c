@@ -3,9 +3,6 @@
 #include "semantic.h"
 
 void setNature_dataType(int nature, HASH_NODE * hashNode, ASTREE* astreeNode){
-	if(hashNode->nature != 0 || hashNode->dataType != 0){
-		fprintf(stderr,"Erro semantico, [%s] já declarada\n",hashNode->value);
-		exit(4); // TODO verificar onde deve dar o exit(4)...
 	if(hashNode->nature != 0){
 		switch(hashNode->nature){
 			case NATURE_ESCALAR: fprintf(stderr,"Variavel [%s] já declarada na linha %d\n",hashNode->value, getLineNumber()); 							break;
@@ -16,7 +13,13 @@ void setNature_dataType(int nature, HASH_NODE * hashNode, ASTREE* astreeNode){
 		}
 		exit(4); // TODO verificar onde deve dar o exit(4)...
 	}
+	if(hashNode->dataType != 0){
+		fprintf(stderr,"Erro semantico, [%s] já declarada\n",hashNode->value);
+		exit(4); // TODO verificar onde deve dar o exit(4)...
+	}
+
 	hashNode->nature = nature;
+
 	switch (astreeNode->type){
 		case ASTREE_BYTE_TYPE: {hashNode->dataType = DATATYPE_BYTE;
                                 astreeNode->valueType = VALUETYPE_INTEGER;} break;
@@ -30,7 +33,7 @@ void setNature_dataType(int nature, HASH_NODE * hashNode, ASTREE* astreeNode){
                                 astreeNode->valueType = VALUETYPE_REAL;} break;
 		default: break;
 	}
-}
+	//fprintf(stderr,"variavel [%s] setada com natureza %d e tipo %d\n",hashNode->value,hashNode->nature,hashNode->dataType);
 }
 
 int testVectorInit(ASTREE* astreeNode,int numberArguments){
@@ -305,35 +308,78 @@ int testIndiceVetor(ASTREE* astreeNode){
 
 
 int testAtribuicao(HASH_NODE * hashNode, ASTREE* astreeNode){
+	if(astreeNode->symbol){
+		if(astreeNode->symbol->nature == NATURE_VECTOR){
+			if(astreeNode->symbol->dataType != hashNode->dataType){
+				fprintf(stderr,"Vetores com tipos diferentes na linha %d\n",getLineNumber());	
+				exit(4);
+				return -1;	
+			}
+			else return 0;
+		}
+	}
+	if(hashNode->nature == NATURE_ESCALAR){ 
+		if(astreeNode->symbol){
+			if(astreeNode->symbol->nature == NATURE_FUNCTION){
+				if(astreeNode->symbol->dataType != hashNode->dataType){
+				fprintf(stderr,"Escalar atribuido a funcao com assinaturas diferentes na linha %d\n",getLineNumber());		
+				exit(4);
+				return -1;
+				}
+				else return 0;
+			}		
+		}	
+	}
 	switch(hashNode->dataType){
 		case DATATYPE_BYTE: 	if(astreeNode->valueType != VALUETYPE_INTEGER){
-						fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());
+						fprintf (stderr,"Expressao incompativel com o tipo na atribuicao da linha %d\n",getLineNumber());
 						exit(4);
 					}
 					break;
 		case DATATYPE_SHORT:	if(astreeNode->valueType != VALUETYPE_INTEGER){
-						fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());
+						fprintf (stderr,"Expressao incompativel com o tipo na atribuicao da linha %d\n",getLineNumber());
 						exit(4);
 					}
 					break;
 		case DATATYPE_LONG:	if(astreeNode->valueType != VALUETYPE_INTEGER){
-						fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());
+						fprintf (stderr,"Expressao incompativel com o tipo na atribuicao da linha %d\n",getLineNumber());
+						fprintf(stderr,"%d\n",astreeNode->valueType);
 						exit(4);
 					}
 					break;
 		case DATATYPE_FLOAT:	if(astreeNode->valueType != VALUETYPE_REAL){
-						fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());
+						fprintf (stderr,"Expressao incompativel com o tipo na na atribuicao da linha %d\n",getLineNumber());
 						exit(4);
 					}
 					break;
 		case DATATYPE_DOUBLE:	if(astreeNode->valueType != VALUETYPE_REAL){
-						fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());
+						fprintf (stderr,"Expressao incompativel com o tipo na na atribuicao da linha %d\n",getLineNumber());
 						exit(4);
 					}
 					break;
 		default: break;
 	}
 
+}
+
+int testFor(HASH_NODE* hashNode, ASTREE* astreeNode1, ASTREE* astreeNode2){
+	if(astreeNode1->valueType != VALUETYPE_INTEGER){
+		fprintf(stderr,"Expressao 1 inválida na linha %d\n",getLineNumber());
+		exit(4);
+	}
+	if(astreeNode2->valueType != VALUETYPE_INTEGER){
+		fprintf(stderr,"Expressao 2 inválida na linha %d\n",getLineNumber());
+		exit(4);
+	}
+	if(hashNode->nature != NATURE_ESCALAR){
+		fprintf(stderr,"variavel de natureza nao escalar na linha %d [%d, %s]\n",getLineNumber(),hashNode->nature,hashNode->value);
+		exit(4);	
+	}
+	if(hashNode->dataType != DATATYPE_BYTE && hashNode->dataType != DATATYPE_SHORT && hashNode->dataType != DATATYPE_LONG){
+		fprintf(stderr,"variavel nao inteira na linha %d\n",getLineNumber());
+		exit(4);
+	}
+	
 }
 
 
