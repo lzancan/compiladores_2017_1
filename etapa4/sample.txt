@@ -16,7 +16,7 @@ long incn (long x)
 long main()
   {
   a = 10;
-  v#2 = v[10-1];
+  v#2 = v[1.1];
 	//
   //v#[a+1] = 10; // certo... corrigido
 	
