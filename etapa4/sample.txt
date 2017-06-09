@@ -10,8 +10,13 @@ d: byte 65;
 //10
 
 
+<<<<<<< HEAD
 long incn (long x)
   return x+a;
+=======
+long incn (long hj, long uahsu)
+  return x+n;
+>>>>>>> meu_branch
 
 long main()
   {
@@ -33,7 +38,11 @@ long main()
   read i;
   while (a<1)
     {
+<<<<<<< HEAD
     a = incn(a); //23
+=======
+    a = incn(v[1],v[2]); //23
+>>>>>>> meu_branch
     i = i + 1;
     a = i * d;
     };
