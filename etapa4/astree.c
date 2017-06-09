@@ -4,7 +4,7 @@
 
 ASTREE* astreeCreate (int type, HASH_NODE* symbol, ASTREE* son0, ASTREE* son1, ASTREE* son2, ASTREE* son3){
 	ASTREE* new_node = 0;
-	
+
 	new_node = calloc(1,sizeof(ASTREE));
 	new_node -> type = type;
 	new_node -> symbol = symbol;
@@ -12,7 +12,6 @@ ASTREE* astreeCreate (int type, HASH_NODE* symbol, ASTREE* son0, ASTREE* son1, A
 	new_node -> son[1] = son1;
 	new_node -> son[2] = son2;
 	new_node -> son[3] = son3;
-	new_node -> valueType = 0;
 	new_node -> valueType = 0;
 
 	return new_node;
@@ -31,7 +30,7 @@ int uncompile(ASTREE* node)
 		case ASTREE_PROGRAMA: uncompile(node->son[0]); break;
 		case ASTREE_FUNCAO:  {
 			uncompile(node->son[0]);
-			uncompile(node->son[1]); 
+			uncompile(node->son[1]);
 			fprintf(outfile,";");
 			fprintf(outfile,"\n");
 		}; break;
@@ -211,16 +210,16 @@ int uncompile(ASTREE* node)
 			fprintf(outfile, "!");
 			uncompile(node->son[0]);
 			} break;
-		case ASTREE_IDENTIFIER: 			
-			if(node->symbol) 
+		case ASTREE_IDENTIFIER:
+			if(node->symbol)
 				fprintf(outfile,"%s", node->symbol->value); break; //não sei se é isso
-		case ASTREE_LITERAL: { 
-			if(node->symbol) 
-				if(node->symbol->type == SYMBOL_LIT_CHAR) 
-					fprintf (outfile,"\'"); 
-			fprintf(outfile,"%s", node->symbol->value); 
-			if(node->symbol->type == SYMBOL_LIT_CHAR) 
-				fprintf (outfile,"\'"); 
+		case ASTREE_LITERAL: {
+			if(node->symbol)
+				if(node->symbol->type == SYMBOL_LIT_CHAR)
+					fprintf (outfile,"\'");
+			fprintf(outfile,"%s", node->symbol->value);
+			if(node->symbol->type == SYMBOL_LIT_CHAR)
+				fprintf (outfile,"\'");
 			} break;
 		case ASTREE_ADD: {
 			uncompile(node->son[0]);
@@ -282,10 +281,10 @@ int uncompile(ASTREE* node)
 			fprintf(outfile, "||");
 			uncompile(node->son[1]);
 			} break;
-		case ASTREE_VAR_GLOBAL_VEC_VALORES: { 
-			fprintf (outfile," "); 
-			uncompile(node->son[0]); 
-			uncompile(node->son[1]); 
+		case ASTREE_VAR_GLOBAL_VEC_VALORES: {
+			fprintf (outfile," ");
+			uncompile(node->son[0]);
+			uncompile(node->son[1]);
 			} break;
 		case ASTREE_DEBUG: break;
 		default: fprintf(outfile, "\nDEFAULT\n");break;

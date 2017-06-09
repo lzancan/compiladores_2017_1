@@ -229,7 +229,7 @@ int ajustLitValue(ASTREE* node){
 		case DATATYPE_LONG: {node->valueType = VALUETYPE_INTEGER;} break;
 		case DATATYPE_FLOAT: {node->valueType = VALUETYPE_REAL;} break;
 		case DATATYPE_DOUBLE: {node->valueType = VALUETYPE_REAL;} break;
-		default: break;
+		default: {fprintf(stderr, "erro em lit na linha %d",getLineNumber()); exit(4);} break;
 	}
 }
 
@@ -311,24 +311,24 @@ int testAtribuicao(HASH_NODE * hashNode, ASTREE* astreeNode){
 	if(astreeNode->symbol){
 		if(astreeNode->symbol->nature == NATURE_VECTOR){
 			if(astreeNode->symbol->dataType != hashNode->dataType){
-				fprintf(stderr,"Vetores com tipos diferentes na linha %d\n",getLineNumber());	
+				fprintf(stderr,"Vetores com tipos diferentes na linha %d\n",getLineNumber());
 				exit(4);
-				return -1;	
+				return -1;
 			}
 			else return 0;
 		}
 	}
-	if(hashNode->nature == NATURE_ESCALAR){ 
+	if(hashNode->nature == NATURE_ESCALAR){
 		if(astreeNode->symbol){
 			if(astreeNode->symbol->nature == NATURE_FUNCTION){
 				if(astreeNode->symbol->dataType != hashNode->dataType){
-				fprintf(stderr,"Escalar atribuido a funcao com assinaturas diferentes na linha %d\n",getLineNumber());		
+				fprintf(stderr,"Escalar atribuido a funcao com assinaturas diferentes na linha %d\n",getLineNumber());
 				exit(4);
 				return -1;
 				}
 				else return 0;
-			}		
-		}	
+			}
+		}
 	}
 	switch(hashNode->dataType){
 		case DATATYPE_BYTE: 	if(astreeNode->valueType != VALUETYPE_INTEGER){
@@ -357,7 +357,7 @@ int testAtribuicao(HASH_NODE * hashNode, ASTREE* astreeNode){
 						exit(4);
 					}
 					break;
-		default: break;
+		default: fprintf(stderr,"Variavel não declarada na linha %d\n",getLineNumber());break;
 	}
 
 }
@@ -373,13 +373,13 @@ int testFor(HASH_NODE* hashNode, ASTREE* astreeNode1, ASTREE* astreeNode2){
 	}
 	if(hashNode->nature != NATURE_ESCALAR){
 		fprintf(stderr,"variavel de natureza nao escalar na linha %d [%d, %s]\n",getLineNumber(),hashNode->nature,hashNode->value);
-		exit(4);	
+		exit(4);
 	}
 	if(hashNode->dataType != DATATYPE_BYTE && hashNode->dataType != DATATYPE_SHORT && hashNode->dataType != DATATYPE_LONG){
 		fprintf(stderr,"variavel nao inteira na linha %d\n",getLineNumber());
 		exit(4);
 	}
-	
+
 }
 
 
