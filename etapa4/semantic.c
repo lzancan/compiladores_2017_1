@@ -253,6 +253,7 @@ int getFunctCallAstreeNode(HASH_NODE* hashNode, ASTREE* astreeNode){
 }
 
 int testFunctionParams(ASTREE* astreeNode1, ASTREE* astreeNode2){
+	
 	if(!astreeNode1){ // se astreeNode nao existe na hash
 		if(!astreeNode2){ // se o astreeNode passado existe
 			return 0;
@@ -272,6 +273,40 @@ int testFunctionParams(ASTREE* astreeNode1, ASTREE* astreeNode2){
 			fprintf(stderr,"Faltam parametros na funcao da linha %d\n",getLineNumber());
 			exit(4);
 			return -1;
+		}
+	}
+	
+	// testa se o parametro passado é vetor...
+	if(astreeNode2->symbol){
+		if(astreeNode2->symbol->nature == NATURE_VECTOR){
+			if(astreeNode2->son[0]){
+				if(astreeNode2->son[0]->type != ASTREE_COLCHETES){
+					fprintf(stderr,"Erro atribuicao de vetor sem colchetes na linha %d\n",getLineNumber());							
+					exit(4);
+					return -1;
+				}
+			}
+			else{
+				fprintf(stderr,"Erro atribuicao de vetor sem colchetes na linha %d\n",getLineNumber());							
+				exit(4);
+				return -1;	
+			}
+			if(astreeNode2->symbol->dataType == DATATYPE_BYTE || astreeNode2->symbol->dataType == DATATYPE_SHORT || astreeNode2->symbol->dataType == DATATYPE_LONG){
+				if(astreeNode1->valueType != VALUETYPE_INTEGER && astreeNode1->valueType != VALUETYPE_CHAR){
+					fprintf(stderr,"Vetor incompativel com parametro na linha %d\n", getLineNumber());				
+					exit(4);
+					return -1;				
+				}
+					
+				return 0;
+			}
+			else if(astreeNode2->symbol->dataType == DATATYPE_FLOAT || astreeNode2->symbol->dataType == DATATYPE_DOUBLE){
+				if(astreeNode1->valueType != VALUETYPE_REAL){
+					fprintf(stderr,"Vetor incompativel com parametro na linha %d\n", getLineNumber());				
+					exit(4);
+					return -1;
+				}
+			}	
 		}
 	}
 	if(astreeNode1->valueType != astreeNode2->valueType){ //TODO intercambiar entre int e real...

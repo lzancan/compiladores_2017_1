@@ -10,7 +10,7 @@ d: byte 65;
 //10
 
 
-long incn (long x)
+long incn (long hj, long uahsu)
   return x+n;
 
 long main()
@@ -31,7 +31,7 @@ long main()
   read i;
   while (i<10)
     {
-    a = incn(5); //23
+    a = incn(v[1],v[2]); //23
     i = i + 1;
     a = i * d;
     };

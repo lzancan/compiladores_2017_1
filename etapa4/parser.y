@@ -188,18 +188,7 @@
 						$$ = astreeCreate(ASTREE_EXPRESSAO_FUNCAO, $1, $2, 0, 0, 0);
 					        getFunctCallAstreeNode($1,$2);
 					     }
-					     if($1->nature == NATURE_VECTOR){
-						if($2->valueType != VALUETYPE_INTEGER){
-							fprintf(stderr,"Erro atribuicao de vetor no parser.y na linha %d\n",getLineNumber());							
-							exit(4);
-						}
-						if($2->type != ASTREE_COLCHETES){
-							fprintf(stderr,"Erro atribuicao de vetor sem colchetes em parser.y na linha %d\n",getLineNumber());							
-							exit(4);
-						}
-						
-					     }
-						//fprintf(stderr,"debug\n");
+					  
 					   } | 
 		   TK_IDENTIFIER '(' LISTA_FUNCAO_PARAMETROS ')' { $$ = astreeCreate(ASTREE_EXPRESSAO_FUNCAO, $1, $3, 0, 0, 0);
 								   getFunctCallAstreeNode($1,$3);
