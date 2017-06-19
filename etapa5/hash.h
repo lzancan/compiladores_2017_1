@@ -57,6 +57,8 @@ HASH_NODE * insertHash(int type,char * value);
 void printToken(int token);// imprime um token
 void printHashNode(HASH_NODE * node); // imprime um nodo da hash
 void printHash(); // imprime a hash toda
+HASH_NODE* makeTemp();
+HASH_NODE* makeLable();
 
 
 

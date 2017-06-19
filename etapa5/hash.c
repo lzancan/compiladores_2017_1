@@ -143,6 +143,20 @@ void printHash(){
 	fprintf(stderr,"Termino de impressao\n");
 }
 
+HASH_NODE* makeTemp(){
+	static int serialNumber = 0;
+	static char buffer[128];
+	sprintf(buffer, "temmmmporarryooius%d",serialNumber++);
+	return insertHash(SYMBOL_IDENTIFIER, buffer);
+}
+
+HASH_NODE* makeLable(){
+	static int serialNumber = 0;
+	static char buffer[128];
+	sprintf(buffer, "labbbbellski%d",serialNumber++);
+	return insertHash(SYMBOL_IDENTIFIER, buffer);
+}
+
 
 
 
