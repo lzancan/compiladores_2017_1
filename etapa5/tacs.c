@@ -6,8 +6,8 @@
 
 
 TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2){
-	TAC* newTac;
-	newTac = (TAC*) calloc(1,sizeof(TAC*));
+	TAC* newTac = 0;
+	newTac = calloc(1,sizeof(TAC));
 	newTac->type = type;
 	newTac->res = res;
 	newTac->op1 = op1;
@@ -42,12 +42,26 @@ TAC* tacGenerate(ASTREE* node){
 	for(i=0; i<MAX_SONS; i++){
 		code[i] = tacGenerate(node->son[i]);
 	}
-
+		
 	// processa esse nodo
 	switch(node->type){
 		case ASTREE_SYMBOL: result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
-		case ASTREE_ADD: result = tacJoin(code[0], tacJoin(code[1], 
-					tacCreate(TAC_ADD, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_LITERAL: result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
+		case ASTREE_ADD: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_ADD, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_SUB: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_SUB, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_MUL: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MUL, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_DIV: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_DIV, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+
+		case ASTREE_LESS_THAN:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_LT, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_GREATER_THAN:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_GT, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_LE:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_LE, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_GE:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_GE, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_EQ:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_EQ, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_NE:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_NE, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_AND:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_AND, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_OR:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_OR, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_NEGATIVO:  result = tacJoin(code[0], tacCreate(TAC_NEGATIVO, makeTemp(), code[0] ? code[0]->res : 0, 0))); break;
+		case ASTREE_NEGADO:  result = tacJoin(code[0], tacCreate(TAC_NEGADO, makeTemp(), code[0] ? code[0]->res : 0, 0))); break;
 		case ASTREE_WHEN_THEN: result = makeWhenThen(code[0], code[1]); break;
 		default: result = tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
 	}
@@ -63,7 +77,7 @@ TAC* makeWhenThen(TAC* code0, TAC* code1){
 	
 	newLable = makeLable();
 	ifTac = tacCreate(TAC_IFZ, newLable, code0 ? code0->res : 0, 0);
-	lableTac = tacCreate(TAC_LABLE, newLable, 0, 0);
+	lableTac = tacCreate(TAC_LABEL, newLable, 0, 0);
 	return tacJoin(tacJoin(tacJoin(code0, ifTac), code1), lableTac);
 
 }
@@ -85,10 +99,10 @@ void tacPrintBack(TAC* last){
 		fprintf(stderr, "TAC(\n");
 		switch(tac->type){
 			case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL"); break;
-			case TAC_ADD: fprintf(stderr, "TAC_SYMBOL"); break;
-			case TAC_SUB: fprintf(stderr, "TAC_SYMBOL"); break;
-			case TAC_IFZ: fprintf(stderr, "TAC_SYMBOL"); break;
-			case TAC_LABLE: fprintf(stderr, "TAC_SYMBOL"); break;
+			case TAC_ADD: fprintf(stderr, "TAC_ADD"); break;
+			case TAC_SUB: fprintf(stderr, "TAC_SUB"); break;
+			case TAC_IFZ: fprintf(stderr, "TAC_IFZ"); break;
+			case TAC_LABEL: fprintf(stderr, "TAC_LABEL"); break;
 			default: fprintf(stderr, "TAC_UNKNOWN!"); break;
 		}
 		if(tac->res) fprintf(stderr, ", %s", tac->res->value); else fprintf(stderr, ", 0");
@@ -110,10 +124,10 @@ void tacPrintForward(TAC* first){
 		fprintf(stderr, "TAC(");
 		switch(tac->type){
 			case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL"); break;
-			case TAC_ADD: fprintf(stderr, "TAC_SYMBOL"); break;
-			case TAC_SUB: fprintf(stderr, "TAC_SYMBOL"); break;
-			case TAC_IFZ: fprintf(stderr, "TAC_SYMBOL"); break;
-			case TAC_LABLE: fprintf(stderr, "TAC_SYMBOL"); break;
+			case TAC_ADD: fprintf(stderr, "TAC_ADD"); break;
+			case TAC_SUB: fprintf(stderr, "TAC_SUB"); break;
+			case TAC_IFZ: fprintf(stderr, "TAC_IFZ"); break;
+			case TAC_LABEL: fprintf(stderr, "TAC_LABEL"); break;
 			default: fprintf(stderr, "TAC_UNKNOWN!"); break; 
 		}
 		if(tac->res) fprintf(stderr, ", %s", tac->res->value); else fprintf(stderr, ", 0");
