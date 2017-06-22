@@ -11,5 +11,9 @@ return a;
 long  main()
 {
 a=fun((a));
+a=2+3;
+a=2-3;
+a=2*3;
+a=-3;
 }
 ;

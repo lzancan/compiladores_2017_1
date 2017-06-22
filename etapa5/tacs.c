@@ -1,4 +1,4 @@
-#include <stdio.h>
+ #include <stdio.h>
 #include <stdlib.h>
 
 #include "tacs.h"
@@ -65,13 +65,9 @@ result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_ADD, makeTemp(), code[0
 		case ASTREE_NEGADO:  result = tacJoin(code[0], tacCreate(TAC_NEGADO, makeTemp(), code[0] ? code[0]->res : 0, 0)); break;
 		case ASTREE_FOR: result = makeFor(node->symbol, code[0], code[1], code[2]); break;
 		case ASTREE_WHILE: result = makeWhile(code[0], code[1]); break;
-		case ASTREE_NEGATIVO:  result = tacJoin(code[0], tacCreate(TAC_NEGATIVO, makeTemp(), code[0] ? code[0]->res : 0, 0)); break;
-		case ASTREE_NEGADO:  result = tacJoin(code[0], tacCreate(TAC_NEGADO, makeTemp(), code[0] ? code[0]->res : 0, 0)); break;
 		case ASTREE_WHEN_THEN: result = makeWhenThen(code[0], code[1]); break;
 		case ASTREE_WHEN_THEN_ELSE: result = makeWhenThenElse(code[0], code[1], code[2]); break;
-		case ASTREE_READ: result = tacCreate(TAC_READ, node->symbol, 0, 0); break;
 		//case ASTREE_PRINT_LISTA: result = tacJoin(tacCreate(TAC_PRINT, code[0]?code[0]->res:0, 0, 0), code[1]?code[1]:0); break;
-		case ASTREE_RETURN: result = tacJoin(code[0], tacCreate(TAC_RET, node->symbol, code[0]?code[0]->res:0, 0)); break;
 		case ASTREE_ATRIBUICAO: result = tacJoin(code[0], tacCreate(TAC_MOVE, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0)); break;
 		case ASTREE_ATRIBUICAO_VETOR: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MOVE_VETOR, node->symbol, code[0]?code[0]->res:0, code[1]? code[1]->res:0))); break;
 		
@@ -226,7 +222,6 @@ void tacPrintForward(TAC* first){
 			case TAC_OR: fprintf(stderr, "TAC_OR"); break;
 			case TAC_NEGATIVO: fprintf(stderr, "TAC_NEGATIVO"); break;
 			case TAC_NEGADO: fprintf(stderr, "TAC_NEGADO"); break;
-			case TAC_READ: fprintf(stderr, "TAC_READ"); break;
 			case TAC_RET: fprintf(stderr, "TAC_RET"); break;
 			case TAC_INC: fprintf(stderr, "TAC_INC"); break;
 			case TAC_GOTO: fprintf(stderr, "TAC_JUMP"); break;
