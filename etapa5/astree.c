@@ -125,6 +125,13 @@ int uncompile(ASTREE* node)
 			if(node->son[1]->type == ASTREE_LITERAL)
 				fprintf (outfile,"\"");
 		} break;
+		case ASTREE_PRINT_ELEMENT: {
+			if(node->son[0]->type == ASTREE_LITERAL)
+				fprintf (outfile,"\"");
+			uncompile(node->son[0]);
+			if(node->son[0]->type == ASTREE_LITERAL)
+				fprintf (outfile,"\"");
+		} break;
 		case ASTREE_RETURN: {
 			fprintf(outfile, "return ");
 			uncompile(node->son[0]);
