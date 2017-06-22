@@ -88,6 +88,7 @@ void initMe(void){
 	initHash();
 }
 
+
 int yywrap()
 {
 	running = 0;

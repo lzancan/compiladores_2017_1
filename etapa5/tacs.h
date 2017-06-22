@@ -34,6 +34,7 @@
 #define TAC_BEGINFUNC 28
 #define TAC_ENDFUNC 29
 #define TAC_FUNCCABECALHO 30
+#define TAC_RETURNFUNCT 31
 
 
 typedef struct tac_struct

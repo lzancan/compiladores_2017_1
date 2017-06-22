@@ -4,16 +4,14 @@ c: long  [10];
 
 long  fun(long g)
 {
+a=1+2;
 return a;
 }
 ;
 
 long  main()
 {
-a=fun((a));
 a=2+3;
-a=2-3;
-a=2*3;
-a=-3;
+a=fun((a));
 }
 ;

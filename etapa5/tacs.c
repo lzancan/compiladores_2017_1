@@ -4,7 +4,6 @@
 #include "tacs.h"
 
 
-
 TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2){
 	TAC* newTac = 0;
 	newTac = calloc(1,sizeof(TAC));
@@ -47,8 +46,7 @@ TAC* tacGenerate(ASTREE* node){
 		case ASTREE_LITERAL: result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
 		case ASTREE_IDENTIFIER: result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
 		case ASTREE_READ: result = tacCreate(TAC_READ, node->symbol, 0, 0); break;
-		case ASTREE_ADD: //fprintf(stderr,"%s e %s\n",code[0]->res->value, code[1]->res->value);
-result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_ADD, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_ADD: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_ADD, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
 		case ASTREE_SUB: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_SUB, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
 		case ASTREE_MUL: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MUL, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
 		case ASTREE_DIV: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_DIV, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
@@ -71,11 +69,15 @@ result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_ADD, makeTemp(), code[0
 		case ASTREE_ATRIBUICAO: result = tacJoin(code[0], tacCreate(TAC_MOVE, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0)); break;
 		case ASTREE_ATRIBUICAO_VETOR: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MOVE_VETOR, node->symbol, code[0]?code[0]->res:0, code[1]? code[1]->res:0))); break;
 		
-		case ASTREE_EXPRESSAO_FUNCAO: result = tacJoin(code[0], tacCreate(TAC_CALLFUNC, makeTemp(), node->symbol, 0)); break;
 
 		//case ASTREE_FUNC_CABECALHO: result = tacCreate(TAC_FUNCCABECALHO, node->symbol, 0, 0); break;
 		
-		case ASTREE_RETURN: result = tacJoin(code[0], tacCreate(TAC_RETURN, node->symbol, code[0]?code[0]->res:0, 0)); break;
+		case ASTREE_RETURN: result = tacCreate(TAC_RETURN, makeTemp(), code[0]?code[0]->res:0, 0); break;
+
+		case ASTREE_FUNC_CABECALHO: result = tacCreate(TAC_FUNCCABECALHO, node->symbol, code[0]?code[0]->res:0, 0); break;  
+		case ASTREE_EXPRESSAO_FUNCAO: result = tacJoin(code[0], tacCreate(TAC_CALLFUNC, makeTemp(), node->symbol, 0)); break;
+		case ASTREE_FUNCAO: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_RETURNFUNCT, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0))); break; 
+
 		
 		default: result = tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
 	}
@@ -198,6 +200,7 @@ void tacPrintForward(TAC* first){
 		if(tac->type == TAC_SYMBOL){
 			continue;
 		}
+	   //if(getNotMain()==0){
 		fprintf(stderr, "TAC(");
 		switch(tac->type){
 			case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL"); break;
@@ -219,19 +222,23 @@ void tacPrintForward(TAC* first){
 			case TAC_EQ: fprintf(stderr, "TAC_EQ"); break;
 			case TAC_NE: fprintf(stderr, "TAC_NE"); break;
 			case TAC_AND: fprintf(stderr, "TAC_AND"); break;
+			case TAC_RETURNFUNCT: fprintf(stderr, "TAC_RETURNFUNCT"); break;
 			case TAC_OR: fprintf(stderr, "TAC_OR"); break;
 			case TAC_NEGATIVO: fprintf(stderr, "TAC_NEGATIVO"); break;
 			case TAC_NEGADO: fprintf(stderr, "TAC_NEGADO"); break;
+			case TAC_FUNCCABECALHO: break;//fprintf(stderr, "TAC_FUNCCABECALHO"); break;
 			case TAC_RET: fprintf(stderr, "TAC_RET"); break;
 			case TAC_INC: fprintf(stderr, "TAC_INC"); break;
 			case TAC_GOTO: fprintf(stderr, "TAC_JUMP"); break;
 			case TAC_PRINT: fprintf(stderr, "TAC_PRINT"); break;
 			default: fprintf(stderr, "TAC_UNKNOWN!"); break;
 		}
+	     if(tac->type != TAC_FUNCCABECALHO){
 		if(tac->res) fprintf(stderr, ", %s", tac->res->value); else fprintf(stderr, ", 0");
 		if(tac->op1) fprintf(stderr, ", %s", tac->op1->value); else fprintf(stderr, ", 0");
 		if(tac->op2) fprintf(stderr, ", %s", tac->op2->value); else fprintf(stderr, ", 0");
 		fprintf(stderr, ")\n");
+	   }
 	}
 }
 

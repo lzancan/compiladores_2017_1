@@ -1,10 +1,13 @@
 %{
 	#include <stdio.h>
 	#include <stdlib.h>
+	#include <string.h>
 	#include "hash.h"
 	#include "tacs.h"
 	
 	ASTREE* root;
+
+
 
 %}
 
@@ -263,6 +266,7 @@ int yyerror(char *value){
   fprintf(stderr, "Erro: %s ,na linha: %d\n",value,getLineNumber());
   exit(3);
 }
+
 
 
 

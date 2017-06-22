@@ -32,6 +32,8 @@
 int getLineNumber(void);
 int yyerror(char *value);
 int yylex(void);
+int getNotMain(void);
+int setNotMain(void);
 
 // estrutura do nodo da hash
 
