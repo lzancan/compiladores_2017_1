@@ -21,6 +21,12 @@
 #define TAC_OR 15
 #define TAC_NEGATIVO 16
 #define TAC_NEGADO 17
+#define TAC_GOTO 18
+#define TAC_MOVE 19
+#define TAC_RET 20
+#define TAC_READ 21
+#define TAC_PRINT 22
+#define TAC_INC 23
 #define TAC_MOVE 18
 #define TAC_MOVE_VETOR 19
 #define TAC_EXPRESSAO 20
@@ -46,6 +52,10 @@ TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2);
 TAC* tacJoin(TAC* l1, TAC* l2);
 TAC* tacGenerate(ASTREE* node);
 TAC* makeWhenThen(TAC* code0, TAC* code1);
+TAC* makeWhenThenElse(TAC* code0, TAC* code1, TAC* code2);
+TAC* makeFor(HASH_NODE* nodeSymbol, TAC* code0, TAC* code1, TAC* code2);
+TAC* makeWhile(TAC* code0, TAC* code1);
+
 TAC* tacReverse(TAC* tac);
 void tacPrintBack(TAC* last);
 void tacPrintForward(TAC* first);
