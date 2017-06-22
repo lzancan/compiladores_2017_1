@@ -173,7 +173,9 @@
 	LISTA_ELEMENTOS_PRINT: ELEMENTO_PRINT LISTA_ELEMENTOS_PRINT { $$ = astreeCreate(ASTREE_PRINT_LISTA, NULL, $1, $2, 0, 0);
 								      $$->valueType = $1->valueType;
 								    }
-				| ELEMENTO_PRINT {$$=$1;}
+				| ELEMENTO_PRINT { $$ = astreeCreate(ASTREE_PRINT_LISTA, NULL, $1, 0, 0, 0);
+
+								    }
 	;
 	ELEMENTO_PRINT: LIT_STRING { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);
 				     $$->valueType = VALUETYPE_STRING;}
