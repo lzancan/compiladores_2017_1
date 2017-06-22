@@ -67,7 +67,8 @@ result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_ADD, makeTemp(), code[0
 		case ASTREE_WHILE: result = makeWhile(code[0], code[1]); break;
 		case ASTREE_WHEN_THEN: result = makeWhenThen(code[0], code[1]); break;
 		case ASTREE_WHEN_THEN_ELSE: result = makeWhenThenElse(code[0], code[1], code[2]); break;
-		//case ASTREE_PRINT_LISTA: result = tacJoin(tacCreate(TAC_PRINT, code[0]?code[0]->res:0, 0, 0), code[1]?code[1]:0); break;
+		case ASTREE_PRINT_LISTA: result = tacJoin(tacCreate(TAC_PRINT, code[0]?code[0]->res:0, 0, 0), code[1]?code[1]:0); break;
+		case ASTREE_PRINT_ELEMENT: result = tacJoin(tacCreate(TAC_PRINT, code[0]?code[0]->res:0, 0, 0), code[1]?code[1]:0); break;
 		case ASTREE_ATRIBUICAO: result = tacJoin(code[0], tacCreate(TAC_MOVE, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0)); break;
 		case ASTREE_ATRIBUICAO_VETOR: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MOVE_VETOR, node->symbol, code[0]?code[0]->res:0, code[1]? code[1]->res:0))); break;
 		

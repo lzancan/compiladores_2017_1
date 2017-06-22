@@ -13,4 +13,5 @@ long main()
   when (i==11) then else//31
     ;
 
-  return i;};
+  return i;
+  print i "sssc" "isidj" i;};
