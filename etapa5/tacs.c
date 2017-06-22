@@ -19,13 +19,11 @@ TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2){
 
 TAC* tacJoin(TAC* l1, TAC* l2){
 	TAC* tac;
-	// para debug:
-	if(!l1 && !l2) fprintf(stderr,"tacJoin: nenhum dos tacs existem!\n");
-
 	if(!l1) return l2;
 	if(!l2) return l1;
-	for(tac=l1; tac->prev; tac=tac->prev){
-		;	
+	tac = l2;
+	while(tac->prev){
+		tac = tac->prev;	
 	}
 	tac->prev = l1;
 	return l2;
@@ -47,7 +45,10 @@ TAC* tacGenerate(ASTREE* node){
 	switch(node->type){
 		case ASTREE_SYMBOL: result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
 		case ASTREE_LITERAL: result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
-		case ASTREE_ADD: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_ADD, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_IDENTIFIER: result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
+		case ASTREE_READ: result = tacCreate(TAC_READ, node->symbol, 0, 0); break;
+		case ASTREE_ADD: //fprintf(stderr,"%s e %s\n",code[0]->res->value, code[1]->res->value);
+result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_ADD, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
 		case ASTREE_SUB: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_SUB, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
 		case ASTREE_MUL: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MUL, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
 		case ASTREE_DIV: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_DIV, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
@@ -60,15 +61,27 @@ TAC* tacGenerate(ASTREE* node){
 		case ASTREE_NE:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_NE, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
 		case ASTREE_AND:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_AND, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
 		case ASTREE_OR:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_OR, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
-		case ASTREE_NEGATIVO:  result = tacJoin(code[0], tacCreate(TAC_NEGATIVO, makeTemp(), code[0] ? code[0]->res : 0, 0))); break;
-		case ASTREE_NEGADO:  result = tacJoin(code[0], tacCreate(TAC_NEGADO, makeTemp(), code[0] ? code[0]->res : 0, 0))); break;
+		case ASTREE_NEGATIVO:  result = tacJoin(code[0], tacCreate(TAC_NEGATIVO, makeTemp(), code[0] ? code[0]->res : 0, 0)); break;
+		case ASTREE_NEGADO:  result = tacJoin(code[0], tacCreate(TAC_NEGADO, makeTemp(), code[0] ? code[0]->res : 0, 0)); break;
 		case ASTREE_WHEN_THEN: result = makeWhenThen(code[0], code[1]); break;
+		case ASTREE_ATRIBUICAO: result = tacJoin(code[0], tacCreate(TAC_MOVE, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0)); break;
+		case ASTREE_ATRIBUICAO_VETOR: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MOVE_VETOR, node->symbol, code[0]?code[0]->res:0, code[1]? code[1]->res:0))); break;
+		
+		case ASTREE_EXPRESSAO_FUNCAO: result = tacJoin(code[0], tacCreate(TAC_CALLFUNC, makeTemp(), node->symbol, 0)); break;
+
+		//case ASTREE_FUNC_CABECALHO: result = tacCreate(TAC_FUNCCABECALHO, node->symbol, 0, 0); break;
+		
+		case ASTREE_RETURN: result = tacJoin(code[0], tacCreate(TAC_RETURN, node->symbol, code[0]?code[0]->res:0, 0)); break;
+		
 		default: result = tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
 	}
 
 	// retorna o codigo desse nodo
 	return result;
 }
+
+
+
 
 TAC* makeWhenThen(TAC* code0, TAC* code1){
 	TAC* ifTac;
@@ -90,7 +103,7 @@ TAC* tacReverse(TAC* tac){
 	return t;
 }
 	
-
+/*
 void tacPrintBack(TAC* last){
 	fprintf(stderr, "Imprimindo codigo gerado:\n");
 	
@@ -101,6 +114,7 @@ void tacPrintBack(TAC* last){
 			case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL"); break;
 			case TAC_ADD: fprintf(stderr, "TAC_ADD"); break;
 			case TAC_SUB: fprintf(stderr, "TAC_SUB"); break;
+			case TAC_MOVE: fprintf(stderr, "TAC_MOVE"); break;
 			case TAC_IFZ: fprintf(stderr, "TAC_IFZ"); break;
 			case TAC_LABEL: fprintf(stderr, "TAC_LABEL"); break;
 			default: fprintf(stderr, "TAC_UNKNOWN!"); break;
@@ -111,7 +125,7 @@ void tacPrintBack(TAC* last){
 		fprintf(stderr, ")\n");
 			
 	}
-}
+}*/
 
 void tacPrintForward(TAC* first){
 	fprintf(stderr, "Imprimindo codigo gerado:\n");
@@ -126,6 +140,11 @@ void tacPrintForward(TAC* first){
 			case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL"); break;
 			case TAC_ADD: fprintf(stderr, "TAC_ADD"); break;
 			case TAC_SUB: fprintf(stderr, "TAC_SUB"); break;
+			case TAC_MOVE: fprintf(stderr, "TAC_MOVE"); break;
+			case TAC_MOVE_VETOR: fprintf(stderr, "TAC_MOVE_VETOR"); break;
+			case TAC_RETURN: fprintf(stderr,"TAC_RETURN"); break;
+			case TAC_CALLFUNC: fprintf(stderr,"TAC_CALLFUNC"); break;
+			case TAC_READ: fprintf(stderr,"TAC_READ"); break;
 			case TAC_IFZ: fprintf(stderr, "TAC_IFZ"); break;
 			case TAC_LABEL: fprintf(stderr, "TAC_LABEL"); break;
 			default: fprintf(stderr, "TAC_UNKNOWN!"); break; 

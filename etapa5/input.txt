@@ -1,6 +1,14 @@
 a: long 0;
+b: long 0;
+c: long[10];
 
+long fun(long g){
+	return a;
+};
 
 long main(){
-	a=2+3;
+	
+	a=fun(a);
 };
+
+

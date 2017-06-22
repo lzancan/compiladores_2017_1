@@ -21,6 +21,16 @@
 #define TAC_OR 15
 #define TAC_NEGATIVO 16
 #define TAC_NEGADO 17
+#define TAC_MOVE 18
+#define TAC_MOVE_VETOR 19
+#define TAC_EXPRESSAO 20
+#define TAC_CALLFUNC 21
+#define TAC_READ 22
+#define TAC_RETURN 23
+#define TAC_BEGINFUNC 24
+#define TAC_ENDFUNC 25
+#define TAC_FUNCCABECALHO 26
+
 
 typedef struct tac_struct
 {

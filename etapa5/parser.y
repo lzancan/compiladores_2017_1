@@ -183,7 +183,16 @@
 	;
 	RETURN: KW_RETURN EXPRESSAO { $$ = astreeCreate(ASTREE_RETURN, NULL, $2, 0, 0, 0);}
 	;
-	EXPRESSAO: TK_IDENTIFIER { $$ = astreeCreate(ASTREE_IDENTIFIER, $1, 0, 0, 0, 0);} |
+	EXPRESSAO: TK_IDENTIFIER { $$ = astreeCreate(ASTREE_IDENTIFIER, $1, 0, 0, 0, 0); 
+				   if($1-> dataType == DATATYPE_BYTE || $1-> dataType == DATATYPE_SHORT || $1-> dataType == DATATYPE_LONG){
+					$$->valueType = VALUETYPE_INTEGER;
+				   }
+				  if($1-> dataType == DATATYPE_FLOAT || $1-> dataType == DATATYPE_DOUBLE){
+					$$->valueType = VALUETYPE_REAL;
+				   }
+					
+				   
+				 } |
 
 		   TK_IDENTIFIER EXPRESSAO { $$ = astreeCreate(ASTREE_EXPRESSAO_VETOR, $1, $2, 0, 0, 0); 
 					     if($1->nature == NATURE_FUNCTION){
