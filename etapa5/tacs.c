@@ -65,20 +65,38 @@ TAC* tacGenerate(ASTREE* node){
 		case ASTREE_WHILE: result = makeWhile(code[0], code[1]); break;
 		case ASTREE_WHEN_THEN: result = makeWhenThen(code[0], code[1]); break;
 		case ASTREE_WHEN_THEN_ELSE: result = makeWhenThenElse(code[0], code[1], code[2]); break;
-		case ASTREE_PRINT_LISTA: result = tacJoin(tacCreate(TAC_PRINT, code[0]?code[0]->res:0, 0, 0), code[1]?code[1]:0); break;
-		case ASTREE_PRINT_ELEMENT: result = tacJoin(tacCreate(TAC_PRINT, code[0]?code[0]->res:0, 0, 0), code[1]?code[1]:0); break;
-		case ASTREE_ATRIBUICAO: result = tacJoin(code[0], tacCreate(TAC_MOVE, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0)); break;
+		case ASTREE_PRINT_LISTA: result = tacJoin(tacCreate(TAC_PRINT, node->symbol, code[0]?code[0]->res:0, 0), code[1]?code[1]:0); break;
+		case ASTREE_PRINT_ELEMENT: result = tacJoin(code[0], tacJoin(tacCreate(TAC_PRINT, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0), code[1]?code[1]:0)); break;
+
+		case ASTREE_ATRIBUICAO: 
+				result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MOVE, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0)));
+				if(node->son[0]){ if(node->son[0]->symbol){ if(node->son[0]->symbol->nature == NATURE_FUNCTION){
+						result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MOVE, node->symbol, node->son[0]->symbol, code[1]?code[1]->res:0)));
+					}}}
+					break;
+
 		case ASTREE_ATRIBUICAO_VETOR: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MOVE_VETOR, node->symbol, code[0]?code[0]->res:0, code[1]? code[1]->res:0))); break;
+
+		case ASTREE_EXPRESSAO_VETOR: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_EXPRESSAO_VETOR, makeTemp(), node->symbol, code[0]? code[0]->res:0))); break;
 		
-
-		//case ASTREE_FUNC_CABECALHO: result = tacCreate(TAC_FUNCCABECALHO, node->symbol, 0, 0); break;
 		
-		case ASTREE_RETURN: result = tacCreate(TAC_RETURN, makeTemp(), code[0]?code[0]->res:0, 0); break;
+		case ASTREE_RETURN: result = tacJoin(code[0], tacCreate(TAC_RETURN, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0)); break;
 
-		case ASTREE_FUNC_CABECALHO: result = tacCreate(TAC_FUNCCABECALHO, node->symbol, code[0]?code[0]->res:0, 0); break;  
-		case ASTREE_EXPRESSAO_FUNCAO: result = tacJoin(code[0], tacCreate(TAC_CALLFUNC, makeTemp(), node->symbol, 0)); break;
-		case ASTREE_FUNCAO: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_RETURNFUNCT, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0))); break; 
+		case ASTREE_FUNC_CABECALHO: result = tacJoin(tacCreate(TAC_FUNCPUSH, node->symbol, code[0]?code[0]->res:0, 0), tacJoin(code[0], code[1])); break;  
 
+		case ASTREE_LISTA_PARAMETROS: result = tacJoin(tacCreate(TAC_PARAMETRO, node->symbol, 0, 0), tacJoin(code[0], code[1])); break;
+
+		case ASTREE_MAIS_PARAMETROS: result = tacJoin(tacCreate(TAC_PARAMETRO, node->symbol, 0, 0), tacJoin(code[0], code[1])); break;
+		
+		case ASTREE_LISTA_FUNC_PARAMETROS: result = tacJoin(code[0], tacJoin(tacCreate(TAC_PARAMETRO_CALL, node->symbol, code[0]?code[0]->res:0, 0), code[1])); break;
+
+
+		case ASTREE_LISTA_FUNC_MAIS_PARAMETROS: result = tacJoin(code[0], tacJoin(tacCreate(TAC_PARAMETRO_CALL, node->symbol, code[0]?code[0]->res:0, 0), code[1])); break;
+
+
+		case ASTREE_FUNCAO: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_FUNCPOP, node->son[0]->symbol, 0, 0))); break; 
+
+		case ASTREE_EXPRESSAO_FUNCAO: result = tacJoin(tacCreate(TAC_CALLFUNC, node->symbol, 0, 0), tacJoin(code[0], code[1])); break;
 		
 		default: result = tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
 	}
@@ -165,8 +183,11 @@ void tacPrintBack(TAC* last){
 			case TAC_SUB: fprintf(stderr, "TAC_SUB"); break;
 			case TAC_MOVE: fprintf(stderr, "TAC_MOVE"); break;
 			case TAC_MOVE_VETOR: fprintf(stderr, "TAC_MOVE_VETOR"); break;
+			case TAC_EXPRESSAO_VETOR: fprintf(stderr, "TAC_EXPRESSAO_VETOR"); break;
 			case TAC_RETURN: fprintf(stderr,"TAC_RETURN"); break;
 			case TAC_CALLFUNC: fprintf(stderr,"TAC_CALLFUNC"); break;
+			case TAC_PARAMETRO: fprintf(stderr,"TAC_PARAMETRO"); break;
+			case TAC_PARAMETRO_CALL: fprintf(stderr,"TAC_PARAMETRO_CALL"); break;
 			case TAC_READ: fprintf(stderr,"TAC_READ"); break;
 			case TAC_IFZ: fprintf(stderr, "TAC_IFZ"); break;
 			case TAC_LABEL: fprintf(stderr, "TAC_LABEL"); break;
@@ -179,23 +200,23 @@ void tacPrintBack(TAC* last){
 			case TAC_EQ: fprintf(stderr, "TAC_EQ"); break;
 			case TAC_NE: fprintf(stderr, "TAC_NE"); break;
 			case TAC_AND: fprintf(stderr, "TAC_AND"); break;
-			case TAC_RETURNFUNCT: fprintf(stderr, "TAC_RETURNFUNCT"); break;
+			case TAC_FUNCPOP: fprintf(stderr, "TAC_FUNCPOP"); break;
+			case TAC_FUNCPUSH: fprintf(stderr, "TAC_FUNCPUSH"); break;
 			case TAC_OR: fprintf(stderr, "TAC_OR"); break;
 			case TAC_NEGATIVO: fprintf(stderr, "TAC_NEGATIVO"); break;
 			case TAC_NEGADO: fprintf(stderr, "TAC_NEGADO"); break;
-			case TAC_FUNCCABECALHO: break;//fprintf(stderr, "TAC_FUNCCABECALHO"); break;
 			case TAC_RET: fprintf(stderr, "TAC_RET"); break;
 			case TAC_INC: fprintf(stderr, "TAC_INC"); break;
 			case TAC_GOTO: fprintf(stderr, "TAC_JUMP"); break;
 			case TAC_PRINT: fprintf(stderr, "TAC_PRINT"); break;
 			default: fprintf(stderr, "TAC_UNKNOWN!"); break;
 		}
-	     if(tac->type != TAC_FUNCCABECALHO){
+	
 		if(tac->res) fprintf(stderr, ", %s", tac->res->value); else fprintf(stderr, ", 0");
 		if(tac->op1) fprintf(stderr, ", %s", tac->op1->value); else fprintf(stderr, ", 0");
 		if(tac->op2) fprintf(stderr, ", %s", tac->op2->value); else fprintf(stderr, ", 0");
 		fprintf(stderr, ")\n");
-	   }
+	   
 
 	}
 }
@@ -208,7 +229,7 @@ void tacPrintForward(TAC* first){
 		if(tac->type == TAC_SYMBOL){
 			continue;
 		}
-	   //if(getNotMain()==0){
+	  
 		fprintf(stderr, "TAC(");
 		switch(tac->type){
 			case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL"); break;
@@ -216,8 +237,11 @@ void tacPrintForward(TAC* first){
 			case TAC_SUB: fprintf(stderr, "TAC_SUB"); break;
 			case TAC_MOVE: fprintf(stderr, "TAC_MOVE"); break;
 			case TAC_MOVE_VETOR: fprintf(stderr, "TAC_MOVE_VETOR"); break;
+			case TAC_EXPRESSAO_VETOR: fprintf(stderr, "TAC_EXPRESSAO_VETOR"); break;
 			case TAC_RETURN: fprintf(stderr,"TAC_RETURN"); break;
 			case TAC_CALLFUNC: fprintf(stderr,"TAC_CALLFUNC"); break;
+			case TAC_PARAMETRO: fprintf(stderr,"TAC_PARAMETRO"); break;
+			case TAC_PARAMETRO_CALL: fprintf(stderr,"TAC_PARAMETRO_CALL"); break;
 			case TAC_READ: fprintf(stderr,"TAC_READ"); break;
 			case TAC_IFZ: fprintf(stderr, "TAC_IFZ"); break;
 			case TAC_LABEL: fprintf(stderr, "TAC_LABEL"); break;
@@ -230,23 +254,23 @@ void tacPrintForward(TAC* first){
 			case TAC_EQ: fprintf(stderr, "TAC_EQ"); break;
 			case TAC_NE: fprintf(stderr, "TAC_NE"); break;
 			case TAC_AND: fprintf(stderr, "TAC_AND"); break;
-			case TAC_RETURNFUNCT: fprintf(stderr, "TAC_RETURNFUNCT"); break;
+			case TAC_FUNCPOP: fprintf(stderr, "TAC_FUNCPOP"); break;
 			case TAC_OR: fprintf(stderr, "TAC_OR"); break;
 			case TAC_NEGATIVO: fprintf(stderr, "TAC_NEGATIVO"); break;
 			case TAC_NEGADO: fprintf(stderr, "TAC_NEGADO"); break;
-			case TAC_FUNCCABECALHO: break;//fprintf(stderr, "TAC_FUNCCABECALHO"); break;
+			case TAC_FUNCPUSH: fprintf(stderr, "TAC_FUNCPUSH"); break;
 			case TAC_RET: fprintf(stderr, "TAC_RET"); break;
 			case TAC_INC: fprintf(stderr, "TAC_INC"); break;
 			case TAC_GOTO: fprintf(stderr, "TAC_JUMP"); break;
 			case TAC_PRINT: fprintf(stderr, "TAC_PRINT"); break;
 			default: fprintf(stderr, "TAC_UNKNOWN!"); break;
 		}
-	     if(tac->type != TAC_FUNCCABECALHO){
+	 
 		if(tac->res) fprintf(stderr, ", %s", tac->res->value); else fprintf(stderr, ", 0");
 		if(tac->op1) fprintf(stderr, ", %s", tac->op1->value); else fprintf(stderr, ", 0");
 		if(tac->op2) fprintf(stderr, ", %s", tac->op2->value); else fprintf(stderr, ", 0");
 		fprintf(stderr, ")\n");
-	   }
+	   
 	}
 }
 

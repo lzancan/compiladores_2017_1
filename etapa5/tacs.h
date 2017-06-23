@@ -33,8 +33,11 @@
 #define TAC_RETURN 27
 #define TAC_BEGINFUNC 28
 #define TAC_ENDFUNC 29
-#define TAC_FUNCCABECALHO 30
-#define TAC_RETURNFUNCT 31
+#define TAC_FUNCPUSH 30
+#define TAC_FUNCPOP 31
+#define TAC_EXPRESSAO_VETOR 32
+#define TAC_PARAMETRO 33
+#define TAC_PARAMETRO_CALL 34
 
 
 typedef struct tac_struct
