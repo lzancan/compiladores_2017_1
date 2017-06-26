@@ -1,0 +1,17 @@
+i: long 0;
+
+long main()
+  {
+  for (i = 1 to 10)
+
+  read i;
+  while (i<1)
+    {
+    i = i + 1;
+    };
+    ;
+  when (i==11) then else//31
+    ;
+
+  return i;
+  print i "sssc" "isidj" i;};
