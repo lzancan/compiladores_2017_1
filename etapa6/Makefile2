@@ -1,0 +1,6 @@
+exemplo: exemplo.o
+	gcc -o exemplo exemplo.c
+exemplo.o: exemplo.c
+	gcc -c exemplo.c
+clean:
+	rm *.o exemplo

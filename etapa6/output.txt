@@ -1,16 +1,22 @@
-i: long  0;
+a: long  0;
+b: long  0;
+c: long  [10];
+
+long  fun(long g,long g2,long g3)
+{
+return a+1;
+}
+;
 
 long  main()
 {
-for(i=1 to 10)read i;
-while(i<1){
-i=i+1;
-}
-;
-;
-when (i==11)then  else 
-;
-return i;
-print i"sssc""isidj"i;
+a=2+3;
+a=fun(a,b,c[10]);
+a=c[2];
+c#1=a;
+print c[7];
+print "oi"a;
+print "2";
+return 53;
 }
 ;
