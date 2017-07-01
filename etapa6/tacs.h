@@ -61,6 +61,8 @@ TAC* makeWhile(TAC* code0, TAC* code1);
 TAC* tacReverse(TAC* tac);
 void tacPrintBack(TAC* last);
 void tacPrintForward(TAC* first);
+void asmGen(TAC* first);
+void asmAdd(TAC* tac, FILE* fout);
 
 #endif 
 

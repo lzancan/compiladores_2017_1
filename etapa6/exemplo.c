@@ -2,7 +2,10 @@
 
 int a=3;
 
+int func(){
+	a=5-a;
+	a=a+a;
+}
 int main(){
-	printf("oii\n");
-	printf("%d oi\n",a);
+	a=a+2;
 }

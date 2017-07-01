@@ -2,14 +2,14 @@ a: long 0;
 b: long 0;
 c: long[10];
 
-long fun(long g, long g2, long g3){
-	return a+1;
+long fun(){
+	a=1-a;
 };
 
 
 long main(){
 	
-	a=2+3;
+	/*a=2+3;
 	a=fun(a,b,c[10]);
 	a=c[2];
 	c#1=a;
@@ -17,7 +17,7 @@ long main(){
 	print "oi" a;
 	print 2;
 
-	return 53;
+	return 53;*/
 };
 
 

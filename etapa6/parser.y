@@ -93,7 +93,8 @@
 %%
 	
 	P: PROGRAMA{	 uncompile($1);
-			 tacPrintForward(tacReverse(tacGenerate($1)));	 
+			 tacPrintForward(tacReverse(tacGenerate($1)));
+			 asmGen(tacReverse(tacGenerate($1)));	 
 		   }
 	;
 	PROGRAMA: DECLARACOES { $$ = astreeCreate(ASTREE_PROGRAMA, NULL, $1, 0, 0, 0);}
