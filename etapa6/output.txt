@@ -1,10 +1,10 @@
-a: long  0;
+a: long  1;
 b: long  0;
 c: long  [10];
 
 long  fun()
 {
-a=1-a;
+a=5/2;
 }
 ;
 

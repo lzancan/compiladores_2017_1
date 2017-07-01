@@ -211,7 +211,7 @@
 								   getFunctCallAstreeNode($1,$3);
 								   //$$->dataType = $1->dataType;
 								 } |
-		   '-' EXPRESSAO { $$ = astreeCreate(ASTREE_NEGATIVO, NULL, $2, 0, 0, 0);setValueType($$);} |
+		   //'-' EXPRESSAO { $$ = astreeCreate(ASTREE_NEGATIVO, NULL, $2, 0, 0, 0);setValueType($$);} |
 		   LIT_INTEGER { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);$$->valueType = VALUETYPE_INTEGER;} |
 		   LIT_REAL { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);$$->valueType = VALUETYPE_REAL;} |
 		   LIT_CHAR { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);$$->valueType = VALUETYPE_INTEGER;}|

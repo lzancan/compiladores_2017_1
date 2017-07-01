@@ -63,6 +63,9 @@ void tacPrintBack(TAC* last);
 void tacPrintForward(TAC* first);
 void asmGen(TAC* first);
 void asmAdd(TAC* tac, FILE* fout);
+void asmSub(TAC* tac, FILE* fout);
+void asmMul(TAC* tac, FILE* fout);
+void asmDiv(TAC* tac, FILE* fout);
 
 #endif 
 

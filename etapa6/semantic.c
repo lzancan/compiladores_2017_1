@@ -78,20 +78,21 @@ int setValueType(ASTREE* node){
             else if(node->son[0]->valueType == VALUETYPE_INTEGER && node->son[1]->valueType == VALUETYPE_INTEGER){
                 node->valueType = VALUETYPE_INTEGER;
 			}} break;
-		case ASTREE_SUB: {
+		case ASTREE_SUB: { 
 		    if(node->son[0]->valueType == 0)
-                ajustLitValue(node->son[0]);
-            if(node->son[1]->valueType == 0)
-                ajustLitValue(node->son[1]);
-            if(node->son[0]->valueType == VALUETYPE_STRING || node->son[0]->valueType == VALUETYPE_BOOLEAN || node->son[1]->valueType == VALUETYPE_STRING || node->son[1]->valueType == VALUETYPE_BOOLEAN)
-                {fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());exit(4);}
-            else if(node->son[0]->valueType == VALUETYPE_REAL || node->son[1]->valueType == VALUETYPE_REAL){
-                node->valueType = VALUETYPE_REAL;
-            }
-            else if(node->son[0]->valueType == VALUETYPE_INTEGER && node->son[1]->valueType == VALUETYPE_INTEGER){
-                node->valueType = VALUETYPE_INTEGER;
-            }
-			} break;
+                	ajustLitValue(node->son[0]);
+            	    if(node->son[1]->valueType == 0)
+                	ajustLitValue(node->son[1]);
+            	    if(node->son[0]->valueType == VALUETYPE_STRING || node->son[0]->valueType == VALUETYPE_BOOLEAN || node->son[1]->valueType == VALUETYPE_STRING || node->son[1]->valueType == VALUETYPE_BOOLEAN){
+			fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());exit(4);
+		    }
+        	    else if(node->son[0]->valueType == VALUETYPE_REAL || node->son[1]->valueType == VALUETYPE_REAL){
+                		node->valueType = VALUETYPE_REAL;
+            	    }
+            	    else if(node->son[0]->valueType == VALUETYPE_INTEGER && node->son[1]->valueType == VALUETYPE_INTEGER){
+                	node->valueType = VALUETYPE_INTEGER;
+            	    }
+		} break;
 		case ASTREE_MUL:  {
 		    if(node->son[0]->valueType == 0)
                 ajustLitValue(node->son[0]);
@@ -107,15 +108,20 @@ int setValueType(ASTREE* node){
             }
 			} break;
 		case ASTREE_DIV:  {
-		    if(node->son[0]->valueType == 0)
-                ajustLitValue(node->son[0]);
-            if(node->son[1]->valueType == 0)
-                ajustLitValue(node->son[1]);
-		    if(node->son[0]->valueType == VALUETYPE_STRING || node->son[0]->valueType == VALUETYPE_BOOLEAN || node->son[1]->valueType == VALUETYPE_STRING || node->son[1]->valueType == VALUETYPE_BOOLEAN)
-                {fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());exit(4);}
-            else
+		    	if(node->son[0]->valueType == 0)
+                		ajustLitValue(node->son[0]);
+            	    	if(node->son[1]->valueType == 0)
+                		ajustLitValue(node->son[1]);
+		    	if(node->son[0]->valueType == VALUETYPE_STRING || node->son[0]->valueType == VALUETYPE_BOOLEAN || node->son[1]->valueType == VALUETYPE_STRING || node->son[1]->valueType == VALUETYPE_BOOLEAN){
+				fprintf (stderr,"Expressao incompativel com o tipo na linha %d\n",getLineNumber());exit(4);
+			}
+            		else if(node->son[0]->valueType == VALUETYPE_REAL || node->son[1]->valueType == VALUETYPE_REAL){
                 node->valueType = VALUETYPE_REAL;
-			} break;
+            }
+            else if(node->son[0]->valueType == VALUETYPE_INTEGER && node->son[1]->valueType == VALUETYPE_INTEGER){
+                node->valueType = VALUETYPE_INTEGER;
+            }
+		} break;
 		case ASTREE_LESS_THAN:    {
 		    if(node->son[0]->valueType == 0)
                 ajustLitValue(node->son[0]);
@@ -378,7 +384,7 @@ int testAtribuicao(HASH_NODE * hashNode, ASTREE* astreeNode){
 					break;
 		case DATATYPE_LONG:	if(astreeNode->valueType != VALUETYPE_INTEGER){
 						fprintf (stderr,"Expressao incompativel com o tipo na atribuicao da linha %d\n",getLineNumber());
-						fprintf(stderr,"%d\n",astreeNode->valueType);
+						fprintf(stderr,"valueType: %d\n",astreeNode->valueType);
 						exit(4);
 					}
 					break;
