@@ -1,4 +1,4 @@
-	.file	"exemplo.c"
+	.file	"exemplo2.c"
 	.globl	a
 	.data
 	.align 4
