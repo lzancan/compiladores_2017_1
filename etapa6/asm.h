@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "hash.h"
 #include "tacs.h"
 
@@ -7,3 +9,5 @@ void asmAdd(TAC* tac, FILE* fout);
 void asmSub(TAC* tac, FILE* fout);
 void asmMul(TAC* tac, FILE* fout);
 void asmDiv(TAC* tac, FILE* fout);
+void funcPush(TAC* tac, FILE* fout);
+void funcPop(TAC* tac, FILE* fout);

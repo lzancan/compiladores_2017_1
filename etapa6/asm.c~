@@ -1,3 +1,10 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "asm.h"
+
+
 void asmGen(TAC* first){
 
 	FILE* fout;
@@ -17,15 +24,51 @@ void asmGen(TAC* first){
 							 break;
 			case TAC_DIV: fprintf(fout, "## TAC_DIV\n"); asmDiv(tac, fout);
 							 break;
-			case TAC_MOVE: fprintf(fout, "## TAC_MOVE\n"
-							"\tmovl %s(%%rip), %s(%%rip)\n",
-							tac->op1->value, tac->res->value); 
+			case TAC_MOVE: fprintf(fout, "## TAC_MOVE\n");
+							if(tac->res->nature != NATURE_FUNCTION){
+								fprintf(fout, "\tmovl %%eax, %s(%%rip)\n", tac->res->value);
+							}
+							else{
+								fprintf(fout, "\tmovl %s(%%rip), %s(%%rip)\n",
+								tac->op1->value, tac->res->value); 
+							}
 							 break;
+			case TAC_FUNCPUSH: fprintf(fout, "## TAC_FUNCPUSH\n"); funcPush(tac, fout); break;
+			case TAC_FUNCPOP: fprintf(fout, "## TAC_FUNCPOP\n"); funcPop(tac, fout); break;
+			case TAC_CALLFUNC: fprintf(fout, "## TAC_CALLFUNC\n"
+								"\tcall	%s\n", tac->res->value); break;
+					 
+						
 			default: break;	
 		}	
 	}
 	
 	fclose(fout);
+
+}
+
+void funcPush(TAC* tac, FILE* fout){
+	fprintf(fout,"\t.globl	%s\n"
+		     "\t.type	%s, @function\n", tac->res->value, tac->res->value);
+	fprintf(fout, "%s:\n"							
+			".%s:\n", tac->res->value, makeLable()->value);
+	fprintf(fout, "\t.cfi_startproc\n"
+		      "\tpushq	%%rbp\n"
+		      "\t.cfi_def_cfa_offset 16\n"
+		      "\t.cfi_offset 6, -16\n"
+		      "\tmovq	%%rsp, %%rbp\n"
+		      "\t.cfi_def_cfa_register 6\n");
+}
+
+void funcPop(TAC* tac, FILE* fout){
+	fprintf(fout, "\tpopq	%%rbp\n"
+		      "\t.cfi_def_cfa 7, 8\n"
+		      "\tret\n"
+		      "\t.cfi_endproc\n");
+	fprintf(fout, ".%s:\n", makeLable()->value);
+	fprintf(fout, "\t.size	%s, .-%s\n", tac->res->value, tac->res->value);
+				      
+
 
 }
 
