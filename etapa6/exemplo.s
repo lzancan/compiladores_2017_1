@@ -40,6 +40,7 @@ funct2:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
+	nop
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
@@ -58,13 +59,14 @@ main:
 	.cfi_def_cfa_register 6
 	movl	$0, %eax
 	call	func
+	addl	$1, %eax
 	movl	%eax, a(%rip)
-	movl	$3, a(%rip)
+	movl	$0, %eax
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE2:
 	.size	main, .-main
-	.ident	"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4"
+	.ident	"GCC: (Ubuntu 5.4.0-6ubuntu1~16.04.4) 5.4.0 20160609"
 	.section	.note.GNU-stack,"",@progbits

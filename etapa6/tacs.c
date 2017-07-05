@@ -72,7 +72,7 @@ TAC* tacGenerate(ASTREE* node){
 		case ASTREE_ATRIBUICAO: 
 				result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MOVE, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0)));
 				if(node->son[0]){ if(node->son[0]->symbol){ if(node->son[0]->symbol->nature == NATURE_FUNCTION){
-						result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MOVE, node->symbol, node->son[0]->symbol, code[1]?code[1]->res:0)));
+						result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MOVE, node->symbol, code[0]?code[0]->op1:0, code[1]?code[1]->res:0)));
 					}}}
 					break;
 
@@ -97,7 +97,7 @@ TAC* tacGenerate(ASTREE* node){
 
 		case ASTREE_FUNCAO: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_FUNCPOP, node->son[0]->symbol, 0, 0))); break; 
 
-		case ASTREE_EXPRESSAO_FUNCAO: result = tacJoin(tacCreate(TAC_CALLFUNC, node->symbol, 0, 0), tacJoin(code[0], code[1])); break;
+		case ASTREE_EXPRESSAO_FUNCAO: result = tacJoin(tacCreate(TAC_CALLFUNC, node->symbol, makeTemp(), 0), tacJoin(code[0], code[1])); break;
 		
 		default: result = tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
 	}

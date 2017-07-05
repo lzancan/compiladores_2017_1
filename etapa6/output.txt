@@ -4,7 +4,7 @@ c: long  [10];
 
 long  fun()
 {
-return 1+a;
+return 3;
 ;
 }
 ;
@@ -16,7 +16,6 @@ long  funct2()
 
 long  main()
 {
-a=fun();
-a=a+1;
+a=1+fun();
 }
 ;

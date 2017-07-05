@@ -8,15 +8,15 @@ long fun(){
 	//a=a/a;
 	//a=5/2;
 	//a=a+a;
-	return 1+a;;
+	return 3;;
 };
 
 long funct2(){};
 
 
 long main(){
-	a=fun();
-	a=a+1;
+	a=1+fun();
+	//a=a+1;
 	/*a=2+3;
 	a=fun(a,b,c[10]);
 	a=c[2];

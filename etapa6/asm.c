@@ -35,9 +35,19 @@ void asmGen(TAC* first){
 							 break;
 			case TAC_FUNCPUSH: fprintf(fout, "## TAC_FUNCPUSH\n"); funcPush(tac, fout); break;
 			case TAC_FUNCPOP: fprintf(fout, "## TAC_FUNCPOP\n"); funcPop(tac, fout); break;
-			case TAC_CALLFUNC: fprintf(fout, "## TAC_CALLFUNC\n"
-								"\tcall	%s\n", tac->res->value); break;
-					 
+			case TAC_CALLFUNC: fprintf(fout, "## TAC_CALLFUNC\n");
+								if(tac->next->type == TAC_CALLFUNC){
+									fprintf(fout, "\tmovl	$0, %%eax\n"
+										      "\tcall	%s\n"
+										      "\tmovl	%%eax, %%ebx\n"
+											, tac->res->value);
+								}
+								else{
+								fprintf(fout, 		
+								"\tmovl	$0, %%eax\n"
+								"\tcall	%s\n", tac->res->value); 
+								}	break;
+					 			
 						
 			default: break;	
 		}	
@@ -75,41 +85,84 @@ void funcPop(TAC* tac, FILE* fout){
 
 void asmAdd(TAC* tac, FILE* fout){
 	if(!tac->op1 || !tac ->op2) return;
-	
-	if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
-		fprintf(fout,
-		"\tmovl %s(%%rip), %%edx\n"
-		"\tmovl %s(%%rip), %%eax\n"
-		"\taddl %%edx, %%eax\n"
-		"\tmovl %%eax, %s(%%rip)\n",
-		tac->op1->value, tac->op2->value,
-		tac->res->value);
-	}
-	if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
-		fprintf(fout,
-		"\tmovl %s(%%rip), %%eax\n"
-		"\taddl $%s, %%eax\n"
-		"\tmovl %%eax, %s(%%rip)\n",
-		tac->op1->value, tac->op2->value,
-		tac->res->value);
-	}
-	if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
-		fprintf(fout,
-		"\tmovl %s(%%rip), %%eax\n"
-		"\taddl $%s, %%eax\n"
-		"\tmovl %%eax, %s(%%rip)\n",
-		tac->op2->value, tac->op1->value,
-		tac->res->value);
-	}
-	if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
-		int numero1 = atoi(tac->op1->value);
-		int numero2 = atoi(tac->op2->value);
-		int soma = numero1+numero2;
-		fprintf(fout,
-		"\tmovl $%d, %s(%%rip)\n",
-		soma,
-		tac->res->value);
-	}
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION && tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\taddl	%%ebx, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->res->value);
+			}
+			else if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\taddl %%edx, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);			
+			}
+			else if (tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\taddl %%edx, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);			
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\taddl %%edx, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\taddl $%s, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\taddl $%s, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\taddl $%s, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\taddl $%s, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value, tac->op1->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			int numero1 = atoi(tac->op1->value);
+			int numero2 = atoi(tac->op2->value);
+			int soma = numero1+numero2;
+			fprintf(fout,
+			"\tmovl $%d, %s(%%rip)\n",
+			soma,
+			tac->res->value);
+		}
 		
 }
 

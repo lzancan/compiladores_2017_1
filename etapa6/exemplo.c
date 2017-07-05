@@ -15,7 +15,6 @@ int func(){
 int funct2(){}
 
 int main(){
-	a=func();
-	a=1+2;
+	a=1+func();
 	//a=a+2;
 }
