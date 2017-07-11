@@ -24,6 +24,28 @@ void asmGen(TAC* first){
 							 break;
 			case TAC_DIV: fprintf(fout, "## TAC_DIV\n"); asmDiv(tac, fout);
 							 break;
+			case TAC_GT: fprintf(fout, "## TAC_GT\n"); asmGt(tac, fout); break;
+			case TAC_LT: fprintf(fout, "## TAC_LT\n"); asmLt(tac, fout);break;
+			case TAC_LE: fprintf(fout, "## TAC_LE\n"); asmLe(tac, fout);break;
+			case TAC_GE: fprintf(fout, "## TAC_GE\n"); asmGe(tac, fout);break;
+			case TAC_EQ: fprintf(fout, "## TAC_EQ\n"); asmEq(tac, fout);break;
+			case TAC_NE: fprintf(fout, "## TAC_NE\n"); asmNe(tac, fout);break;
+			case TAC_AND: fprintf(fout, "## TAC_AND\n"); asmAnd(tac, fout);break;
+			case TAC_OR: fprintf(fout, "## TAC_OR\n"); asmOr(tac, fout);break;
+			case TAC_IFZ: fprintf(fout, "## TAC_IFZ\n");fprintf(fout,
+									"\tmovl %s(%%rip), %%eax\n"
+									"\tcmpl %%eax, $1\n"
+									"\tjne  .%s\n",
+									tac->op1->value,
+									tac->res->value); break;
+			case TAC_LABEL: fprintf(fout, "## TAC_LABEL\n");fprintf(fout, ".%s\n",	tac->res->value); break;
+			case TAC_GOTO: fprintf(fout, "## TAC_GOTO\n");fprintf(fout, "\tjmp  .%s\n",	tac->res->value); break;
+			case TAC_INC: fprintf(fout, "## TAC_INC\n");fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\taddl $1, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value); break;
 			case TAC_MOVE: fprintf(fout, "## TAC_MOVE\n");
 							if(tac->op1->nature == NATURE_FUNCTION){
 								fprintf(fout, "\tmovl %%eax, %s(%%rip)\n", tac->res->value);
@@ -298,3 +320,941 @@ void asmDiv(TAC* tac, FILE* fout){
 		tac->res->value);
 	}
 }
+void asmGt(TAC* tac, FILE* fout){
+	if(!tac->op1 || !tac ->op2) return;
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION && tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl	%%eax, %%ebx\n"
+				"\tsetg %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->res->value);
+			}
+			else if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl	%%eax, %%edx\n"
+				"\tsetg %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);			
+			}
+			else if (tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax, %%edx\n"
+				"\tsetg	%%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);		
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax, %%edx\n"
+				"\tsetg	%%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl $%s, %%eax\n"
+				"\tsetg	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl $%s, %%eax\n"
+				"\tsetg	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl %%eax,$%s \n"
+				"\tsetg	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax,$%s\n"
+				"\tsetg	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value, tac->op1->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			int numero1 = atoi(tac->op1->value);
+			int numero2 = atoi(tac->op2->value);
+			int res = numero1>numero2;
+			fprintf(fout,
+			"\tmovl $%d, %s(%%rip)\n",
+			res,
+			tac->res->value);
+		}
+		
+}
+void asmLt(TAC* tac, FILE* fout){
+	if(!tac->op1 || !tac ->op2) return;
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION && tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl	%%eax, %%ebx\n"
+				"\tsetl %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->res->value);
+			}
+			else if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl	%%eax, %%edx\n"
+				"\tsetl %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);			
+			}
+			else if (tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax, %%edx\n"
+				"\tsetl	%%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);		
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax, %%edx\n"
+				"\tsetl	%%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl $%s, %%eax\n"
+				"\tsetl	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl $%s, %%eax\n"
+				"\tsetl	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl %%eax,$%s \n"
+				"\tsetl	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax,$%s\n"
+				"\tsetl	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value, tac->op1->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			int numero1 = atoi(tac->op1->value);
+			int numero2 = atoi(tac->op2->value);
+			int res = numero1<numero2;
+			fprintf(fout,
+			"\tmovl $%d, %s(%%rip)\n",
+			res,
+			tac->res->value);
+		}
+		
+}
+void asmLe(TAC* tac, FILE* fout){
+	if(!tac->op1 || !tac ->op2) return;
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION && tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl	%%eax, %%ebx\n"
+				"\tsetle %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->res->value);
+			}
+			else if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl	%%eax, %%edx\n"
+				"\tsetle %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);			
+			}
+			else if (tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax, %%edx\n"
+				"\tsetle	%%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);		
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax, %%edx\n"
+				"\tsetle	%%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl $%s, %%eax\n"
+				"\tsetle	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl $%s, %%eax\n"
+				"\tsetle	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl %%eax,$%s \n"
+				"\tsetle	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax,$%s\n"
+				"\tsetle	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value, tac->op1->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			int numero1 = atoi(tac->op1->value);
+			int numero2 = atoi(tac->op2->value);
+			int res = numero1<=numero2;
+			fprintf(fout,
+			"\tmovl $%d, %s(%%rip)\n",
+			res,
+			tac->res->value);
+		}
+		
+}
+void asmGe(TAC* tac, FILE* fout){
+	if(!tac->op1 || !tac ->op2) return;
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION && tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl	%%eax, %%ebx\n"
+				"\tsetge %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->res->value);
+			}
+			else if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl	%%eax, %%edx\n"
+				"\tsetge %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);			
+			}
+			else if (tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax, %%edx\n"
+				"\tsetge %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);		
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax, %%edx\n"
+				"\tsetge %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl $%s, %%eax\n"
+				"\tsetge %%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl $%s, %%eax\n"
+				"\tsetge %%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl %%eax,$%s \n"
+				"\tsetge %%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax,$%s\n"
+				"\tsetge %%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value, tac->op1->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			int numero1 = atoi(tac->op1->value);
+			int numero2 = atoi(tac->op2->value);
+			int res = numero1>=numero2;
+			fprintf(fout,
+			"\tmovl $%d, %s(%%rip)\n",
+			res,
+			tac->res->value);
+		}
+		
+}
+void asmEq(TAC* tac, FILE* fout){
+	if(!tac->op1 || !tac ->op2) return;
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION && tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl	%%eax, %%ebx\n"
+				"\tsete %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->res->value);
+			}
+			else if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl	%%eax, %%edx\n"
+				"\tsete %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);			
+			}
+			else if (tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax, %%edx\n"
+				"\tsete	%%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);		
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax, %%edx\n"
+				"\tsete	%%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl $%s, %%eax\n"
+				"\tsete	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl $%s, %%eax\n"
+				"\tsete	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl %%eax,$%s \n"
+				"\tsete	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax,$%s\n"
+				"\tsete	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value, tac->op1->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			int numero1 = atoi(tac->op1->value);
+			int numero2 = atoi(tac->op2->value);
+			int res = numero1==numero2;
+			fprintf(fout,
+			"\tmovl $%d, %s(%%rip)\n",
+			res,
+			tac->res->value);
+		}
+		
+}
+void asmNe(TAC* tac, FILE* fout){
+	if(!tac->op1 || !tac ->op2) return;
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION && tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl	%%eax, %%ebx\n"
+				"\tsetne %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->res->value);
+			}
+			else if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl	%%eax, %%edx\n"
+				"\tsetne %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);			
+			}
+			else if (tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax, %%edx\n"
+				"\tsetne	%%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);		
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax, %%edx\n"
+				"\tsetne	%%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl $%s, %%eax\n"
+				"\tsetne	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl $%s, %%eax\n"
+				"\tsetne	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tcmpl %%eax,$%s \n"
+				"\tsetne	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl %%eax,$%s\n"
+				"\tsetne	%%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value, tac->op1->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			int numero1 = atoi(tac->op1->value);
+			int numero2 = atoi(tac->op2->value);
+			int res = numero1!=numero2;
+			fprintf(fout,
+			"\tmovl $%d, %s(%%rip)\n",
+			res,
+			tac->res->value);
+		}
+		
+}
+void asmAnd(TAC* tac, FILE* fout){
+	HASH_NODE *l1, *l2;
+	l1 = makeLable();
+	l2 = makeLable(); 
+	if(!tac->op1 || !tac ->op2) return;
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION && tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\ttstl	$0, %%eax\n"
+				"\tje .%s\n"
+				"\ttstl	$0, %%ebx\n"
+				"\tje .%s\n"
+				"\tmovl $1, %%eax\n"
+				"\tjmp .%s\n"
+				".%s:\n"
+				"\tmovl $0, %%eax\n"
+				".%s:\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				l1->value,l1->value,l2->value,l1->value,l2->value,
+				tac->res->value);
+			}
+			else if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\ttstl	$0, %%eax\n"
+				"\tje .%s\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\ttstl	$0, %%eax\n"
+				"\tje .%s\n"
+				"\tmovl $1, %%eax\n"
+				"\tjmp .%s\n"
+				".%s:\n"
+				"\tmovl $0, %%eax\n"
+				".%s:\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				l1->value,tac->op2->value,l1->value,l2->value,l1->value,l2->value,
+				tac->res->value);			
+			}
+			else if (tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\tmovl %%eax, %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\ttstl	$0, %%eax\n"
+				"\tje .%s\n"
+				"\ttstl	$0, %%edx\n"
+				"\tje .%s\n"
+				"\tmovl $1, %%eax\n"
+				"\tjmp .%s\n"
+				".%s:\n"
+				"\tmovl $0, %%eax\n"
+				".%s:\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,l1->value,l1->value,l2->value,l1->value,l2->value,
+				tac->res->value);		
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%edx\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\ttstl	$0, %%edx\n"
+				"\tje .%s\n"
+				"\ttstl	$0, %%eax\n"
+				"\tje .%s\n"
+				"\tmovl $1, %%eax\n"
+				"\tjmp .%s\n"
+				".%s:\n"
+				"\tmovl $0, %%eax\n"
+				".%s:\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value,l1->value,l1->value,l2->value,l1->value,l2->value,
+				tac->res->value);
+			}
+		}
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION){
+				int numero2 = atoi(tac->op2->value);
+				if(numero2==0){
+				fprintf(fout,
+				"\tmovl $0, %s(%%rip)\n",
+				tac->res->value);
+				}
+				else{
+				fprintf(fout,
+				"\tcmpl $0, %%eax\n"
+				"\tsetne %%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->res->value);
+				}
+			}
+			else{
+				int numero2 = atoi(tac->op2->value);
+				if(numero2==0){
+				fprintf(fout,
+				"\tmovl $0, %s(%%rip)\n",
+				tac->res->value);
+				}
+				else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl $0, %%eax\n"
+				"\tsetne %%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);
+				}
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION){
+				int numero1 = atoi(tac->op1->value);
+				if(numero1==0){
+				fprintf(fout,
+				"\tmovl $0, %s(%%rip)\n",
+				tac->res->value);
+				}
+				else{
+				fprintf(fout,
+				"\tcmpl $0, %%eax\n"
+				"\tsetne %%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->res->value);
+				}
+			}
+			else{
+				int numero1 = atoi(tac->op1->value);
+				if(numero1==0){
+				fprintf(fout,
+				"\tmovl $0, %s(%%rip)\n",
+				tac->res->value);
+				}
+				else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl $0, %%eax\n"
+				"\tsetne %%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);
+				}
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			int numero1 = atoi(tac->op1->value);
+			int numero2 = atoi(tac->op2->value);
+			int res = numero1&&numero2;
+			fprintf(fout,
+			"\tmovl $%d, %s(%%rip)\n",
+			res,
+			tac->res->value);
+		}
+		
+}
+void asmOr(TAC* tac, FILE* fout){
+	HASH_NODE *l1, *l2, *l3;
+	l1 = makeLable();
+	l2 = makeLable(); 
+	l3 = makeLable(); 
+	if(!tac->op1 || !tac ->op2) return;
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION && tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\ttstl	$0, %%eax\n"
+				"\tjne .%s\n"
+				"\ttstl	$0, %%ebx\n"
+				"\tje .%s\n"
+				".%s:\n"
+				"\tmovl $1, %%eax\n"
+				"\tjmp .%s\n"
+				".%s:\n"
+				"\tmovl $0, %%eax\n"
+				".%s:\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				l1->value,l2->value,l1->value,l3->value,l2->value,l3->value,
+				tac->res->value);
+			}
+			else if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\ttstl	$0, %%eax\n"
+				"\tjne .%s\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\ttstl	$0, %%eax\n"
+				"\tje .%s\n"
+				".%s:\n"
+				"\tmovl $1, %%eax\n"
+				"\tjmp .%s\n"
+				".%s:\n"
+				"\tmovl $0, %%eax\n"
+				".%s:\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				l1->value,tac->op2->value,l2->value,l1->value,l3->value,l2->value,l3->value,
+				tac->res->value);			
+			}
+			else if (tac->op2->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				"\ttstl	$0, %%eax\n"
+				"\tjne .%s\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\ttstl	$0, %%eax\n"
+				"\tje .%s\n"
+				".%s:\n"
+				"\tmovl $1, %%eax\n"
+				"\tjmp .%s\n"
+				".%s:\n"
+				"\tmovl $0, %%eax\n"
+				".%s:\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				l1->value,tac->op1->value,l2->value,l1->value,l3->value,l2->value,l3->value,
+				tac->res->value);		
+			}
+			else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\ttstl	$0, %%eax\n"
+				"\tjne .%s\n"
+				"\tmovl %s(%%rip), %%eax\n"
+				"\ttstl	$0, %%eax\n"
+				"\tje .%s\n"
+				".%s:\n"
+				"\tmovl $1, %%eax\n"
+				"\tjmp .%s\n"
+				".%s:\n"
+				"\tmovl $0, %%eax\n"
+				".%s:\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,l1->value,tac->op2->value,l2->value,l1->value,l3->value,l2->value,l3->value,
+				tac->res->value);	
+			}
+		}
+		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION){
+				int numero2 = atoi(tac->op2->value);
+				if(numero2==1){
+				fprintf(fout,
+				"\tmovl $1, %s(%%rip)\n",
+				tac->res->value);
+				}
+				else{
+				fprintf(fout,
+				"\tcmpl $0, %%eax\n"
+				"\tsetne %%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->res->value);
+				}
+			}
+			else{
+				int numero2 = atoi(tac->op2->value);
+				if(numero2==1){
+				fprintf(fout,
+				"\tmovl $1, %s(%%rip)\n",
+				tac->res->value);
+				}
+				else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl $0, %%eax\n"
+				"\tsetne %%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);
+				}
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
+			if(tac->op1->nature == NATURE_FUNCTION){
+				int numero1 = atoi(tac->op1->value);
+				if(numero1==1){
+				fprintf(fout,
+				"\tmovl $1, %s(%%rip)\n",
+				tac->res->value);
+				}
+				else{
+				fprintf(fout,
+				"\tcmpl $0, %%eax\n"
+				"\tsetne %%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->res->value);
+				}
+			}
+			else{
+				int numero1 = atoi(tac->op1->value);
+				if(numero1==1){
+				fprintf(fout,
+				"\tmovl $1, %s(%%rip)\n",
+				tac->res->value);
+				}
+				else{
+				fprintf(fout,
+				"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl $0, %%eax\n"
+				"\tsetne %%al)\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value,
+				tac->res->value);
+				}
+			}
+		}
+		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
+			int numero1 = atoi(tac->op1->value);
+			int numero2 = atoi(tac->op2->value);
+			int res = numero1||numero2;
+			fprintf(fout,
+			"\tmovl $%d, %s(%%rip)\n",
+			res,
+			tac->res->value);
+		}
+		
+}
+void asmNegado(TAC* tac, FILE* fout){
+
+	if(tac->op1->type == SYMBOL_IDENTIFIER){
+		if(tac->op1->nature == NATURE_FUNCTION){
+			fprintf(fout,"\tcmpl	%%eax, $0\n"
+				"\tsete %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->res->value);}
+		else{fprintf(fout,"\tmovl %s(%%rip), %%eax\n"
+				"\tcmpl	%%eax, $0\n"
+				"\tsete %%al\n"
+				"\tmovzbl %%al, %%eax\n"
+				"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value,
+				tac->res->value);}
+	}
+	else{
+		int numero1 = atoi(tac->op1->value);
+		if(numero1==0){
+			fprintf(fout,
+			"\tmovl $1, %s(%%rip)\n",
+			tac->res->value);
+		}
+		else{
+			fprintf(fout,
+			"\tmovl $0, %s(%%rip)\n",
+			tac->res->value);
+		}
+	}	
+}
+
+
+
+
+

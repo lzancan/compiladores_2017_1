@@ -11,3 +11,12 @@ void asmMul(TAC* tac, FILE* fout);
 void asmDiv(TAC* tac, FILE* fout);
 void funcPush(TAC* tac, FILE* fout);
 void funcPop(TAC* tac, FILE* fout);
+void asmGt(TAC* tac, FILE* fout);
+void asmLt(TAC* tac, FILE* fout);
+void asmLe(TAC* tac, FILE* fout);
+void asmGe(TAC* tac, FILE* fout);
+void asmEq(TAC* tac, FILE* fout);
+void asmNe(TAC* tac, FILE* fout);
+void asmAnd(TAC* tac, FILE* fout);
+void asmOr(TAC* tac, FILE* fout);
+
