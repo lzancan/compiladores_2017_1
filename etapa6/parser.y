@@ -209,7 +209,12 @@
 					   } | 
 		   TK_IDENTIFIER '(' LISTA_FUNCAO_PARAMETROS ')' { $$ = astreeCreate(ASTREE_EXPRESSAO_FUNCAO, $1, $3, 0, 0, 0);
 								   getFunctCallAstreeNode($1,$3);
-								   //$$->dataType = $1->dataType;
+								   if($1->dataType == DATATYPE_FLOAT || $1->dataType == DATATYPE_DOUBLE){
+									$$->valueType = VALUETYPE_REAL;
+								   }
+								   if($1->dataType == DATATYPE_LONG || $1->dataType == DATATYPE_SHORT || $1->dataType == DATATYPE_BYTE){
+									$$->valueType = VALUETYPE_INTEGER;
+								    }
 								 } |
 		   //'-' EXPRESSAO { $$ = astreeCreate(ASTREE_NEGATIVO, NULL, $2, 0, 0, 0);setValueType($$);} |
 		   LIT_INTEGER { $$ = astreeCreate(ASTREE_LITERAL, $1, 0, 0, 0, 0);$$->valueType = VALUETYPE_INTEGER;} |
