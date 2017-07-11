@@ -51,10 +51,10 @@ TAC* tacGenerate(ASTREE* node){
 		case ASTREE_LITERAL: result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
 		case ASTREE_IDENTIFIER: result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
 		case ASTREE_READ: result = tacCreate(TAC_READ, node->symbol, 0, 0); break;
-		case ASTREE_ADD: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_ADD, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->op1 : 0))); break;
-		case ASTREE_SUB: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_SUB, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->op1 : 0))); break;
-		case ASTREE_MUL: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MUL, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->op1 : 0))); break;
-		case ASTREE_DIV: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_DIV, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->op1 : 0))); break;
+		case ASTREE_ADD: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_ADD, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_SUB: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_SUB, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_MUL: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MUL, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_DIV: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_DIV, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
 
 		case ASTREE_LESS_THAN:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_LT, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
 		case ASTREE_GREATER_THAN:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_GT, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;

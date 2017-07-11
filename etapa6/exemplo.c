@@ -1,9 +1,9 @@
 #include <stdio.h>
 
 int a=45;
-float b = 2;
+int b = 2;
 
-int func(int ac, int bc){
+/*int func(){
 	//a=54/a;
 	//a=a/5;
 	//a=a/b;
@@ -14,8 +14,9 @@ int func(int ac, int bc){
 }
 
 int funct2(){}
-
+*/
 int main(){
-	a=func(1,5);
+	printf("teste");
+	printf("%d",a);
 	//a=a+2;
 }

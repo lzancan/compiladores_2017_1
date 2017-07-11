@@ -35,13 +35,19 @@ void asmGen(TAC* first){
 			case TAC_NE: fprintf(fout, "## TAC_NE\n"); asmNe(tac, fout);break;
 			case TAC_AND: fprintf(fout, "## TAC_AND\n"); asmAnd(tac, fout);break;
 			case TAC_OR: fprintf(fout, "## TAC_OR\n"); asmOr(tac, fout);break;
+			case TAC_READ: fprintf(fout, "## TAC_READ\n"
+						"\tmovl $%s, %%esi\n"
+						"\tmovl $.LC0, %%edi\n"
+						"\tmovl $0 %%eax\n"
+						"\tcall __isoc99_scanf\n"
+						,tac->res->value);break;
 			case TAC_IFZ: fprintf(fout, "## TAC_IFZ\n");fprintf(fout,
 									"\tmovl %s(%%rip), %%eax\n"
-									"\tcmpl %%eax, $1\n"
-									"\tjne  .%s\n",
+									"\tcmpl $1, %%eax\n"
+									"\tje  .%s\n",
 									tac->op1->value,
 									tac->res->value); break;
-			case TAC_LABEL: fprintf(fout, "## TAC_LABEL\n");fprintf(fout, ".%s\n",	tac->res->value); break;
+			case TAC_LABEL: fprintf(fout, "## TAC_LABEL\n");fprintf(fout, ".%s:\n",	tac->res->value); break;
 			case TAC_GOTO: fprintf(fout, "## TAC_GOTO\n");fprintf(fout, "\tjmp  .%s\n",	tac->res->value); break;
 			case TAC_INC: fprintf(fout, "## TAC_INC\n");fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
@@ -53,8 +59,13 @@ void asmGen(TAC* first){
 							if(tac->op1->nature == NATURE_FUNCTION){
 								fprintf(fout, "\tmovl %%eax, %s(%%rip)\n", tac->res->value);
 							}
+							else if(tac->op1->type == SYMBOL_IDENTIFIER){
+								fprintf(fout, "\tmovl %s(%%rip), %%eax\n"
+												"\tmovl %%eax, %s(%%rip)\n",
+								tac->op1->value, tac->res->value); 
+							}
 							else{
-								fprintf(fout, "\tmovl %s(%%rip), %s(%%rip)\n",
+								fprintf(fout, "\tmovl $%s, %s(%%rip)\n",
 								tac->op1->value, tac->res->value); 
 							}
 							 break;
@@ -186,7 +197,7 @@ void funcPop(TAC* tac, FILE* fout){
 
 
 void asmAdd(TAC* tac, FILE* fout){
-	if(!tac->op1 || !tac ->op2) return;
+	if(!tac->op1 || !tac->op2) return;
 		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
 			if(tac->op1->nature == NATURE_FUNCTION && tac->op2->nature == NATURE_FUNCTION){
 				fprintf(fout,
@@ -594,7 +605,7 @@ void asmGt(TAC* tac, FILE* fout){
 			if(tac->op1->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tcmpl $%s, %%eax\n"
-				"\tsetg	%%al)\n"
+				"\tsetg	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value,
@@ -604,7 +615,7 @@ void asmGt(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl $%s, %%eax\n"
-				"\tsetg	%%al)\n"
+				"\tsetg	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value, tac->op2->value,
@@ -615,7 +626,7 @@ void asmGt(TAC* tac, FILE* fout){
 			if(tac->op2->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tcmpl %%eax,$%s \n"
-				"\tsetg	%%al)\n"
+				"\tsetg	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value,
@@ -625,7 +636,7 @@ void asmGt(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl %%eax,$%s\n"
-				"\tsetg	%%al)\n"
+				"\tsetg	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value, tac->op1->value,
@@ -692,7 +703,7 @@ void asmLt(TAC* tac, FILE* fout){
 			if(tac->op1->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tcmpl $%s, %%eax\n"
-				"\tsetl	%%al)\n"
+				"\tsetl	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value,
@@ -702,7 +713,7 @@ void asmLt(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl $%s, %%eax\n"
-				"\tsetl	%%al)\n"
+				"\tsetl	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value, tac->op2->value,
@@ -713,7 +724,7 @@ void asmLt(TAC* tac, FILE* fout){
 			if(tac->op2->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tcmpl %%eax,$%s \n"
-				"\tsetl	%%al)\n"
+				"\tsetl	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value,
@@ -723,7 +734,7 @@ void asmLt(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl %%eax,$%s\n"
-				"\tsetl	%%al)\n"
+				"\tsetl	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value, tac->op1->value,
@@ -790,7 +801,7 @@ void asmLe(TAC* tac, FILE* fout){
 			if(tac->op1->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tcmpl $%s, %%eax\n"
-				"\tsetle	%%al)\n"
+				"\tsetle	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value,
@@ -800,7 +811,7 @@ void asmLe(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl $%s, %%eax\n"
-				"\tsetle	%%al)\n"
+				"\tsetle	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value, tac->op2->value,
@@ -811,7 +822,7 @@ void asmLe(TAC* tac, FILE* fout){
 			if(tac->op2->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tcmpl %%eax,$%s \n"
-				"\tsetle	%%al)\n"
+				"\tsetle	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value,
@@ -821,7 +832,7 @@ void asmLe(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl %%eax,$%s\n"
-				"\tsetle	%%al)\n"
+				"\tsetle	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value, tac->op1->value,
@@ -888,7 +899,7 @@ void asmGe(TAC* tac, FILE* fout){
 			if(tac->op1->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tcmpl $%s, %%eax\n"
-				"\tsetge %%al)\n"
+				"\tsetge %%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value,
@@ -898,7 +909,7 @@ void asmGe(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl $%s, %%eax\n"
-				"\tsetge %%al)\n"
+				"\tsetge %%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value, tac->op2->value,
@@ -909,7 +920,7 @@ void asmGe(TAC* tac, FILE* fout){
 			if(tac->op2->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tcmpl %%eax,$%s \n"
-				"\tsetge %%al)\n"
+				"\tsetge %%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value,
@@ -919,7 +930,7 @@ void asmGe(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl %%eax,$%s\n"
-				"\tsetge %%al)\n"
+				"\tsetge %%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value, tac->op1->value,
@@ -986,7 +997,7 @@ void asmEq(TAC* tac, FILE* fout){
 			if(tac->op1->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tcmpl $%s, %%eax\n"
-				"\tsete	%%al)\n"
+				"\tsete	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value,
@@ -996,7 +1007,7 @@ void asmEq(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl $%s, %%eax\n"
-				"\tsete	%%al)\n"
+				"\tsete	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value, tac->op2->value,
@@ -1007,7 +1018,7 @@ void asmEq(TAC* tac, FILE* fout){
 			if(tac->op2->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tcmpl %%eax,$%s \n"
-				"\tsete	%%al)\n"
+				"\tsete	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value,
@@ -1017,7 +1028,7 @@ void asmEq(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl %%eax,$%s\n"
-				"\tsete	%%al)\n"
+				"\tsete	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value, tac->op1->value,
@@ -1084,7 +1095,7 @@ void asmNe(TAC* tac, FILE* fout){
 			if(tac->op1->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tcmpl $%s, %%eax\n"
-				"\tsetne	%%al)\n"
+				"\tsetne	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value,
@@ -1094,7 +1105,7 @@ void asmNe(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl $%s, %%eax\n"
-				"\tsetne	%%al)\n"
+				"\tsetne	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value, tac->op2->value,
@@ -1105,7 +1116,7 @@ void asmNe(TAC* tac, FILE* fout){
 			if(tac->op2->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tcmpl %%eax,$%s \n"
-				"\tsetne	%%al)\n"
+				"\tsetne	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value,
@@ -1115,7 +1126,7 @@ void asmNe(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl %%eax,$%s\n"
-				"\tsetne	%%al)\n"
+				"\tsetne	%%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value, tac->op1->value,
@@ -1216,7 +1227,7 @@ void asmAnd(TAC* tac, FILE* fout){
 				else{
 				fprintf(fout,
 				"\tcmpl $0, %%eax\n"
-				"\tsetne %%al)\n"
+				"\tsetne %%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->res->value);
@@ -1233,7 +1244,7 @@ void asmAnd(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl $0, %%eax\n"
-				"\tsetne %%al)\n"
+				"\tsetne %%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value,
@@ -1252,7 +1263,7 @@ void asmAnd(TAC* tac, FILE* fout){
 				else{
 				fprintf(fout,
 				"\tcmpl $0, %%eax\n"
-				"\tsetne %%al)\n"
+				"\tsetne %%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->res->value);
@@ -1269,7 +1280,7 @@ void asmAnd(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl $0, %%eax\n"
-				"\tsetne %%al)\n"
+				"\tsetne %%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value,
@@ -1375,7 +1386,7 @@ void asmOr(TAC* tac, FILE* fout){
 				else{
 				fprintf(fout,
 				"\tcmpl $0, %%eax\n"
-				"\tsetne %%al)\n"
+				"\tsetne %%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->res->value);
@@ -1392,7 +1403,7 @@ void asmOr(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl $0, %%eax\n"
-				"\tsetne %%al)\n"
+				"\tsetne %%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op1->value,
@@ -1411,7 +1422,7 @@ void asmOr(TAC* tac, FILE* fout){
 				else{
 				fprintf(fout,
 				"\tcmpl $0, %%eax\n"
-				"\tsetne %%al)\n"
+				"\tsetne %%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->res->value);
@@ -1428,7 +1439,7 @@ void asmOr(TAC* tac, FILE* fout){
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
 				"\tcmpl $0, %%eax\n"
-				"\tsetne %%al)\n"
+				"\tsetne %%al\n"
 				"\tmovzbl %%al, %%eax\n"
 				"\tmovl %%eax, %s(%%rip)\n",
 				tac->op2->value,

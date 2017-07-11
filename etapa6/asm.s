@@ -1,39 +1,25 @@
 ## VARIAVEIS_GLOBAIS
-	.globl a
-	.align 4
-	.type	a, @object
-	.size	a, 4
-a:
-	.long	1
-## VARIAVEIS_GLOBAIS
 	.globl b
 	.align 4
 	.type	b, @object
 	.size	b, 4
 b:
-	.long	2
+	.long	15
+## VARIAVEIS_GLOBAIS
+	.globl a
+	.align 4
+	.type	a, @object
+	.size	a, 4
+a:
+	.long	0
 ## TAC_FUNCPUSH
-	.globl	fun
-	.type	fun, @function
-fun:
 .labbbbellski0:
-	.cfi_startproc
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-## TAC_FUNCPOP
-	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
+	.string "kkk"
 .labbbbellski1:
-	.size	fun, .-fun
-## TAC_FUNCPUSH
-	.globl	funct2
-	.type	funct2, @function
-funct2:
+	.string "%d"
+	.globl	main
+	.type	main, @function
+main:
 .labbbbellski2:
 	.cfi_startproc
 	pushq	%rbp
@@ -41,36 +27,20 @@ funct2:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
+## TAC_PRINT
+	movl	$.labbbbellski0, %edi
+	movl	$0, %eax
+	call	printf
+## TAC_PRINT
+	movl	a(%rip), %eax
+	movl	%eax, %esi
+	movl	$.labbbbellski1, %edi
+	movl	$0, %eax
+	call	printf
 ## TAC_FUNCPOP
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .labbbbellski3:
-	.size	funct2, .-funct2
-## TAC_FUNCPUSH
-	.globl	main
-	.type	main, @function
-main:
-.labbbbellski4:
-	.cfi_startproc
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-## TAC_CALLFUNC
-	movl	$0, %eax
-	call	fun
-## TAC_CALLFUNC
-	movl	$0, %eax
-	call	funct2
-## TAC_MOVE
-	movl %eax, a(%rip)
-## TAC_FUNCPOP
-	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
-.labbbbellski5:
 	.size	main, .-main
