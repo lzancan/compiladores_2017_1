@@ -1,21 +1,22 @@
 a: long  1;
-b: long  0;
-c: long  [10];
+b: long  2;
+c: long  [10] 1 2 2 3 3 4 5 1 2 3;
 
-long  fun()
+long  fun(long h,long j)
 {
 return 3;
-;
 }
 ;
 
 long  funct2()
 {
+return 1;
 }
 ;
 
 long  main()
 {
-a=1+fun();
+a=fun(25,funct2());
+return 2;
 }
 ;

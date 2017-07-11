@@ -1,21 +1,22 @@
 a: long 1;
-b: long 0;
-c: long[10];
+b: long 2;
+c: long[10] 1 2 2 3 3 4 5 1 2 3;
 
-long fun(){
+long fun(long h, long j){
 	//a=5/a;
 	//a=a/5;
 	//a=a/a;
 	//a=5/2;
 	//a=a+a;
-	return 3;;
+	return 3;
 };
 
-long funct2(){};
+long funct2(){ return 1;};
 
 
 long main(){
-	a=1+fun();
+	//a=fun(4)+1;
+	a=fun(25,funct2());
 	//a=a+1;
 	/*a=2+3;
 	a=fun(a,b,c[10]);
@@ -26,6 +27,7 @@ long main(){
 	print 2;
 
 	return 53;*/
+	return 2;
 };
 
 

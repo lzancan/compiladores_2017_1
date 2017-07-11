@@ -1,3 +1,17 @@
+## VARIAVEIS_GLOBAIS
+	.globl a
+	.align 4
+	.type	a, @object
+	.size	a, 4
+a:
+	.long	1
+## VARIAVEIS_GLOBAIS
+	.globl b
+	.align 4
+	.type	b, @object
+	.size	b, 4
+b:
+	.long	2
 ## TAC_FUNCPUSH
 	.globl	fun
 	.type	fun, @function
@@ -48,11 +62,11 @@ main:
 ## TAC_CALLFUNC
 	movl	$0, %eax
 	call	fun
-## TAC_ADD
-	addl $1, %eax
-	movl %eax, temmmmporarryooius3(%rip)
+## TAC_CALLFUNC
+	movl	$0, %eax
+	call	funct2
 ## TAC_MOVE
-	movl temmmmporarryooius3(%rip), a(%rip)
+	movl %eax, a(%rip)
 ## TAC_FUNCPOP
 	popq	%rbp
 	.cfi_def_cfa 7, 8

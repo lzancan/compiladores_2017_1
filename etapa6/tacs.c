@@ -44,13 +44,17 @@ TAC* tacGenerate(ASTREE* node){
 	// processa esse nodo
 	switch(node->type){
 		case ASTREE_SYMBOL: result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
+		case ASTREE_VAR_GLOBAL: if(node->symbol->nature == NATURE_ESCALAR){ 
+					result = tacCreate(TAC_VAR_GLOBAL, node->symbol, code[1] ? code[1]->res : 0, code[0]? code[0]->res : 0); 
+					}
+				break;
 		case ASTREE_LITERAL: result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
 		case ASTREE_IDENTIFIER: result = tacCreate(TAC_SYMBOL, node->symbol, 0, 0); break;
 		case ASTREE_READ: result = tacCreate(TAC_READ, node->symbol, 0, 0); break;
-		case ASTREE_ADD: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_ADD, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
-		case ASTREE_SUB: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_SUB, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
-		case ASTREE_MUL: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MUL, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
-		case ASTREE_DIV: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_DIV, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
+		case ASTREE_ADD: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_ADD, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->op1 : 0))); break;
+		case ASTREE_SUB: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_SUB, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->op1 : 0))); break;
+		case ASTREE_MUL: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_MUL, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->op1 : 0))); break;
+		case ASTREE_DIV: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_DIV, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->op1 : 0))); break;
 
 		case ASTREE_LESS_THAN:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_LT, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
 		case ASTREE_GREATER_THAN:  result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_GT, makeTemp(), code[0] ? code[0]->res : 0, code[1]? code[1]->res : 0))); break;
@@ -179,6 +183,7 @@ void tacPrintBack(TAC* last){
 	for(tac = last; tac; tac = tac->prev){
 		fprintf(stderr, "TAC(\n");
 		switch(tac->type){
+			case TAC_VAR_GLOBAL: fprintf(stderr, "TAC_VAR_GLOBAL"); break;
 			case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL"); break;
 			case TAC_ADD: fprintf(stderr, "TAC_ADD"); break;
 			case TAC_SUB: fprintf(stderr, "TAC_SUB"); break;
@@ -233,6 +238,7 @@ void tacPrintForward(TAC* first){
 	  
 		fprintf(stderr, "TAC(");
 		switch(tac->type){
+			case TAC_VAR_GLOBAL: fprintf(stderr, "TAC_VAR_GLOBAL"); break;
 			case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL"); break;
 			case TAC_ADD: fprintf(stderr, "TAC_ADD"); break;
 			case TAC_SUB: fprintf(stderr, "TAC_SUB"); break;

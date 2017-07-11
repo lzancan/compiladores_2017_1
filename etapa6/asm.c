@@ -10,19 +10,15 @@ void asmGen(TAC* first){
 	FILE* fout;
 	fout = fopen("asm.s", "w");
 	
-	// print variaveis globais da hash
 	
-	fprintf(fout, "## VARIAVEIS_GLOBAIS\n");
-	printHashAsm(fout); 
-	
-	//
-
 	TAC* tac;
 	for(tac = first; tac; tac = tac->next){
 		if(tac->type == TAC_SYMBOL){
 			continue;		
 		}
 		switch(tac->type){
+			case TAC_VAR_GLOBAL: fprintf(fout, "## VARIAVEIS_GLOBAIS\n");
+						printVarGlobal(tac, fout); break;
 			case TAC_ADD: fprintf(fout, "## TAC_ADD\n"); asmAdd(tac, fout);
 							 break;
 			case TAC_SUB: fprintf(fout, "## TAC_SUB\n"); asmSub(tac, fout);
@@ -108,25 +104,14 @@ void asmGen(TAC* first){
 
 }
 
-void printHashAsm(FILE* fout){
-	int i;
-	HASH_NODE * node = NULL;
-
-	//fprintf(stderr,"Hash printing:\nInicio de impressao\n");
-	for(i=0 ; i < HASH_SIZE ; i++){
-		for(node = hashTable[i] ; node ; node = node->next){
-			if(node->nature == NATURE_ESCALAR){
-				fprintf(fout,"\t.globl %s\n"
-					     "\t.align 4\n"
-					     "\t.type	%s, @object\n"
-					     "\t.size	%s, 4\n"
-					     "%s:\n"
-					     "\t.long	45\n", node->value, node->value, node->value, node->value); 			
-			}
-			//printHashNode(node);
-		}
-	}
-	fprintf(stderr,"Termino de impressao\n");
+void printVarGlobal(TAC* tac, FILE* fout){
+	//if(tac->res->dataType == DATATYPE_BYTE || tac->res->dataType == DATATYPE_SHORT || tac->res->dataType == DATATYPE_SHORT){
+		fprintf(fout,"\t.globl %s\n"
+		     	     "\t.align 4\n"
+		             "\t.type	%s, @object\n"
+		             "\t.size	%s, 4\n"
+		             "%s:\n"
+		             "\t.long	%d\n", tac->res->value, tac->res->value, tac->res->value, tac->res->value, atoi(tac->op1->value));
 }
 
 

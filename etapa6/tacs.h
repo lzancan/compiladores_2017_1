@@ -38,6 +38,7 @@
 #define TAC_EXPRESSAO_VETOR 32
 #define TAC_PARAMETRO 33
 #define TAC_PARAMETRO_CALL 34
+#define TAC_VAR_GLOBAL 35
 
 
 typedef struct tac_struct
