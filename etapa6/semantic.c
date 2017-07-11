@@ -362,6 +362,7 @@ int testAtribuicao(HASH_NODE * hashNode, ASTREE* astreeNode){
 	if(hashNode->nature == NATURE_ESCALAR){
 		if(astreeNode->symbol){
 			if(astreeNode->symbol->nature == NATURE_FUNCTION){
+				fprintf(stderr,"chegou aqui\n");
 				if(astreeNode->symbol->dataType != hashNode->dataType){
 				fprintf(stderr,"Escalar atribuido a funcao com assinaturas diferentes na linha %d\n",getLineNumber());
 				exit(4);

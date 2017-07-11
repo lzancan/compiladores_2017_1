@@ -16,6 +16,6 @@ long  funct2()
 
 long  main()
 {
-a=1+fun();
+c#2=fun();
 }
 ;

@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int a=45;
-int b = 2;
+int b;
 
 int func(){
 	//a=54/a;
@@ -15,6 +15,6 @@ int func(){
 int funct2(){}
 
 int main(){
-	a=1+func();
+	return 1;
 	//a=a+2;
 }

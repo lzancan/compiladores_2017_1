@@ -6,12 +6,7 @@
 	.size	a, 4
 a:
 	.long	45
-	.globl	b
-	.align 4
-	.type	b, @object
-	.size	b, 4
-b:
-	.long	2
+	.comm	b,4,4
 	.text
 	.globl	func
 	.type	func, @function
@@ -57,11 +52,7 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	movl	$0, %eax
-	call	func
-	addl	$1, %eax
-	movl	%eax, a(%rip)
-	movl	$0, %eax
+	movl	$1, %eax
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
