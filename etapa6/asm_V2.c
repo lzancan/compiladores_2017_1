@@ -4,7 +4,6 @@
 
 #include "asm.h"
 
-int flagVarTemp = 0;
 
 void asmGen(TAC* first){
 
@@ -61,9 +60,11 @@ void asmGen(TAC* first){
 								fprintf(fout, "\tmovl %%eax, %s(%%rip)\n", tac->res->value);
 							}
 							else if(tac->op1->type == SYMBOL_IDENTIFIER){
-								fprintf(fout, "\tmovl %s(%%rip), %%eax\n"
-												"\tmovl %%eax, %s(%%rip)\n",
-								tac->op1->value, tac->res->value); 
+								fprintf(fout, 
+                                                         //		"\tmovl %s(%%rip), %%eax\n"
+									"\tmovl %%eax, %s(%%rip)\n",
+								//tac->op1->value, 
+								tac->res->value); 
 							}
 							else{
 								fprintf(fout, "\tmovl $%s, %s(%%rip)\n",
@@ -91,7 +92,7 @@ void asmGen(TAC* first){
 								"\tmovl	%%eax, %s(%%rip)\n"
 								, tac->op1->value, atoi(tac->op2->value)*4 , tac->res->value); 
 							break;
-			case TAC_FUNCPUSH: funcPush(tac, fout); break;
+			case TAC_FUNCPUSH: fprintf(fout, "## TAC_FUNCPUSH\n"); funcPush(tac, fout); break;
 			case TAC_FUNCPOP: fprintf(fout, "## TAC_FUNCPOP\n"); funcPop(tac, fout); break;
 			case TAC_CALLFUNC: fprintf(fout, "## TAC_CALLFUNC\n");
 								if(tac->next->type == TAC_CALLFUNC){
@@ -149,23 +150,8 @@ void asmPrint(TAC* tac,FILE* fout){
 }
 
 void funcPush(TAC* tac, FILE* fout){
-
-	if (flagVarTemp == 0){
-		int i;
-		HASH_NODE * node = NULL;
-		// declara todas as variaveis temporarias...
-		for(i=0 ; i < HASH_SIZE ; i++){
-			for(node = hashTable[i] ; node ; node = node->next){
-				if(node -> nature == 0 && node -> type == SYMBOL_IDENTIFIER){
-					fprintf(fout, "\t.comm	%s,4,4\n", node->value);				
-				}
-			}
-		}		
-
-		flagVarTemp=1;
-	}	
-
-	//declara labels do print	
+	//declara labels do print
+	
 	TAC* tacLabel;
 	for(tacLabel=tac; tacLabel->type != TAC_FUNCPOP; tacLabel=tacLabel->next){
 		if(tacLabel->type == TAC_PRINT){
@@ -187,7 +173,6 @@ void funcPush(TAC* tac, FILE* fout){
 		
 	//
 
-	fprintf(fout, "## TAC_FUNCPUSH\n");
 
 	fprintf(fout,"\t.globl	%s\n"
 		     "\t.type	%s, @function\n", tac->res->value, tac->res->value);
@@ -220,69 +205,77 @@ void asmAdd(TAC* tac, FILE* fout){
 			if(tac->op1->nature == NATURE_FUNCTION && tac->op2->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\taddl	%%ebx, %%eax\n"
-				"\tmovl %%eax, %s(%%rip)\n",
-				tac->res->value);
+				//"\tmovl %%eax, %s(%%rip)\n"
+				//,tac->res->value
+				);
 			}
 			else if(tac->op1->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tmovl %%eax, %%edx\n"
 				"\tmovl %s(%%rip), %%eax\n"
-				"\taddl %%edx, %%eax\n"
-				"\tmovl %%eax, %s(%%rip)\n",
-				tac->op2->value,
-				tac->res->value);			
+				"\taddl %%edx, %%eax\n",
+				//"\tmovl %%eax, %s(%%rip)\n"
+				tac->op2->value
+				//tac->res->value
+				);			
 			}
 			else if (tac->op2->nature == NATURE_FUNCTION){
 				fprintf(fout,
 				"\tmovl %%eax, %%edx\n"
 				"\tmovl %s(%%rip), %%eax\n"
-				"\taddl %%edx, %%eax\n"
-				"\tmovl %%eax, %s(%%rip)\n",
-				tac->op1->value,
-				tac->res->value);			
+				"\taddl %%edx, %%eax\n",
+				//"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value
+				//,tac->res->value
+				);			
 			}
 			else{
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%edx\n"
 				"\tmovl %s(%%rip), %%eax\n"
-				"\taddl %%edx, %%eax\n"
-				"\tmovl %%eax, %s(%%rip)\n",
-				tac->op1->value, tac->op2->value,
-				tac->res->value);
+				"\taddl %%edx, %%eax\n",
+				//"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value
+				//, tac->res->value
+				);
 			}
 		}
 		if(tac->op1->type == SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
 			if(tac->op1->nature == NATURE_FUNCTION){
 				fprintf(fout,
-				"\taddl $%s, %%eax\n"
-				"\tmovl %%eax, %s(%%rip)\n",
-				tac->op2->value,
-				tac->res->value);
+				"\taddl $%s, %%eax\n",
+				//"\tmovl %%eax, %s(%%rip)\n",
+				tac->op2->value
+				//tac->res->value
+				);
 			}
 			else{
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
-				"\taddl $%s, %%eax\n"
-				"\tmovl %%eax, %s(%%rip)\n",
-				tac->op1->value, tac->op2->value,
-				tac->res->value);
+				"\taddl $%s, %%eax\n",
+				//"\tmovl %%eax, %s(%%rip)\n",
+				tac->op1->value, tac->op2->value
+				//, tac->res->value
+				);
 			}
 		}
 		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type == SYMBOL_IDENTIFIER){
 			if(tac->op2->nature == NATURE_FUNCTION){
 				fprintf(fout,
-				"\taddl $%s, %%eax\n"
-				"\tmovl %%eax, %s(%%rip)\n",
-				tac->op1->value,
-				tac->res->value);
+				"\taddl $%s, %%eax\n",
+				//"\tmovl %%eax, %s(%%rip)\n"
+				tac->op1->value
+				//tac->res->value
+				);
 			}
 			else{
 				fprintf(fout,
 				"\tmovl %s(%%rip), %%eax\n"
-				"\taddl $%s, %%eax\n"
-				"\tmovl %%eax, %s(%%rip)\n",
-				tac->op2->value, tac->op1->value,
-				tac->res->value);
+				"\taddl $%s, %%eax\n",
+				//"\tmovl %%eax, %s(%%rip)\n"
+				tac->op2->value, tac->op1->value
+				//tac->res->value
+				);
 			}
 		}
 		if(tac->op1->type != SYMBOL_IDENTIFIER && tac->op2->type != SYMBOL_IDENTIFIER){
@@ -290,9 +283,11 @@ void asmAdd(TAC* tac, FILE* fout){
 			int numero2 = atoi(tac->op2->value);
 			int soma = numero1+numero2;
 			fprintf(fout,
-			"\tmovl $%d, %s(%%rip)\n",
-			soma,
-			tac->res->value);
+			//"\tmovl $%d, %s(%%rip)\n",
+			"\tmovl $%d, %%eax\n",
+			soma
+			//tac->res->value
+			);
 		}
 		
 }

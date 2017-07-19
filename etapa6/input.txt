@@ -1,6 +1,9 @@
+a: long 10;
+b: long 5;
 
 long main(){
-	print "ok\n";
+	a=a/b;
+	print a "\n";
 };
 
 

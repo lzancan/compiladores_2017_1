@@ -1,7 +1,12 @@
 	.file	"exemplo.c"
-	.section	.rodata
-.LC0:
-	.string	"ok"
+	.globl	a
+	.data
+	.align 4
+	.type	a, @object
+	.size	a, 4
+a:
+	.long	2
+	.comm	vaidasim,4,4
 	.text
 	.globl	main
 	.type	main, @function
@@ -13,8 +18,11 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	movl	$.LC0, %edi
-	call	puts
+	movl	-8(%rbp), %eax
+	leal	2(%rax), %edx
+	movl	-4(%rbp), %eax
+	addl	%edx, %eax
+	movl	%eax, -8(%rbp)
 	movl	$0, %eax
 	popq	%rbp
 	.cfi_def_cfa 7, 8
