@@ -1,23 +1,6 @@
-a: long 1;
-
-
-long fun(long h, long j){
-	//a=5/a;
-	//a=a/5;
-	//a=a/a;
-	//a=5/2;
-	//a=a+a;
-	return 3;
-};
-
-long funct2(){ return 1;};
-
 
 long main(){
-
-	a=1+2;
-	
-	return 2;
+	print "ok\n";
 };
 
 
