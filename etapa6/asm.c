@@ -118,6 +118,7 @@ void asmGen(TAC* first){
 void printVarGlobal(TAC* tac, FILE* fout){
 	//if(tac->res->dataType == DATATYPE_BYTE || tac->res->dataType == DATATYPE_SHORT || tac->res->dataType == DATATYPE_SHORT){
 		fprintf(fout,"\t.globl %s\n"
+			     "\t.data\n"
 		     	     "\t.align 4\n"
 		             "\t.type	%s, @object\n"
 		             "\t.size	%s, 4\n"

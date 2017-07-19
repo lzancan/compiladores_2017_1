@@ -1,6 +1,5 @@
 a: long 1;
-b: long 2;
-c: long[10] 1 2 2 3 3 4 5 1 2 3;
+
 
 long fun(long h, long j){
 	//a=5/a;
@@ -15,18 +14,9 @@ long funct2(){ return 1;};
 
 
 long main(){
-	//a=fun(4)+1;
-	a=fun(25,funct2());
-	//a=a+1;
-	/*a=2+3;
-	a=fun(a,b,c[10]);
-	a=c[2];
-	c#1=a;
-	print c[7];
-	print "oi" a;
-	print 2;
 
-	return 53;*/
+	a=1+2;
+	
 	return 2;
 };
 

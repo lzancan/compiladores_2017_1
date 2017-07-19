@@ -1,6 +1,4 @@
 a: long  1;
-b: long  2;
-c: long  [10] 1 2 2 3 3 4 5 1 2 3;
 
 long  fun(long h,long j)
 {
@@ -16,7 +14,7 @@ return 1;
 
 long  main()
 {
-a=fun(25,funct2());
+a=1+2;
 return 2;
 }
 ;
