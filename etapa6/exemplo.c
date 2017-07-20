@@ -1,8 +1,10 @@
 #include <stdio.h>
 int a = 2;
 int vaidasim;
+
+int fun(){
+	return a+1;
+}
 int main(){
-	int a;
-	int b;
-	a=a+2+b;
+	scanf("%d",&a);
 }

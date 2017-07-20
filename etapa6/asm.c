@@ -28,6 +28,12 @@ void asmGen(TAC* first){
 							 break;
 			case TAC_DIV: fprintf(fout, "## TAC_DIV\n"); asmDiv(tac, fout);
 							 break;
+			case TAC_RETURN: fprintf(fout, "## TAC_RETURN\n"); if(tac->op1->type == SYMBOL_LIT_INTEGER || 
+										tac->op1->type == SYMBOL_LIT_REAL){
+											fprintf(fout, "\tmovl $%s, %%eax\n",
+											tac->op1->value);
+										}
+							 break;
 			case TAC_GT: fprintf(fout, "## TAC_GT\n"); asmGt(tac, fout); break;
 			case TAC_LT: fprintf(fout, "## TAC_LT\n"); asmLt(tac, fout);break;
 			case TAC_LE: fprintf(fout, "## TAC_LE\n"); asmLe(tac, fout);break;
@@ -38,10 +44,10 @@ void asmGen(TAC* first){
 			case TAC_OR: fprintf(fout, "## TAC_OR\n"); asmOr(tac, fout);break;
 			case TAC_READ: fprintf(fout, "## TAC_READ\n"
 						"\tmovl $%s, %%esi\n"
-						"\tmovl $.LC0, %%edi\n"
-						"\tmovl $0 %%eax\n"
+						"\tmovl $.%s, %%edi\n"
+						"\tmovl $0, %%eax\n"
 						"\tcall __isoc99_scanf\n"
-						,tac->res->value);break;
+						,tac->res->value, tac->op2->value);break;
 			case TAC_IFZ: fprintf(fout, "## TAC_IFZ\n");fprintf(fout,
 									"\tmovl %s(%%rip), %%eax\n"
 									"\tcmpl $1, %%eax\n"
@@ -165,10 +171,10 @@ void funcPush(TAC* tac, FILE* fout){
 		flagVarTemp=1;
 	}	
 
-	//declara labels do print	
+	//declara labels do print (printf) e read (scanf)	
 	TAC* tacLabel;
 	for(tacLabel=tac; tacLabel->type != TAC_FUNCPOP; tacLabel=tacLabel->next){
-		if(tacLabel->type == TAC_PRINT){
+		if(tacLabel->type == TAC_PRINT ){
 			if(tacLabel->op1->type == SYMBOL_IDENTIFIER){
 				tacLabel->op2 = makeLable();
 				fprintf(fout,".%s:\n"
@@ -183,10 +189,18 @@ void funcPush(TAC* tac, FILE* fout){
 					    , tacLabel->op2->value,tacLabel->op1->value);	
 			}
 		}
+		if(tacLabel->type == TAC_READ ){
+			tacLabel->op2 = makeLable();
+			fprintf(fout,".%s:\n"
+				     	    "\t.string \"%%d\"\n"
+					   , tacLabel->op2->value);	
+		}
+	
 	}
 		
 	//
 
+	fprintf(fout, "\t.text\n");
 	fprintf(fout, "## TAC_FUNCPUSH\n");
 
 	fprintf(fout,"\t.globl	%s\n"

@@ -1,9 +1,16 @@
 a: long  10;
 b: long  5;
 
+long  fun()
+{
+return 1;
+}
+;
+
 long  main()
 {
-a=a/b;
+a=fun()+1;
+read a;
 print a"\n";
 }
 ;
