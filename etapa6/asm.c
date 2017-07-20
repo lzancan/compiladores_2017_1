@@ -18,6 +18,7 @@ void asmGen(TAC* first){
 			continue;		
 		}
 		switch(tac->type){
+			//case TAC_PARAMETRO_CALL: fprintf(fout, "## TAC_PARAMETRO_CALL\n"); parametrosFunc(tac, fout); break;
 			case TAC_VAR_GLOBAL: fprintf(fout, "## VARIAVEIS_GLOBAIS\n");
 						printVarGlobal(tac, fout); break;
 			case TAC_ADD: fprintf(fout, "## TAC_ADD\n"); asmAdd(tac, fout);
@@ -122,6 +123,78 @@ void asmGen(TAC* first){
 
 }
 
+/*
+void parametrosFunc(TAC* tac, FILE* fout){
+		TAC* tacPercorre1 = tac;
+		TAC* tacPercorre2 = tac;
+		int flag=0;
+		while(tacPercorre1->type != TAC_CALLFUNC){
+			tacPercorre1 = tacPercorre1 -> next;
+		}
+		
+		do{
+			tacPercorre2 = tacPercorre2 -> prev;
+			flag=0;
+			if(tacPercorre2->type == TAC_FUNCPUSH){
+				if(tacPercorre2->res){
+					if(strcmp(tacPercorre1->res->value,tacPercorre2->res->value)==0){
+						flag = 1;
+					}
+					else flag=0;
+				}
+			}	
+		}while(flag!=1);
+	
+		tacPercorre2 = tacPercorre2->next;
+		
+		TAC* tacPercorre3 = tac; 
+		/*
+		fprintf(fout, "## TAC_MOVE\n");
+							if(tac->op1->nature == NATURE_FUNCTION){
+								fprintf(fout, "\tmovl %%eax, %s(%%rip)\n", tac->res->value);
+							}
+							else{
+								fprintf(fout, "\tmovl %s(%%rip), %s(%%rip)\n",
+								tac->op1->value, tac->res->value); 
+							}
+							 break;*/
+		do{
+			if(tacPercorre3->op2 == NULL){
+				if(tacPercorre2->res){
+					if(tacPercorre2->res->nature == NATURE_ESCALAR){
+						if(tacPercorre3->op1 == NULL){
+							tacPercorre3 = tacPercorre3->next;
+						}
+						if(tacPercorre3->op2 == NULL){
+							//fprintf(stderr, "(TAC_MOVE, %s, %s, %s)\n", tacPercorre2->res? tacPercorre2->res->value:0, tacPercorre3->op1?tacPercorre3->op1->value:0, tacPercorre3->op2?tacPercorre3->op2->value:0 );
+							fprintf(fout, "## TAC_MOVE\n");
+							if(tacPercorre3->op1->nature == NATURE_FUNCTION){
+								fprintf(fout, "\tmovl %%eax, %s(%%rip)\n", tacPercorre2->res->value);
+							}
+							else if (tacPercorre3->op1->type==SYMBOL_IDENTIFIER){
+								fprintf(fout, "\tmovl %s(%%rip), %%eax\n",
+											  "\tmovl %%eax, %s(%%rip)\n",
+											tacPercorre3->op1->value, tacPercorre2->res->value); 
+							}
+							else{
+								fprintf(fout, "\tmovl $%s, %s(%%rip)\n",
+								tacPercorre3->op1->value, tacPercorre2->res->value); 
+							}
+							tacPercorre3->op2 = makeTemp();
+						}
+						
+					}
+				}
+				//tacPercorre3 = tacPercorre3->next;
+			}
+			tacPercorre2 = tacPercorre2->next;
+			tacPercorre3 = tacPercorre3->next;
+		}
+		while(tacPercorre3->type != TAC_CALLFUNC);
+		
+		
+}
+*/
 void printVarGlobal(TAC* tac, FILE* fout){
 	//if(tac->res->dataType == DATATYPE_BYTE || tac->res->dataType == DATATYPE_SHORT || tac->res->dataType == DATATYPE_SHORT){
 		fprintf(fout,"\t.globl %s\n"
