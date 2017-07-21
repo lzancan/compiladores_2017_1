@@ -18,73 +18,64 @@ b:
 	.comm	temmmmporarryooius0,4,4
 	.comm	temmmmporarryooius1,4,4
 	.comm	temmmmporarryooius2,4,4
-	.text
-## TAC_FUNCPUSH
-	.globl	fun
-	.type	fun, @function
-fun:
-.labbbbellski0:
-	.cfi_startproc
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-## TAC_RETURN
-	movl $1, %eax
-## TAC_FUNCPOP
-	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
-.labbbbellski1:
-	.size	fun, .-fun
-.labbbbellski2:
-	.string "%d"
-.labbbbellski3:
-	.string "%d"
 .labbbbellski4:
-	.string "\n"
+	.string "%d"
+.labbbbellski5:
+	.string "%d"
 	.text
 ## TAC_FUNCPUSH
 	.globl	main
 	.type	main, @function
 main:
-.labbbbellski5:
+.labbbbellski6:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-## TAC_CALLFUNC
-	movl	$0, %eax
-	call	fun
-## TAC_ADD
-	addl $1, %eax
-	movl %eax, temmmmporarryooius3(%rip)
-## TAC_MOVE
-	movl temmmmporarryooius3(%rip), %eax
-	movl %eax, a(%rip)
 ## TAC_READ
 	movl $a, %esi
-	movl $.labbbbellski2, %edi
+	movl $.labbbbellski4, %edi
 	movl $0, %eax
 	call __isoc99_scanf
+## TAC_MOVE
+	movl $0, b(%rip)
+## TAC_LABEL
+.labbbbellski2:
+## TAC_LE
+	movl b(%rip), %eax
+	cmpl $10, %eax
+	setle	%al
+	movzbl %al, %eax
+	movl %eax, temmmmporarryooius3(%rip)
+## TAC_IFZ
+	movl temmmmporarryooius3(%rip), %eax
+	testl %eax, %eax
+	je  .labbbbellski3
+## TAC_ADD
+	movl a(%rip), %edx
+	movl b(%rip), %eax
+	addl %edx, %eax
+	movl %eax, temmmmporarryooius2(%rip)
 ## TAC_PRINT
-	movl	a(%rip), %eax
+	movl	temmmmporarryooius2(%rip), %eax
 	movl	%eax, %esi
-	movl	$.labbbbellski3, %edi
+	movl	$.labbbbellski5, %edi
 	movl	$0, %eax
 	call	printf
-## TAC_PRINT
-	movl	$.labbbbellski4, %edi
-	movl	$0, %eax
-	call	printf
+## TAC_INC
+	movl b(%rip), %eax
+	addl $1, %eax
+	movl %eax, b(%rip)
+## TAC_GOTO
+	jmp  .labbbbellski2
+## TAC_LABEL
+.labbbbellski3:
 ## TAC_FUNCPOP
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.labbbbellski6:
+.labbbbellski7:
 	.size	main, .-main

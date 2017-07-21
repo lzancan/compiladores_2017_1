@@ -1,13 +1,12 @@
 a: long 10;
 b: long 5;
 
-long fun(){
-	return 1;
-};
 long main(){
-	a=fun()+1;
 	read a;
-	print a "\n";
+	for(b=0 to 10){
+		print a+b;
+	};
+		
 };
 
 

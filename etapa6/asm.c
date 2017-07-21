@@ -51,7 +51,7 @@ void asmGen(TAC* first){
 						,tac->res->value, tac->op2->value);break;
 			case TAC_IFZ: fprintf(fout, "## TAC_IFZ\n");fprintf(fout,
 									"\tmovl %s(%%rip), %%eax\n"
-									"\tcmpl $1, %%eax\n"
+									"\ttestl %%eax, %%eax\n"
 									"\tje  .%s\n",
 									tac->op1->value,
 									tac->res->value); break;
@@ -148,7 +148,7 @@ void parametrosFunc(TAC* tac, FILE* fout){
 		tacPercorre2 = tacPercorre2->next;
 		
 		TAC* tacPercorre3 = tac; 
-		/*
+		
 		fprintf(fout, "## TAC_MOVE\n");
 							if(tac->op1->nature == NATURE_FUNCTION){
 								fprintf(fout, "\tmovl %%eax, %s(%%rip)\n", tac->res->value);
@@ -157,7 +157,7 @@ void parametrosFunc(TAC* tac, FILE* fout){
 								fprintf(fout, "\tmovl %s(%%rip), %s(%%rip)\n",
 								tac->op1->value, tac->res->value); 
 							}
-							 break;*/
+							 break;
 		do{
 			if(tacPercorre3->op2 == NULL){
 				if(tacPercorre2->res){
@@ -193,8 +193,8 @@ void parametrosFunc(TAC* tac, FILE* fout){
 		while(tacPercorre3->type != TAC_CALLFUNC);
 		
 		
-}
-*/
+}*/
+
 void printVarGlobal(TAC* tac, FILE* fout){
 	//if(tac->res->dataType == DATATYPE_BYTE || tac->res->dataType == DATATYPE_SHORT || tac->res->dataType == DATATYPE_SHORT){
 		fprintf(fout,"\t.globl %s\n"
@@ -235,7 +235,7 @@ void funcPush(TAC* tac, FILE* fout){
 		// declara todas as variaveis temporarias...
 		for(i=0 ; i < HASH_SIZE ; i++){
 			for(node = hashTable[i] ; node ; node = node->next){
-				if(node -> nature == 0 && node -> type == SYMBOL_IDENTIFIER){
+				if(node -> nature == 0 && node -> type == SYMBOL_IDENTIFIER && node->value[0]=='t'){
 					fprintf(fout, "\t.comm	%s,4,4\n", node->value);				
 				}
 			}

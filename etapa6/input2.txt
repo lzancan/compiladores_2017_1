@@ -1,27 +1,16 @@
-/*100
-+
-blablab
-.
-for
-int
-teste
-teste
-teste
-for for for*/
+a: long 10;
+b: long 5;
+long func(){
+	return 3+9;
+};
+long main(){
+	while(a>b){
+		print func()+b;
+		b = b+1;
+	};
+		
+};
 
-#include <stdio.h>
 
-int main(int argc, char *argv[]){
-    while(1) printf("%d",yylex()); 
-    printf("\n");
-    return 0; 
-}
 
-void printHashNode(HASH_NODE * node){
-	if(node){
-		fprintf(stderr,"Type: ");
-		printToken(node->type);
-		fprintf(stderr,", Value: %s",node->value);
-		fprintf(stderr,", HashAddress: %d\n",hashAddress(node->value));
-	}	
-}
+
