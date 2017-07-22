@@ -21,4 +21,4 @@ void asmEq(TAC* tac, FILE* fout);
 void asmNe(TAC* tac, FILE* fout);
 void asmAnd(TAC* tac, FILE* fout);
 void asmOr(TAC* tac, FILE* fout);
-//void parametrosFunc(TAC* tac,FILE* fout);
+void parametrosFunc(TAC* tac,FILE* fout);

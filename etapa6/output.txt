@@ -1,16 +1,14 @@
 a: long  10;
 b: long  5;
 
-long  fun()
+long  fun(long h,long j,long hj)
 {
-return 1;
+return 3;
 }
 ;
 
 long  main()
 {
-a=fun()+1;
-read a;
-print a"\n";
+a=fun(1,2,5);
 }
 ;

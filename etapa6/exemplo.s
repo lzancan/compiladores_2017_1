@@ -13,16 +13,15 @@ a:
 fun:
 .LFB0:
 	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	movl	a, %eax
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	movl	a(%rip), %eax
 	addl	$1, %eax
-	popl	%ebp
-	.cfi_def_cfa 4, 4
-	.cfi_restore 5
+	popq	%rbp
+	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE0:
@@ -36,23 +35,21 @@ fun:
 main:
 .LFB1:
 	.cfi_startproc
-	pushl	%ebp
-	.cfi_def_cfa_offset 8
-	.cfi_offset 5, -8
-	movl	%esp, %ebp
-	.cfi_def_cfa_register 5
-	andl	$-16, %esp
-	subl	$16, %esp
-	movl	$.LC0, %eax
-	movl	$a, 4(%esp)
-	movl	%eax, (%esp)
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	movl	$a, %esi
+	movl	$.LC0, %edi
+	movl	$0, %eax
 	call	__isoc99_scanf
-	leave
-	.cfi_restore 5
-	.cfi_def_cfa 4, 4
+	movl	$0, %eax
+	popq	%rbp
+	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE1:
 	.size	main, .-main
-	.ident	"GCC: (Ubuntu/Linaro 4.6.3-1ubuntu5) 4.6.3"
+	.ident	"GCC: (Ubuntu 5.4.0-6ubuntu1~16.04.4) 5.4.0 20160609"
 	.section	.note.GNU-stack,"",@progbits

@@ -5,7 +5,7 @@ long func(){
 };
 long main(){
 	while(a>b){
-		print func()+b;
+		print func()+1 "\n";
 		b = b+1;
 	};
 		

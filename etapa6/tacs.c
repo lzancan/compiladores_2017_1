@@ -70,7 +70,7 @@ TAC* tacGenerate(ASTREE* node){
 		case ASTREE_WHILE: result = makeWhile(code[0], code[1]); break;
 		case ASTREE_WHEN_THEN: result = makeWhenThen(code[0], code[1]); break;
 		case ASTREE_WHEN_THEN_ELSE: result = makeWhenThenElse(code[0], code[1], code[2]); break;
-		case ASTREE_PRINT_LISTA: result = tacJoin(tacCreate(TAC_PRINT, node->symbol, code[0]?code[0]->res:0, 0), code[1]?code[1]:0); break;
+		case ASTREE_PRINT_LISTA: result = tacJoin(code[0], tacJoin(tacCreate(TAC_PRINT, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0), code[1]?code[1]:0)); break;
 		case ASTREE_PRINT_ELEMENT: result = tacJoin(code[0], tacJoin(tacCreate(TAC_PRINT, node->symbol, code[0]?code[0]->res:0, code[1]?code[1]->res:0), code[1]?code[1]:0)); break;
 
 		case ASTREE_ATRIBUICAO: 
@@ -101,7 +101,7 @@ TAC* tacGenerate(ASTREE* node){
 
 		case ASTREE_FUNCAO: result = tacJoin(code[0], tacJoin(code[1], tacCreate(TAC_FUNCPOP, node->son[0]->symbol, 0, 0))); break; 
 
-		case ASTREE_EXPRESSAO_FUNCAO: result = tacJoin(tacCreate(TAC_CALLFUNC, node->symbol, makeTemp(), 0), tacJoin(code[0], code[1])); break;
+		case ASTREE_EXPRESSAO_FUNCAO: result = tacJoin(code[0], tacJoin(tacCreate(TAC_CALLFUNC, node->symbol, makeTemp(), 0), code[1])); break;
 		
 		default: result = tacJoin(tacJoin(tacJoin(code[0], code[1]), code[2]), code[3]);
 	}

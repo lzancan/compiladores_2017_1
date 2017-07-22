@@ -18,7 +18,8 @@ void asmGen(TAC* first){
 			continue;		
 		}
 		switch(tac->type){
-			//case TAC_PARAMETRO_CALL: fprintf(fout, "## TAC_PARAMETRO_CALL\n"); parametrosFunc(tac, fout); break;
+			case TAC_PARAMETRO_CALL: fprintf(fout, "## TAC_PARAMETRO_CALL\n"); parametrosFunc(tac, fout); 
+							break;
 			case TAC_VAR_GLOBAL: fprintf(fout, "## VARIAVEIS_GLOBAIS\n");
 						printVarGlobal(tac, fout); break;
 			case TAC_ADD: fprintf(fout, "## TAC_ADD\n"); asmAdd(tac, fout);
@@ -100,7 +101,8 @@ void asmGen(TAC* first){
 							break;
 			case TAC_FUNCPUSH: funcPush(tac, fout); break;
 			case TAC_FUNCPOP: fprintf(fout, "## TAC_FUNCPOP\n"); funcPop(tac, fout); break;
-			case TAC_CALLFUNC: fprintf(fout, "## TAC_CALLFUNC\n");
+			case TAC_CALLFUNC: 	parametrosFunc(tac, fout); 
+						fprintf(fout, "## TAC_CALLFUNC\n");
 								if(tac->next->type == TAC_CALLFUNC){
 									fprintf(fout, "\tmovl	$0, %%eax\n"
 										      "\tcall	%s\n"
@@ -123,15 +125,15 @@ void asmGen(TAC* first){
 
 }
 
-/*
+
 void parametrosFunc(TAC* tac, FILE* fout){
 		TAC* tacPercorre1 = tac;
 		TAC* tacPercorre2 = tac;
 		int flag=0;
+
 		while(tacPercorre1->type != TAC_CALLFUNC){
 			tacPercorre1 = tacPercorre1 -> next;
 		}
-		
 		do{
 			tacPercorre2 = tacPercorre2 -> prev;
 			flag=0;
@@ -139,14 +141,15 @@ void parametrosFunc(TAC* tac, FILE* fout){
 				if(tacPercorre2->res){
 					if(strcmp(tacPercorre1->res->value,tacPercorre2->res->value)==0){
 						flag = 1;
+						fprintf(stderr,"%s e %s\n", tacPercorre1->res->value, tacPercorre2->res->value);
 					}
 					else flag=0;
 				}
 			}	
 		}while(flag!=1);
 	
-		tacPercorre2 = tacPercorre2->next;
-		
+		//tacPercorre2 = tacPercorre2->next;
+		/*
 		TAC* tacPercorre3 = tac; 
 		
 		fprintf(fout, "## TAC_MOVE\n");
@@ -157,7 +160,7 @@ void parametrosFunc(TAC* tac, FILE* fout){
 								fprintf(fout, "\tmovl %s(%%rip), %s(%%rip)\n",
 								tac->op1->value, tac->res->value); 
 							}
-							 break;
+							
 		do{
 			if(tacPercorre3->op2 == NULL){
 				if(tacPercorre2->res){
@@ -190,10 +193,10 @@ void parametrosFunc(TAC* tac, FILE* fout){
 			tacPercorre2 = tacPercorre2->next;
 			tacPercorre3 = tacPercorre3->next;
 		}
-		while(tacPercorre3->type != TAC_CALLFUNC);
+		while(tacPercorre3->type != TAC_CALLFUNC);*/
 		
 		
-}*/
+}
 
 void printVarGlobal(TAC* tac, FILE* fout){
 	//if(tac->res->dataType == DATATYPE_BYTE || tac->res->dataType == DATATYPE_SHORT || tac->res->dataType == DATATYPE_SHORT){
@@ -210,12 +213,22 @@ void printVarGlobal(TAC* tac, FILE* fout){
 void asmPrint(TAC* tac,FILE* fout){
 	if(tac->op1){
 		if(tac->op1->type == SYMBOL_IDENTIFIER){
-			fprintf(fout,"\tmovl	%s(%%rip), %%eax\n"
+			if(tac->op1->nature == NATURE_FUNCTION){
+				fprintf(fout,
+				     "\tmovl	%%eax, %%esi\n"
+				     "\tmovl	$.%s, %%edi\n"
+				     "\tmovl	$0, %%eax\n"
+				     "\tcall	printf\n",
+				     tac->op2->value);
+			}
+			else{
+				fprintf(fout,"\tmovl	%s(%%rip), %%eax\n"
 				     "\tmovl	%%eax, %%esi\n"
 				     "\tmovl	$.%s, %%edi\n"
 				     "\tmovl	$0, %%eax\n"
 				     "\tcall	printf\n"
-				     , tac->op1->value, tac->op2->value);		
+				     , tac->op1->value, tac->op2->value);			
+			}		
 		}
 		else{
 			fprintf(fout,"\tmovl	$.%s, %%edi\n"
@@ -377,9 +390,9 @@ void asmAdd(TAC* tac, FILE* fout){
 			int numero2 = atoi(tac->op2->value);
 			int soma = numero1+numero2;
 			fprintf(fout,
-			"\tmovl $%d, %s(%%rip)\n",
-			soma,
-			tac->res->value);
+			"\tmovl $%d, %%eax\n",
+			soma
+			);
 		}
 		
 }
